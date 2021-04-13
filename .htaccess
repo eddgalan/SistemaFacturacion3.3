@@ -1,0 +1,13 @@
+#Impedir que se pueda ver el listado de contenidos de un directorio
+Options All -Indexes
+
+#Acceso a los recursos (.css y .js)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+
+#Creando URL amigables
+RewriteEngine On
+#RewriteRule ^([-a-zA-Z0-9/]+)$ index.php?url=$1
+#RewriteRule ^([-a-zA-Z0-9/]+)$ index.php?url=$1 [L,QSA]
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]

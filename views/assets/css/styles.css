@@ -1,0 +1,51 @@
+label {
+  /*
+  margin-left: 15px;
+  */
+  margin-top: 3px;
+  margin-bottom: -5px;
+}
+input {
+  height: 30px !important;
+  margin-right: 25px;
+}
+select{
+  height: 30px !important;
+  padding-top: 2px !important;
+}
+#subtitulo_modal {
+  margin-bottom: 20px;
+}
+
+.col {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.form-check-input{
+  margin-top: -2px !important;
+}
+
+/* Colores de texto */
+.color_blue{
+  color:#1D76C4;
+}
+
+.color_green{
+  color:#15B337;
+}
+
+.color_red{
+  color:#E42727;
+}
+
+.color_black{
+  color:#000;
+}
+.icon_status{
+  font-size: 25px;
+}
+
+.display_none{
+  display:none;
+}
