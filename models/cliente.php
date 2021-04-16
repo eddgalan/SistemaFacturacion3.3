@@ -1,7 +1,13 @@
 <?php
     Class ClientePDO extends Connection_PDO{
-      private $id_cliente;
+      private $id;
+      private $emisor;
+      private $estatus;
       private $nombre;
+      private $rfc;
+      private $direccion;
+      private $telefono;
+      private $correo;
 
       function __construct() {
         parent::__construct();
@@ -9,7 +15,8 @@
       }
 
       public function get_clientes(){
-        $stmt = $this->conn->prepare("SELECT * FROM cliente LIMIT 3");
+        $sql = "SELECT * FROM clientes WHERE emisor='1'";
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         write_log(serialize($result));

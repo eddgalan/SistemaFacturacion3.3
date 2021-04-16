@@ -1,6 +1,11 @@
 <?php
   require 'models/usuario.php';
   require 'models/cliente.php';
+  require 'models/catsat/metodos_pago.php';
+  require 'models/catsat/formas_pago.php';
+  require 'models/catsat/usos_cfdi.php';
+  require 'models/catsat/moneda.php';
+  require 'models/catsat/series.php';
 
   class Dashboard {
     function __construct($host_name="", $site_name="", $variables=null){
@@ -14,9 +19,29 @@
 
   class ViewNuevaFactura {
     function __construct($host_name="", $site_name="", $variables=null){
-      $data['title'] = "Facturación 3.3 | Facturas > Nueva Factura";
+      $data['title'] = "Facturación 3.3 | Facturas | Nueva Factura";
       $data['host'] = $host_name;
       $data['sitio'] = $site_name;
+      // Obtiene los clientes del usuario (Emisor)
+      $cliente = new ClientePDO();
+      $data['clientes'] = $cliente->get_clientes();
+      // Obtiene los metodos de pago
+      $metodo = new CatSATMetodos();
+      $data['metodos_pago'] = $metodo->get_all();
+      // Obtiene las formas de pago
+      $forma_pago = new CatSATFormaPago();
+      $data['formas_pago'] = $forma_pago->get_all();
+      // Obtiene los usos CFDI
+      $usos_cfdi = new CatSATUsosCFDI();
+      $data['usos_cfdi'] = $usos_cfdi->get_all();
+      // Obtiene las monedas
+      $moneda = new CatSATMoneda();
+      $data['monedas'] = $moneda->get_all();
+      // Obtiene las monedas
+      $serie = new SeriesPDO();
+      $data['series'] = $serie->get_all();
+
+
       $this->view = new View();
       $this->view->render('views/modules/cfdis/nuevo_cfdi.php', $data);
     }
