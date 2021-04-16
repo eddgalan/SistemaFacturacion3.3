@@ -11,10 +11,20 @@
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Dashboard";
       $data['host'] = $host_name;
-      $data['sitio'] = $site_name;
       $this->view = new View();
       $this->view->render('views/modules/dashboard.php', $data);
     }
+  }
+
+  class ViewProdServ {
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Catalogo Productos y Servicios";
+      $data['host'] = $host_name;
+
+      $this->view = new View();
+      $this->view->render('views/modules/catsat/prodserv.php',$data);
+    }
+
   }
 
   class ViewNuevaFactura {

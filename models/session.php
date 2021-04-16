@@ -3,10 +3,15 @@
   Class UserSession{
       private $id_user;
       private $user;
+      private $user_name;
+      private $user_lastname;
+      private $groups;
+      private $status;
+      private $token;
 
       public function __construct(){
         // Inicia la sesión si no está iniciada
-        if(session_status() == 1){
+        if(session_status() != 1){
           session_start();
         }
       }

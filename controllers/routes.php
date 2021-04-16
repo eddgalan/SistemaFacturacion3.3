@@ -6,10 +6,12 @@
     function __construct($host_name, $site_name){
       /* ...:: Views :::.. */
       $routes["dashboard"]="Dashboard";
+      $routes["catalogosSAT/prod_serv"]="ViewProdServ";
+
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
 
       /* ...:: APIs ::... */
-      $routes["API/clientes/get_clientes"]="ClienteAPI/get_clientes";
+      $routes["API/productos/get_producto/_data_"]="ProductoAPI/get_producto";
 
 
       //Si no está vacía la variable $_GET['url'] la usamos para navegar

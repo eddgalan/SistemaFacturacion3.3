@@ -280,60 +280,59 @@
             <h4 class="modal-title"> <i class="fas fa-plus"></i> Agregar Producto o Servicio </h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
-
-            <div class="modal-body">
-              <div class="col-lg-12 col-md-12 col-sm-12">
-                <div class="row">
-                  <div class="col-lg-12 col-md-12 col-sm-8">
-                    <label for="cliente"> Producto o servicio: </label><br>
-                    <select class="from-control selectpicker" name="cliente" data-live-search="true" style="width:100%;">
-                      <option value="0" disabled selected>Buscar producto/servicio...</option>
-                      <?php
-                        foreach ($data['clientes'] as $cliente) {
-                          $html_option = "<option value='". $cliente['Id']. "'>". $cliente['RFC'] ." | ". $cliente['Nombre'] ."</option>\n";
-                          echo $html_option;
-                        }
-                      ?>
-                    </select>
-                  </div>
-                  <!-- Clave SAT -->
-                  <div class="col-lg-4">
-                    <label for="clave_sat">Clave SAT: </label>
-                    <input type="text" class="form-control" name="clave_sat" placeholder="00000000" disabled>
-                  </div>
-                  <!-- Clave Unidad -->
-                  <div class="col-lg-4">
-                    <label for="clave_unidad"> Unidad: </label>
-                    <input type="text" class="form-control" name="clave_unidad" placeholder="0000" disabled>
-                  </div>
-                  <!-- Precio -->
-                  <div class="col-lg-4">
-                    <label for="precio"> Precio:  </label>
-                    <input type="text" class="form-control" name="precio" placeholder="$ 0.00" disabled>
-                  </div>
-                  <!-- Impuesto -->
-                  <div class="col-lg-4">
-                    <label for="impuesto"> Impuesto:  </label>
-                    <input type="text" class="form-control" name="impuesto" placeholder="IVA / IEPS | Tasa" disabled>
-                  </div>
-                  <!-- Impuesto -->
-                  <div class="col-lg-4">
-                    <label for="cantidad"> Cantidad:  </label>
-                    <input type="text" class="form-control" name="cantidad" placeholder="0.00">
-                  </div>
-                  <!-- Impuesto -->
-                  <div class="col-lg-4">
-                    <label for="descuento"> Descuento:  </label>
-                    <input type="text" class="form-control" name="descuento" placeholder="$ 0.00">
-                  </div>
-
+          <div class="modal-body">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-8">
+                  <label for="cliente"> Producto o servicio: </label><br>
+                  <select class="from-control selectpicker" name="cliente" data-live-search="true" style="width:100%;">
+                    <option value="0" disabled selected>Buscar producto/servicio...</option>
+                    <?php
+                      foreach ($data['clientes'] as $cliente) {
+                        $html_option = "<option value='". $cliente['Id']. "'>". $cliente['RFC'] ." | ". $cliente['Nombre'] ."</option>\n";
+                        echo $html_option;
+                      }
+                    ?>
+                  </select>
                 </div>
+                <!-- Clave SAT -->
+                <div class="col-lg-4">
+                  <label for="clave_sat">Clave SAT: </label>
+                  <input type="text" class="form-control" name="clave_sat" placeholder="00000000" disabled>
+                </div>
+                <!-- Clave Unidad -->
+                <div class="col-lg-4">
+                  <label for="clave_unidad"> Unidad: </label>
+                  <input type="text" class="form-control" name="clave_unidad" placeholder="0000" disabled>
+                </div>
+                <!-- Precio -->
+                <div class="col-lg-4">
+                  <label for="precio"> Precio:  </label>
+                  <input type="text" class="form-control" name="precio" placeholder="$ 0.00" disabled>
+                </div>
+                <!-- Impuesto -->
+                <div class="col-lg-4">
+                  <label for="impuesto"> Impuesto:  </label>
+                  <input type="text" class="form-control" name="impuesto" placeholder="IVA / IEPS | Tasa" disabled>
+                </div>
+                <!-- Impuesto -->
+                <div class="col-lg-4">
+                  <label for="cantidad"> Cantidad:  </label>
+                  <input type="text" class="form-control" name="cantidad" placeholder="0.00">
+                </div>
+                <!-- Impuesto -->
+                <div class="col-lg-4">
+                  <label for="descuento"> Descuento:  </label>
+                  <input type="text" class="form-control" name="descuento" placeholder="$ 0.00">
+                </div>
+
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-success"> <i class="fas fa-check"></i> Agregar </button>
-              <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
-            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success"> <i class="fas fa-check"></i> Agregar </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+          </div>
 
         </div>
       </div>
