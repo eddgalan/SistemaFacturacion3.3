@@ -91,13 +91,13 @@
                   <label for="cliente"> Clave Producto o servicio: </label><br>
                   <select class="from-control selectpicker" name="cliente" data-live-search="true" style="width:100%;">
                     <option value="0" disabled selected>Buscar clave producto/servicio...</option>
-
+                    <?php
+                      foreach ($data['cat_prodserv'] as $key => $prodserv) {
+                        $html_option = "<option value='". $key ."'>". $key ." | ". $prodserv ."</option>\n";
+                        echo $html_option;
+                      }
+                    ?>
                   </select>
-                </div>
-                <!-- Clave SAT -->
-                <div class="col-lg-12">
-                  <label for="clave_sat">Descripción: </label>
-                  <textarea class="form-control" name="desc_clave_prodserv" placeholder="Descripción de la clave del producto o servicio..." disabled></textarea>
                 </div>
               </div>
             </div>
