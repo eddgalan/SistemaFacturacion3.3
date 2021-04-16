@@ -20,6 +20,9 @@ select{
   border: 1px solid #ced4da;
   background-color:#FFF;
 }
+.dropdown-menu{
+  margin-left:0px;
+}
 #subtitulo_modal {
   margin-bottom: 20px;
 }
