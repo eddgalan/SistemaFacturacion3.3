@@ -13,6 +13,13 @@ select{
   height: 30px !important;
   padding-top: 2px !important;
 }
+.bootstrap-select{
+  width:100% !important;
+}
+.bootstrap-select button{
+  border: 1px solid #ced4da;
+  background-color:#FFF;
+}
 #subtitulo_modal {
   margin-bottom: 20px;
 }

@@ -22,13 +22,13 @@
                                 <h5> <i class="fas fa-info-circle"></i> Información</h5>
                               </div>
                               <!-- Cliente -->
-                              <div class="col-lg-6 col-md-8 col-sm-8">
-                                <label for="cliente"> Cliente: </label>
-                                <select class="form-control" name="cliente">
-                                  <option value="0">-----</option>
+                              <div class="col-lg-12 col-md-12 col-sm-8">
+                                <label for="cliente"> Cliente: </label><br>
+                                <select class="from-control selectpicker" name="cliente" data-live-search="true" style="width:100%;">
+                                  <option value="0" disabled selected>Buscar cliente...</option>
                                   <?php
                                     foreach ($data['clientes'] as $cliente) {
-                                      $html_option = "<option value='". $cliente['Id']. "'>". $cliente['Nombre'] ."</option>\n";
+                                      $html_option = "<option value='". $cliente['Id']. "'>". $cliente['RFC'] ." | ". $cliente['Nombre'] ."</option>\n";
                                       echo $html_option;
                                     }
                                   ?>
@@ -284,13 +284,17 @@
             <div class="modal-body">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="row">
-                  <div class="col-lg-12 col-md-12 col-sm-12">
-                    <label for="articulo_agregar"> Producto / Servicio: </label>
-                    <select class="form-control" name="articulo_agregar">
-                      <option value="0">-----</option>
-                      <option value="1"> 0101010101 | Papitas super crujientes de queso </option>
+                  <div class="col-lg-12 col-md-12 col-sm-8">
+                    <label for="cliente"> Producto o servicio: </label><br>
+                    <select class="from-control selectpicker" name="cliente" data-live-search="true" style="width:100%;">
+                      <option value="0" disabled selected>Buscar producto/servicio...</option>
+                      <?php
+                        foreach ($data['clientes'] as $cliente) {
+                          $html_option = "<option value='". $cliente['Id']. "'>". $cliente['RFC'] ." | ". $cliente['Nombre'] ."</option>\n";
+                          echo $html_option;
+                        }
+                      ?>
                     </select>
-                    <hr>
                   </div>
                   <!-- Clave SAT -->
                   <div class="col-lg-4">
