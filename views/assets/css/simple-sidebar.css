@@ -71,6 +71,7 @@
 
 #page-content-wrapper {
   min-width: 100vw;
+  padding-bottom: 15px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
