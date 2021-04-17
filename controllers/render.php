@@ -27,7 +27,7 @@
           }
         }
       }else{
-        $data['title'] = "Tarjetas de Lealtad | Login";
+        $data['title'] = "Facturación 3.3 | Inicio de sesión";
         $data['host'] = $host_name;
         $data['sitio'] = $site_name;
         $this->view = new View();

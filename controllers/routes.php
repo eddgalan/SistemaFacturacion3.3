@@ -5,8 +5,10 @@
   class Routes{
     function __construct($host_name, $site_name){
       /* ...:: Views :::.. */
+      $routes["login"]="Login";
       $routes["dashboard"]="Dashboard";
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
+      $routes["catalogosSAT/unidades"]="ViewUnidades";
 
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
 

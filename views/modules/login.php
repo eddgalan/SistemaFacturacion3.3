@@ -1,60 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <?php include './views/modules/components/head.php'; ?>
-  <link rel="stylesheet" href="./views/assets/css/index.css">
+    <?php include './views/modules/components/head.php'; ?>
+    <link rel="stylesheet" href="<?= $data['host']?>/views/assets/css/login.css">
 </head>
-<body>
-  <div class="container-fluid div_main">
-    <div class="row h-100">
-      <!-- Formulario login -->
-      <div class="col-md-5 mx-auto">
-        <div class="col-md-8 mx-auto" style="width:100%; margin-top:65px;">
-          <div class="card col-md-12" style="padding-right:-15px;">
-            <div class="card-body">
-              <div class="text-center">
-                <img src="<?= $data['host'] ?>/views/assets/img/logo.jpg" class="img-fluid">
-              </div>
-              <form action="login" method="post">
-                <div class="form-group">
-                    <label for="username" style="margin-left: 0px;">Usuario: </label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                          <div class="input-group-text">
-                              <i class="fa fa-user"></i>
-                          </div>
-                      </div>
-                      <input id="username" type="text" class="form-control" name="username" tabindex="1" placeholder="username">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="d-block">
-                        <label for="password" style="margin-left: 0px;">Contraseña: </label>
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                              <div class="input-group-text">
-                                  <i class="fa fa-lock"></i>
-                              </div>
-                          </div>
-                          <input id="password" type="password" class="form-control" name="password" tabindex="2" placeholder="********">
+
+<body class="bg-gradient-primary">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-12 col-xl-10">
+                <div class="card shadow-lg o-hidden border-0 my-5">
+                    <div class="card-body p-0">
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-flex">
+                                <div class="flex-grow-1 bg-login-image"></div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h3 class="text-dark mb-4">Facturación Electrónica</h3>
+                                        <h4 class="text-dark mb-4">Bienvenido</h4>
+                                    </div>
+                                    <form class="register-form">
+                                      <div class="form-group">
+                                        <label for="email">Correo: </label>
+                                        <input type="text" class="form-control" name="email" placeholder="empresa@dominio.com" required>
+                                      </div>
+                                      <button>Recuperar contraseña</button>
+                                      <p class="message">¿Ya está registrado? <a href="#">Iniciar sesión</a></p>
+                                    </form>
+                                    <form class="login-form">
+                                      <div class="form-group">
+                                        <label for="username"><strong>Usuario: </strong></label>
+                                        <input type="text" class="form-control" name="username" placeholder="Nombre de usuario" required>
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="password"><strong>Contraseña: </strong></label>
+                                        <input type="text" class="form-control" name="password" placeholder="* * * * * * * * " required>
+                                      </div>
+                                      <button>Entrar</button>
+                                      <hr>
+                                      <p class="message">¿Olvidó su contraseña? <a href="#">Cambiar contraseña</a></p>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="text-center">
-                  <button type="submit" id="btn_login" name="btn_login" class="btn btn-primary" tabindex="4">
-                      Iniciar sesión
-                  </button>
-                </div>
-                <div class="text-center">
-                  <a class="small" href="forgot-password.html">¿Olvidó su contraseña?</a>
-                </div>
-              </form>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <?php include './views/modules/components/javascript.php'; ?>
+    <?php include './views/modules/components/javascript.php'; ?>
+    <script>
+      $('.message a').click(function(){
+       $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+      });
+    </script>
 </body>
+
 </html>
