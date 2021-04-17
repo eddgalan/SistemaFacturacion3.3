@@ -11,7 +11,7 @@
 
       public function __construct(){
         // Inicia la sesión si no está iniciada
-        if(session_status() != 1){
+        if(session_status() == 1){
           session_start();
         }
       }

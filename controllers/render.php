@@ -16,7 +16,7 @@
           $usr_name = $_POST['username'];
           $usr_pass = $_POST['password'];
 
-          $usuario = new Usuario();
+          $usuario = new UsuarioPDO();
 
           if($usuario->validate_user($usr_name, $usr_pass)){
             $session = new UserSession();
@@ -37,10 +37,10 @@
   }
 
   class Logout{
-    function __construct(){
+    function __construct($hostname){
       $session = new UserSession();
       $session->close_sesion();
-      header("location: ./login");
+      header("location: ". $hostname ."/login");
     }
   }
 
@@ -50,6 +50,82 @@
       $data['host'] = $host_name;
       $this->view = new View();
       $this->view->render('views/modules/dashboard.php', $data);
+    }
+  }
+
+  class ViewUsuarios {
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Usuarios";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/usuarios.php', $data);
+    }
+  }
+
+  class ProcessUsuario {
+    function __construct($host_name="", $site_name="", $variables=null){
+      if ($_POST){
+        // Valida el Token de la sesión
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        write_log($token);
+        if($sesion->validate_token($token)){
+          if (empty($_POST['id_usuario'])){
+            // Si NO se recibe id_usuario es una Alta de Usuario
+            // Obtiene los datos del Formulario (Variables POST)
+            $username = $_POST['username'];
+            $contra = $_POST['password'];
+            $contra = password_hash($contra, PASSWORD_DEFAULT, ['cost' => 15]);
+            $email = $_POST['email'];
+            // Crea una instancia de UsuarioPDO con los datos del formulario
+            $usuario = new UsuarioPDO('0', 1, $username, $contra, $email);
+            $usuario_creado = $usuario->insert_usuario();  // Crea el usuario con los datos que mandamos
+            // Verifica si se creó el usuario y hace el msg
+            $sesion = new UserSession();
+            if($usuario_creado){
+              $sesion->set_notification("OK", "Se ha creado un nuevo usuario");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al crear el usuario. Intente de nuevo.");
+            }
+          }else{
+            // Si se recibe id_usuario es un UPDATE de Usuario
+            // Obtiene los datos del Formulario (Variables POST)
+            if(isset($_POST['user_activo'])){
+              $activo = 1;
+            }else{
+              $activo = 0;
+            }
+            $id_usuario = $_POST['id_usuario'];
+            $nombre = $_POST['nombre_usuario_editar'];
+            $apellidos = $_POST['apellidos_editar'];
+            $nombre_usuario = $_POST['user_name_editar'];
+            // Valida si se ingresó una nueva contraseña
+            if (empty($_POST['contrasenia_editar'])){
+              $contra = "";
+            }else{
+              $contra = password_hash($_POST['contrasenia_editar'], PASSWORD_DEFAULT, ['cost' => 15]);
+            }
+            // Crea una instancia de UsuarioPDO con los datos del formulario
+            $usuario = new UsuarioPDO($id_usuario, $activo, $nombre, $apellidos, $nombre_usuario, $contra);
+            $usuario_actualizado = $usuario->actualizar_usuario();        // Actualiza el usuario con los datos que mandamos
+            // Verifica si se actualizó el usuario y genera el msg/notificación
+            $sesion = new UserSession();
+            if($usuario_actualizado){
+              $sesion->set_notification("OK", "Los datos del usuario se actualizaron.");
+            }else{
+              $sesion->set_notification("OK", "Ocurrió un error al actualizar los datos del usuario.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+      }
+      // Redirecciona a la página de administrar/usuarios
+      header("location: " . $host_name . "/administrar/usuarios");
     }
   }
 

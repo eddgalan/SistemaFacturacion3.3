@@ -7,6 +7,8 @@
       /* ...:: Views :::.. */
       $routes["login"]="Login";
       $routes["dashboard"]="Dashboard";
+      $routes["administrar/usuarios"]="ViewUsuarios";
+      $routes["administrar/usuarios/process"]="ProcessUsuario";
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
       $routes["catalogosSAT/unidades"]="ViewUnidades";
 
