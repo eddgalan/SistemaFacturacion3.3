@@ -9,7 +9,7 @@
             require $modulo;
           }else{
             write_log("NO hay una sesión Activa | Redirigiendo a login");
-            header("location: ./login");     // Poner a qué dirección se desea redirigir si no hay sesión
+            header("location: ". $data['host'] . "/login");     // Poner a qué dirección se desea redirigir si no hay sesión
           }
       }else{
         if($modulo == 'views/modules/login.php'){

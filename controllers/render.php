@@ -19,6 +19,7 @@
           $usuario = new UsuarioPDO();
 
           if($usuario->validate_user($usr_name, $usr_pass)){
+            // write_log("USUARIO Y CONTASEÑA CORRECTA");
             $session = new UserSession();
             $session->set_session($usuario->get_userdata($usr_name));
             header("location: ./dashboard");
@@ -49,7 +50,7 @@
       $data['title'] = "Facturación 3.3 | Dashboard";
       $data['host'] = $host_name;
       $this->view = new View();
-      $this->view->render('views/modules/dashboard.php', $data);
+      $this->view->render('views/modules/dashboard.php', $data, true);
     }
   }
 
@@ -62,7 +63,7 @@
       $data['token'] = $sesion->set_token();
 
       $this->view = new View();
-      $this->view->render('views/modules/administrar/usuarios.php', $data);
+      $this->view->render('views/modules/administrar/usuarios.php', $data, true);
     }
   }
 
@@ -138,7 +139,7 @@
       $data['cat_prodserv'] = $cat_prodserv->get_all_catsat();
 
       $this->view = new View();
-      $this->view->render('views/modules/catsat/prodserv.php',$data);
+      $this->view->render('views/modules/catsat/prodserv.php',$data, true);
     }
   }
 
@@ -168,7 +169,7 @@
 
 
       $this->view = new View();
-      $this->view->render('views/modules/cfdis/nuevo_cfdi.php', $data);
+      $this->view->render('views/modules/cfdis/nuevo_cfdi.php', $data, true);
     }
   }
 
@@ -181,7 +182,7 @@
       $data['cat_unidades'] = $unidades->get_all_catsat();
 
       $this->view = new View();
-      $this->view->render('views/modules/catsat/unidades.php',$data);
+      $this->view->render('views/modules/catsat/unidades.php',$data, true);
     }
   }
 

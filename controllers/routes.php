@@ -6,6 +6,7 @@
     function __construct($host_name, $site_name){
       /* ...:: Views :::.. */
       $routes["login"]="Login";
+      $routes["logout"]="Logout";
       $routes["dashboard"]="Dashboard";
       $routes["administrar/usuarios"]="ViewUsuarios";
       $routes["administrar/usuarios/process"]="ProcessUsuario";

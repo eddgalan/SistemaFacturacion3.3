@@ -17,7 +17,7 @@
       }
 
       public function validate_session(){
-        if(isset($_SESSION['id_user'])){
+        if(isset($_SESSION['Id'])){
           write_log("validate_session");
           return true;
         }else{
@@ -27,11 +27,14 @@
 
       public function set_session($datos_usuario){
         write_log(serialize($datos_usuario));
-        write_log("Id = " . $datos_usuario['id']);
-        write_log("Username = " . $datos_usuario['username']);
         // $_SESSION['id_user'] = $token;
-        $_SESSION['id_user'] = $datos_usuario['id'];
-        $_SESSION['user'] = $datos_usuario['username'];
+        $_SESSION['Id'] = $datos_usuario['Id'];
+        $_SESSION['Estatus'] = $datos_usuario['Estatus'];
+        $_SESSION['Username'] = $datos_usuario['Username'];
+        $_SESSION['Email'] = $datos_usuario['Email'];
+        $_SESSION['Created'] = $datos_usuario['Created'];
+        $_SESSION['ChangePass'] = $datos_usuario['ChangePass'];
+        $_SESSION['LastSession'] = $datos_usuario['LastSession'];
         write_log("Sesión Colocada");
       }
 

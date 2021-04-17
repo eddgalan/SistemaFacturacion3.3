@@ -21,7 +21,7 @@
                                         <h3 class="text-dark mb-4">Facturación Electrónica</h3>
                                         <h4 class="text-dark mb-4">Bienvenido</h4>
                                     </div>
-                                    <form class="register-form">
+                                    <form class="register-form" method="POST" action="">
                                       <div class="form-group">
                                         <label for="email">Correo: </label>
                                         <input type="text" class="form-control" name="email" placeholder="empresa@dominio.com" required>
@@ -29,18 +29,18 @@
                                       <button>Recuperar contraseña</button>
                                       <p class="message">¿Ya está registrado? <a href="#">Iniciar sesión</a></p>
                                     </form>
-                                    <form class="login-form">
+                                    <form class="login-form"  method="POST" action="<?= $data['host']?>/login">
                                       <div class="form-group">
                                         <label for="username"><strong>Usuario: </strong></label>
                                         <input type="text" class="form-control" name="username" placeholder="Nombre de usuario" required>
                                       </div>
                                       <div class="form-group">
                                         <label for="password"><strong>Contraseña: </strong></label>
-                                        <input type="text" class="form-control" name="password" placeholder="* * * * * * * * " required>
+                                        <input type="password" class="form-control" name="password" placeholder="* * * * * * * * " required>
                                       </div>
                                       <button>Entrar</button>
                                       <hr>
-                                      <p class="message">¿Olvidó su contraseña? <a href="#">Cambiar contraseña</a></p>
+                                      <p class="message">¿Olvidó su contraseña? <a href="#">Recuperar contraseña</a></p>
                                     </form>
                                 </div>
                             </div>
