@@ -1,6 +1,8 @@
 <?php
   require 'models/usuario.php';
   require 'models/cliente.php';
+  require 'models/pac.php';
+
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';
   require 'models/catsat/formas_pago.php';
@@ -64,6 +66,22 @@
 
       $this->view = new View();
       $this->view->render('views/modules/administrar/usuarios.php', $data, true);
+    }
+  }
+
+  class ViewEmisores {
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Emisores";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+
+      $pac = new PacPDO();
+      $data['pacs'] = $pac->get_active_pac();
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/emisores.php', $data, true);
     }
   }
 

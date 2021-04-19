@@ -10,6 +10,8 @@
       $routes["dashboard"]="Dashboard";
       $routes["administrar/usuarios"]="ViewUsuarios";
       $routes["administrar/usuarios/process"]="ProcessUsuario";
+      $routes["administrar/emisores"]="ViewEmisores";
+      $routes["administrar/emisores/process"]="ProcessEmisores";
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
       $routes["catalogosSAT/unidades"]="ViewUnidades";
 
