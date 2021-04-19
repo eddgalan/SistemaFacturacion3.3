@@ -9,6 +9,7 @@
       $routes["logout"]="Logout";
       $routes["dashboard"]="Dashboard";
       $routes["administrar/usuarios"]="ViewUsuarios";
+      $routes["administrar/usuarios/switch_active/_data_/_data_"]="SwitchActivo";
       $routes["administrar/usuarios/process"]="ProcessUsuario";
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";
@@ -18,6 +19,7 @@
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
 
       /* ...:: APIs ::... */
+      $routes["API/usuarios/get_usuario/_data_"]="UsuarioAPI/get_usuario";
       $routes["API/productos/get_producto/_data_"]="ProductoAPI/get_producto";
 
 

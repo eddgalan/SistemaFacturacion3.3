@@ -42,22 +42,20 @@
     public function actualizar_usuario(){
       $this->connect();       // Conecta a la base de datos
       try{
-        if($this->user_pass != ""){
+        if($this->userpass != ""){
           // Actualiza contraseña
-          $sql = "UPDATE usuario SET Activo='$this->activo',
-          Nombre='$this->nombre',
-          Apellidos='$this->apellidos',
-          User_name='$this->user_name',
-          Password='$this->user_pass'
-          WHERE Id_usuario = $this->id_usuario";
+          $sql = "UPDATE usuario SET Estatus='$this->activo',
+          Username='$this->usrname',
+          Email='$this->email',
+          Password='$this->userpass'
+          WHERE Id = $this->id";
           write_log("Actualiza contraseña");
         }else{
           // NO Actualiza contraseña
-          $sql = "UPDATE usuario SET Activo='$this->activo',
-          Nombre='$this->nombre',
-          Apellidos='$this->apellidos',
-          User_name='$this->user_name'
-          WHERE Id_usuario = $this->id_usuario";
+          $sql = "UPDATE usuario SET Estatus='$this->activo',
+          Username='$this->usrname',
+          Email='$this->email'
+          WHERE Id = '$this->id'";
           write_log("NO Actualiza contraseña");
         }
 
@@ -68,28 +66,76 @@
         $this->disconect();
         return true;
       }catch(PDOException $e) {
-        write_log("Ocurrió un error al realizar el INSERT del Usuario\nError: ". $e->getMessage());
+        write_log("Ocurrió un error al realizar el UPDATE del Usuario\nError: ". $e->getMessage());
         write_log("SQL: ". $sql);
         $this->disconect();
         return false;
       }
     }
 
-    public function get_userdata($username=''){
-      if(empty($this->id_usuario)){
+    public function get_users($username=''){
+      $this->connect();
+      $stmt = $this->conn->prepare("SELECT * FROM usuario");
+      $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $this->disconect();
+
+      if(count($result) != 0){
+        return $result;
+      }else{
+        write_log("NO se han registrado Usuarios");
+      }
+    }
+
+    public function cambiar_activo(){
+      try{
         $this->connect();
-        $stmt = $this->conn->prepare("SELECT * FROM usuario WHERE Username='$username'");
+        $sql = "UPDATE usuario SET Estatus='$this->activo'
+        WHERE Id = $this->id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+        $this->disconect();
+        return true;
+      }catch(PDOException $e){
+        write_log("Ocurrió un error al actualizar el campo Activo del Usuario\nError: ". $e->getMessage());
+        write_log("SQL: ". $sql);
+        $this->disconect();
+      }
+    }
+
+    public function get_userdata_by_id($id=''){
+      if(empty($this->id)){
+        $this->connect();
+        $stmt = $this->conn->prepare("SELECT * FROM usuario WHERE Id='$id'");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $this->disconect();
 
         if(count($result) != 0){
           return $result[0];
-          // $this->id_usuario = $result[0]['Id'];
-          // $this->user_name = $result[0]['User_name'];
         }
       }
-      // return array("id"=>$this->id_usuario, "username"=>$this->user_name);
+    }
+
+    public function get_userdata($username=''){
+      $this->connect();
+
+      if(empty($this->id)){
+        $sql = "SELECT * FROM usuario WHERE Username='$username'";
+      }else{
+        $sql = "SELECT * FROM usuario WHERE Id='$this->id'";
+      }
+
+      $stmt = $this->conn->prepare($sql);
+      $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $this->disconect();
+
+      if(count($result) != 0){
+        return $result[0];
+      }
     }
 
     public function validate_user($username, $password){

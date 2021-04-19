@@ -64,24 +64,35 @@
       $sesion = new UserSession();
       $data['token'] = $sesion->set_token();
 
+      $usuario = new UsuarioPDO();
+      $data['usuarios'] = $usuario->get_users();
+
       $this->view = new View();
       $this->view->render('views/modules/administrar/usuarios.php', $data, true);
     }
   }
 
-  class ViewEmisores {
-    function __construct($host_name="", $site_name="", $variables=null){
-      $data['title'] = "Facturación 3.3 | Administrar | Emisores";
-      $data['host'] = $host_name;
+  class SwitchActivo{
+    function __construct($host_name="", $site_name="", $datos=null){
+      $user_id = $datos[1];
+      $status_actual = $datos[2];
 
+      if($status_actual == 1){
+        $nuevo_status = 0;
+        $msg_status="Se ha desactivado el usuario.";
+      }else{
+        $nuevo_status = 1;
+        $msg_status="Se ha activado el usuario.";
+      }
+
+      $usuario = new UsuarioPDO($user_id, $nuevo_status);
       $sesion = new UserSession();
-      $data['token'] = $sesion->set_token();
-
-      $pac = new PacPDO();
-      $data['pacs'] = $pac->get_active_pac();
-
-      $this->view = new View();
-      $this->view->render('views/modules/administrar/emisores.php', $data, true);
+      if($usuario->cambiar_activo()){
+        $sesion->set_notification("OK", $msg_status);
+      }else{
+        $sesion->set_notification("OK", $msg_status);
+      }
+      header("location: " . $host_name . "/administrar/usuarios");
     }
   }
 
@@ -119,24 +130,23 @@
               $activo = 0;
             }
             $id_usuario = $_POST['id_usuario'];
-            $nombre = $_POST['nombre_usuario_editar'];
-            $apellidos = $_POST['apellidos_editar'];
-            $nombre_usuario = $_POST['user_name_editar'];
+            $username = $_POST['username_edit'];
+            $email = $_POST['email_edit'];
             // Valida si se ingresó una nueva contraseña
-            if (empty($_POST['contrasenia_editar'])){
+            if (empty($_POST['password_edit'])){
               $contra = "";
             }else{
-              $contra = password_hash($_POST['contrasenia_editar'], PASSWORD_DEFAULT, ['cost' => 15]);
+              $contra = password_hash($_POST['password_edit'], PASSWORD_DEFAULT, ['cost' => 15]);
             }
             // Crea una instancia de UsuarioPDO con los datos del formulario
-            $usuario = new UsuarioPDO($id_usuario, $activo, $nombre, $apellidos, $nombre_usuario, $contra);
+            $usuario = new UsuarioPDO($id_usuario, $activo, $username, $contra, $email);
             $usuario_actualizado = $usuario->actualizar_usuario();        // Actualiza el usuario con los datos que mandamos
             // Verifica si se actualizó el usuario y genera el msg/notificación
             $sesion = new UserSession();
             if($usuario_actualizado){
               $sesion->set_notification("OK", "Los datos del usuario se actualizaron.");
             }else{
-              $sesion->set_notification("OK", "Ocurrió un error al actualizar los datos del usuario.");
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del usuario.");
             }
           }
         }
@@ -145,6 +155,22 @@
       }
       // Redirecciona a la página de administrar/usuarios
       header("location: " . $host_name . "/administrar/usuarios");
+    }
+  }
+
+  class ViewEmisores {
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Emisores";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+
+      $pac = new PacPDO();
+      $data['pacs'] = $pac->get_active_pac();
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/emisores.php', $data, true);
     }
   }
 

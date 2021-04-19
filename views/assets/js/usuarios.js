@@ -13,17 +13,15 @@ function carga_datos_usuario(id){
     data: {"token":token},
     success: function(resp){
       // Obtiene los datos del servicio
-      var id = resp.data['0'].Id_usuario;
-      var activo = resp.data['0'].Activo;
-      var nombre = resp.data['0'].Nombre;
-      var apellidos = resp.data['0'].Apellidos;
-      var user_name = resp.data['0'].User_name;
+      var id = resp.data.Id;
+      var activo = resp.data.Estatus;
+      var username = resp.data.Username;
+      var email = resp.data.Email;
       // Setea los datos en el formulario
       $("input[name='id_usuario']").val(id);
-      $("input[name='nombre_usuario_editar']").val(nombre);
-      $("input[name='apellidos_editar']").val(apellidos);
-      $("input[name='user_name_editar']").val(user_name);
-      $("input[name='contrasenia_editar']").val("");
+      $("input[name='username_edit']").val(username);
+      $("input[name='email_edit']").val(email);
+      $("input[name='password_edit']").val("");
       // Activa/Desactiva el check
       if(activo == "1"){
         $("input[name='user_activo']").prop("checked", true);
