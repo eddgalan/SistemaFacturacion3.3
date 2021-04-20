@@ -79,39 +79,44 @@
     <!-- ..:: Modal Agregar Artículo ::.. -->
     <div class="modal fade" id="modal_agregar_clave">
       <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title"> <i class="fas fa-plus"></i> Agregar Clave ProdServ </h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-          </div>
-          <div class="modal-body">
-            <div class="col-lg-12 col-md-12 col-sm-12">
-              <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-8">
-                  <label for="cliente"> Clave Producto o servicio: </label><br>
-                  <select class="from-control selectpicker" name="cliente" data-live-search="true" style="width:100%;">
-                    <option value="0" disabled selected>Buscar clave producto/servicio...</option>
-                    <?php
-                      foreach ($data['cat_prodserv'] as $key => $prodserv) {
-                        $html_option = "<option value='". $key ."'>". $key ." | ". $prodserv ."</option>\n";
-                        echo $html_option;
-                      }
-                    ?>
-                  </select>
+        <form action="<?= $data['host'] ?>/catalogosSAT/prod_serv/add" method="POST">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title"> <i class="fas fa-plus"></i> Agregar Clave ProdServ </h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                  <!-- Token -->
+                  <div style="display:none;">
+                    <input type="hidden" name="token" value="<?= $data['token']?>">
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <label for="cliente"> Clave Producto o servicio: </label><br>
+                    <select class="from-control selectpicker" name="clave_prodserv" data-live-search="true">
+                      <option value="0" disabled selected>Buscar clave producto/servicio...</option>
+                      <?php
+                        foreach ($data['cat_prodserv'] as $key => $prodserv) {
+                          $html_option = "<option value='". $key ." | ". $prodserv ."'>". $key ." | ". $prodserv ."</option>\n";
+                          echo $html_option;
+                        }
+                      ?>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
+            <div class="modal-footer">
+              <button type="submit" name="agregar" class="btn btn-success" disabled> <i class="fas fa-check"></i> Agregar </button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" disabled> <i class="fas fa-check"></i> Agregar </button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
-          </div>
-
-        </div>
+        </form>
       </div>
     </div>
     <?php include './views/modules/components/javascript.php'; ?>
-    <script type="text/javascript" src="../views/assets/js/catsat/load_prodserv.js"></script>
+    <script type="text/javascript" src="../views/assets/js/catsat/prodserv.js"></script>
 </body>
 
 </html>

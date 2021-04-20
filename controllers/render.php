@@ -74,6 +74,7 @@
 
   class SwitchActivo{
     function __construct($host_name="", $site_name="", $datos=null){
+      // PONER TOKEN!!!!
       $user_id = $datos[1];
       $status_actual = $datos[2];
 
@@ -179,11 +180,34 @@
       $data['title'] = "Facturación 3.3 | Catalogo Productos y Servicios";
       $data['host'] = $host_name;
 
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+
       $cat_prodserv = new CatSATProdServ();
       $data['cat_prodserv'] = $cat_prodserv->get_all_catsat();
 
       $this->view = new View();
       $this->view->render('views/modules/catsat/prodserv.php',$data, true);
+    }
+  }
+
+  class ProcessProdServ{
+    function __construct($host_name="", $site_name="", $datos=null){
+      if ($_POST){
+        $clave = $_POST['clave_prodserv'];
+        
+        $clave_prodserv = new CatSATProdServ();
+        $sesion = new UserSession();
+
+        if($clave_prodserv->add_prodserv($clave)){
+          $sesion->set_notification("OK", "Se agregó la Clave de Producto o Servicio a su catálogo");
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al agregar la Clave de Producto o Servicio. Intente de nuevo");
+        }
+        header("location: " . $host_name . "/catalogosSAT/prod_serv");
+      }else{
+        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+      }
     }
   }
 

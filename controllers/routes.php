@@ -14,6 +14,7 @@
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
+      $routes["catalogosSAT/prod_serv/add"]="ProcessProdServ";
       $routes["catalogosSAT/unidades"]="ViewUnidades";
 
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";

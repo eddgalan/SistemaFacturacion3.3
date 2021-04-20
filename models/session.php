@@ -35,12 +35,19 @@
         $_SESSION['Created'] = $datos_usuario['Created'];
         $_SESSION['ChangePass'] = $datos_usuario['ChangePass'];
         $_SESSION['LastSession'] = $datos_usuario['LastSession'];
+        $_SESSION['Emisor'] = 1;
         write_log("Sesión Colocada");
       }
 
       public function get_session(){
-        if(isset($_SESSION['id_user']) && isset($_SESSION['user'])){
-          return array("Id"=>$_SESSION['id_user'], "User"=>$_SESSION['user']);
+        if(isset($_SESSION['Username'])){
+          return array("Id"=>$_SESSION['Id'],
+          "Username"=>$_SESSION['Username'],
+          "Email"=>$_SESSION['Email'],
+          "Created"=>$_SESSION['Created'],
+          "LastSession"=>$_SESSION['LastSession'],
+          "Emisor"=>$_SESSION['Emisor']
+          );
         }else{
           return false;
         }
