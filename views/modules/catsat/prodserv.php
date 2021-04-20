@@ -43,26 +43,36 @@
                                         </tr>
                                       </thead>
                                       <tbody style="font-size:15px;">
-                                        <tr>
-                                          <td>0000-0000-0000</td>
-                                          <td>Producto de Prueba 1</td>
-                                          <td class="text-center">PZA</td>
-                                          <td class="text-center">
-                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="width:100%;">
-                      												<button id="btnGroupDrop1" style="background-color: #4e73df !important;" type="button" class="btn btn-info btn_options text-center" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      													<i class="fas fa-ellipsis-h icon_btn_options"></i>
-                      												</button>
-                      												<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                      													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_editar_producto" onclick="carga_datos_producto()">
-                                                  <i class="fas fa-edit color_blue"></i> Editar
-                                                </a>
-                      													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_eliminar_producto" onclick="carga_datos_producto()">
-                                                  <i class="fas fa-times color_red"></i> Eliminar
-                                                </a>
-                      												</div>
-                      											</div>
-                                          </td>
-                                        </tr>
+                                        <?php
+                                          foreach ($data['claves_prodserv'] as $clave_prodserv) {
+                                            $icon=""; $icon_option = ""; $label_accion ="";
+                                            if ($clave_prodserv['Estatus']==1){
+                                              $icon = "<i class='fas fa-toggle-on color_green icon_status'></i>";
+                                              $icon_option = "<i class='fas fa-toggle-off color_red '></i>";
+                                              $label_accion = " Desactivar";
+                                            }else{
+                                              $icon = "<i class='fas fa-toggle-off color_red icon_status'></i>";
+                                              $icon_option = "<i class='fas fa-toggle-on color_green'></i>";
+                                              $label_accion = " Activar";
+                                            }
+                                            $html_row = ""."\n\t\t\t\t\t\t\t<tr>\n".
+                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>" . $icon . "</td> \n".
+                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>". $clave_prodserv['ClaveProdServ'] ."</td>\n".
+                                                          "\t\t\t\t\t\t\t\t<td>". $clave_prodserv['Descripcion'] ."</td>\n".
+                                                          "\t\t\t\t\t\t\t\t<td>\n".
+                                                            "\t\t\t\t\t\t\t\t\t<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'>\n".
+                                                              "\t\t\t\t\t\t\t\t\t\t<button id='btnGroupDrop1' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>\n".
+                                                                "\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-ellipsis-h icon_btn_options'></i>\n".
+                                                              "\t\t\t\t\t\t\t\t\t\t</button>\n".
+                                                              "\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
+                                                                "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='". $data['host'] ."/catalogosSAT/prod_serv/switch_active/". $clave_prodserv['Id'] ."/". $clave_prodserv['Estatus'] ."' >". $icon_option . $label_accion ."</a>\n".
+                                                              "\t\t\t\t\t\t\t\t\t\t</div>\n".
+                                                            "\t\t\t\t\t\t\t\t\t</div>\n".
+                                                          "\t\t\t\t\t\t\t\t</td>\n".
+                                                        "\t\t\t\t\t\t\t\t</tr>\n";
+                                            echo $html_row;
+                                          }
+                                        ?>
                                       </tbody>
                                   </table>
                                 </div>

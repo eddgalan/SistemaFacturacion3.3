@@ -91,7 +91,7 @@
       if($usuario->cambiar_activo()){
         $sesion->set_notification("OK", $msg_status);
       }else{
-        $sesion->set_notification("OK", $msg_status);
+        $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
       }
       header("location: " . $host_name . "/administrar/usuarios");
     }
@@ -186,6 +186,8 @@
       $cat_prodserv = new CatSATProdServ();
       $data['cat_prodserv'] = $cat_prodserv->get_all_catsat();
 
+      $data['claves_prodserv'] = $cat_prodserv->get_all();
+
       $this->view = new View();
       $this->view->render('views/modules/catsat/prodserv.php',$data, true);
     }
@@ -195,7 +197,7 @@
     function __construct($host_name="", $site_name="", $datos=null){
       if ($_POST){
         $clave = $_POST['clave_prodserv'];
-        
+
         $clave_prodserv = new CatSATProdServ();
         $sesion = new UserSession();
 
@@ -208,6 +210,32 @@
       }else{
         write_log("ProcessUsuario\nNO se recibieron datos por POST");
       }
+    }
+  }
+
+  class SwitchActivoProdServ{
+    function __construct($host_name="", $site_name="", $datos=null){
+      // PONER TOKEN!!!!
+      $prodserv_id = $datos[1];
+      $status_actual = $datos[2];
+
+      if($status_actual == 1){
+        $nuevo_status = 0;
+        $msg_status="Se ha desactivado la Clave de Producto o Servicio.";
+      }else{
+        $nuevo_status = 1;
+        $msg_status="Se ha activado la Clave de Producto o Servicio.";
+      }
+
+      $prodserv = new CatSATProdServ($prodserv_id, $nuevo_status);
+      $sesion = new UserSession();
+
+      if($prodserv->cambiar_activo()){
+        $sesion->set_notification("OK", $msg_status);
+      }else{
+        $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
+      }
+      header("location: " . $host_name . "/catalogosSAT/prod_serv");
     }
   }
 

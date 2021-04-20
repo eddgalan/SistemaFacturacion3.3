@@ -6,9 +6,13 @@
       private $clave;
       private $descripcion;
 
-      function __construct() {
+      function __construct($id="", $estatus="", $emisor="", $clave="", $descripcion="") {
         parent::__construct();
-        $this->connect();
+        $this->id=$id;
+        $this->estatus=$estatus;
+        $this->emisor=$emisor;
+        $this->clave=$clave;
+        $this->descripcion=$descripcion;
       }
 
       public function get_all_catsat(){
@@ -18,6 +22,22 @@
         return $array_unidades[0];
       }
 
+      public function get_all(){
+        $this->connect();
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+
+        $emisor = $data_session['Emisor'];
+
+        $sql = "SELECT * FROM catsatclavesprodserv WHERE emisor='$emisor'";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        write_log("Claves de ProdServ del Emisor ". $emisor .":\n " . serialize($result));
+        $this->disconect();
+        return $result;
+      }
+
       public function add_prodserv($prodserv){
         $clave = substr($prodserv, 0, strpos($prodserv, " | "));
         $desc = substr($prodserv, 11, strlen($prodserv));
@@ -25,7 +45,6 @@
         $sesion = new UserSession();
         $data_session = $sesion->get_session();
 
-        write_log(serialize($data_session));
         $emisor = $data_session['Emisor'];
 
         $this->connect();
@@ -62,13 +81,24 @@
         }
       }
 
-      public function get_all(){
-        $sql = "SELECT * FROM catsatclavesprodserv WHERE emisor='1'";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        write_log("CatSATMoneda \n " . serialize($result));
-        return $result;
+      public function cambiar_activo(){
+        try{
+          $this->connect();
+          $sql = "UPDATE catsatclavesprodserv
+          SET Estatus='$this->estatus'
+          WHERE Id = $this->id";
+          write_log($sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e){
+          write_log("Ocurrió un error al actualizar el campo Activo del Usuario\nError: ". $e->getMessage());
+          write_log("SQL: ". $sql);
+          $this->disconect();
+        }
       }
     }
 ?>

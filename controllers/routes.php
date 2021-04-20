@@ -9,12 +9,14 @@
       $routes["logout"]="Logout";
       $routes["dashboard"]="Dashboard";
       $routes["administrar/usuarios"]="ViewUsuarios";
-      $routes["administrar/usuarios/switch_active/_data_/_data_"]="SwitchActivo";
       $routes["administrar/usuarios/process"]="ProcessUsuario";
+      $routes["administrar/usuarios/switch_active/_data_/_data_"]="SwitchActivo";
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";
+      /* ..:: CATALOGOS SAT ::.. */
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
       $routes["catalogosSAT/prod_serv/add"]="ProcessProdServ";
+      $routes["catalogosSAT/prod_serv/switch_active/_data_/_data_"]="SwitchActivoProdServ";
       $routes["catalogosSAT/unidades"]="ViewUnidades";
 
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
