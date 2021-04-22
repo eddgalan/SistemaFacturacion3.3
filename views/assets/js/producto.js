@@ -13,7 +13,7 @@ $(document).ready(function (){
       data: {"token":token},
       success: function(resp){
         // Obtiene los datos del servicio
-        var id = resp.data.Id;
+        var id = resp.data.ProductoID;
         var sku = resp.data.SKU;
         var descripcion = resp.data.ProductoNombre;
         var clave_sat = resp.data.ProductoClaveSAT;
@@ -29,6 +29,7 @@ $(document).ready(function (){
         $("input[name='precio']").val(precio);
         $("input[name='impuesto']").val(impuesto_desc + " | " + impuesto_tasa + "%");
         // Inputs Ocultos
+        $("input[name='id_producto']").val(id);
         $("input[name='sku']").val(sku);
         $("input[name='descripcion']").val(descripcion);
         $("input[name='clave_unidad']").val(unidad_clave);
@@ -57,6 +58,7 @@ $(document).ready(function (){
       // Valida importe >= descuento ¿?
       if(importe >= descuento){
         // Obtiene los datos del formulario
+        var id = $("input[name='id_producto']").val();
         var sku = $("input[name='sku']").val();
         var descripcion = $("input[name='descripcion']").val();
         var clave_prodserv = $("input[name='clave_sat']").val();
@@ -64,32 +66,36 @@ $(document).ready(function (){
         var clave_impuesto = $("input[name='impuesto']").val();
         var clave_unidad = $("input[name='clave_unidad']").val();
         var unidad = $("input[name='unidad_desc']").val();
-        var impuesto = $("input[name='clave_impuesto']").val();
+        var clave_impuesto = $("input[name='clave_impuesto']").val();
+        var impuesto_nombre = $("input[name='impuesto']").val();
         var tasa = $("input[name='tasa_impuesto']").val();
 
-        if(impuesto=="002"){
-          var iva = Math.round(parseFloat(tasa) * importe, 4);
+        if(clave_impuesto=="002"){
+          var iva = parseFloat(tasa) * importe; // Redondear aquí
           var ieps = 0;
         }else{
-          var ieps = Math.round(parseFloat(tasa) * importe, 4);
+          var ieps = parseFloat(tasa) * importe;  // Redondear aquí
           var iva = 0;
         }
 
         json_producto = {
+          "id":id,
           "sku":sku,
+          "clave_prodserv": clave_prodserv,
           "descripcion":descripcion,
           "unidad_nombre":unidad,
           "unidad_clave":clave_unidad,
           "precio":precio,
           "cantidad":cantidad,
           "importe": importe,
-          "descuento":descuento,
+          "descuento":parseFloat(descuento),
           "iva":iva,
           "ieps":ieps,
           "impuesto_importe":parseFloat(tasa) * importe,
           "impuesto_tasa_cuota":tasa,
-          "impuesto_clave":impuesto,
+          "impuesto_clave":clave_impuesto,
           "impuesto_base":importe,
+          "impuesto_nombre":impuesto_nombre,
           "total":importe - descuento + (parseFloat(tasa) * importe)
         }
         productos.push(json_producto);
@@ -99,13 +105,30 @@ $(document).ready(function (){
       console.log("NO Numeric");
     }
   });
+  /* ..:: Guarda los cambios realizados al producto ::.. */
+  $("button[name='save_product']").click(function(){
+    var id_producto = $("input[name='id_prod_edit']").val();
+    var cantidad = $("input[name='cantidad_edit']").val();
+    var descuento = $("input[name='descuento_prod_edit']").val();
+
+    for(let producto of productos){
+      if(producto.id == id_producto){
+        producto.cantidad = cantidad;
+        producto.descuento = descuento;
+        break;
+      }
+    }
+    create_table();
+  });
 });
 
 function create_table(){
+  $("tbody").empty();
   var subtotal=0, iva=0, ieps=0, desc=0, total=0;
-
+  console.log(productos);
+  var tbody = "";
   for( let producto of productos ){
-    var table_body = "<tr>"+
+    var row = "<tr>"+
         "<td>" + producto.sku + "</td>"+
         "<td>" + producto.descripcion + "</td>"+
         "<td class='text-center'>"+ producto.unidad_nombre +"</td>"+
@@ -118,25 +141,26 @@ function create_table(){
         "<td class='text-center'>$"+ producto.total +"</td>"+
         "<td class='text-center'>"+
           "<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'>"+
-            "<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>"+
+            "<button id='btnGroupDrop"+ producto.id +"' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>"+
               "<i class='fas fa-ellipsis-h icon_btn_options'></i>"+
             "</button>"+
-            "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>"+
-              "<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_producto' onclick='carga_datos_producto("+ producto.sku +")'>"+
+            "<div class='dropdown-menu' aria-labelledby='btnGroupDrop"+ producto.id +"'>"+
+              "<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_producto' onclick='carga_datos_producto("+ producto.id +")'>"+
                 "<i class='fas fa-edit color_blue'></i> Editar"+
               "</a>"+
               "<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_eliminar_producto' onclick='carga_datos_producto("+ producto.sku +")'>"+
-                "<i class='fas fa-times color_red'></i> Eliminar"+
+                "<i class='fas fa-times color_red'></i> Remover"+
               "</a>"+
             "</div>"+
           "</div>"+
       "</td>"+
     "</tr>";
+    tbody += row;
     /* ..:: Calcular Totales ::.. */
     subtotal += producto.importe;
     iva += producto.iva;
     ieps += producto.ieps;
-    desc += producto.descuento;
+    desc += parseFloat(producto.descuento);
     total = subtotal - desc + iva + ieps;
     /* ..:: Coloca los totales ::.. */
     $("input[name='subtotal']").val(subtotal);
@@ -145,11 +169,12 @@ function create_table(){
     $("input[name='descuento']").val(desc);
     $("input[name='total']").val(total);
   }
-  $("tbody").append(table_body);
   clear_inputs();
+  $("tbody").append(tbody);
 }
 
 function clear_inputs(){
+  $("select[name='producto']").val("");
   $("input[name='clave_sat']").val("");
   $("input[name='unidad']").val("");
   $("input[name='precio']").val("");
@@ -164,4 +189,20 @@ function clear_inputs(){
   $("input[name='descuento_prod']").val("");
 
   $("button[name='add_product']").attr("disabled","disabled");
+}
+
+function carga_datos_producto(id_producto){
+  for (let producto of productos){
+    if(producto.id == id_producto){
+      // Coloca los datos en el formulario
+      $("input[name='id_prod_edit']").val(producto.id);
+      $("input[name='clave_sat_edit']").val(producto.clave_prodserv);
+      $("input[name='unidad_edit']").val(producto.unidad_clave + " | " + producto.unidad_nombre);
+      $("input[name='precio_edit']").val(producto.precio);
+      $("input[name='impuesto_edit']").val(producto.impuesto_nombre);
+      $("input[name='cantidad_edit']").val(producto.cantidad);
+      $("input[name='descuento_prod_edit']").val(producto.descuento);
+      break;
+    }
+  }
 }

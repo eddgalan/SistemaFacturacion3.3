@@ -230,9 +230,12 @@
           <div class="modal-body">
             <div class="col-lg-12 col-md-12 col-sm-12">
               <div class="row">
-                <!-- Token -->
+                <!-- Hidden -->
                 <div class="col-md-12 display_none">
+                  <!-- Token -->
                   <input type="hidden" name="token" value="<?= $data['token']?>">
+                  <!-- id -->
+                  <input type="hidden" name="id_producto" disabled>
                   <!-- sku -->
                   <input type="hidden" name="sku" disabled>
                   <!-- descripcion -->
@@ -293,6 +296,61 @@
           </div>
           <div class="modal-footer">
             <button type="button" name="add_product"class="btn btn-success" disabled> <i class="fas fa-check"></i> Agregar </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ..:: Modal Editar Producto ::.. -->
+    <div class="modal fade" id="modal_editar_producto">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title"> <i class="fas fa-plus"></i> Editar Producto/Servicio </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="row">
+                <!-- Id Producto -->
+                <div class="display_none">
+                  <input type="hidden" name="id_prod_edit">
+                </div>
+                <!-- Clave SAT -->
+                <div class="col-lg-4">
+                  <label for="clave_sat">Clave SAT: </label>
+                  <input type="text" class="form-control" name="clave_sat_edit" placeholder="00000000" disabled>
+                </div>
+                <!-- Clave Unidad -->
+                <div class="col-lg-4">
+                  <label for="clave_unidad"> Unidad: </label>
+                  <input type="text" class="form-control" name="unidad_edit" placeholder="-----" disabled>
+                </div>
+                <!-- Precio -->
+                <div class="col-lg-4">
+                  <label for="precio"> Precio:  </label>
+                  <input type="text" class="form-control" name="precio_edit" placeholder="$ 0.00" disabled>
+                </div>
+                <!-- Impuesto -->
+                <div class="col-lg-4">
+                  <label for="impuesto"> Impuesto:  </label>
+                  <input type="text" class="form-control" name="impuesto_edit" placeholder="IVA / IEPS | Tasa" disabled>
+                </div>
+                <!-- Cantidad -->
+                <div class="col-lg-4">
+                  <label for="cantidad"> Cantidad:  </label>
+                  <input type="text" class="form-control" name="cantidad_edit" placeholder="0.00">
+                </div>
+                <!-- Descuento -->
+                <div class="col-lg-4">
+                  <label for="descuento"> Descuento:  </label>
+                  <input type="text" class="form-control" name="descuento_prod_edit" placeholder="$ 0.00" value="0">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" name="save_product"class="btn btn-success"> <i class="fas fa-check"></i> Guardar cambios </button>
             <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
           </div>
         </div>
