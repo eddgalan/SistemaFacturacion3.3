@@ -5,7 +5,7 @@
                       <div class="dropdown" id="drop_perfil"><a class="dropdown-toggle" aria-expanded="false" data-toggle="dropdown" href="#"> <i class="fas fa-user"></i> Perfil&nbsp;</a>
                           <div class="dropdown-menu">
                             <a class="dropdown-item" href="#"> <i class="fas fa-id-card"></i> Perfil </a>
-                            <a class="dropdown-item" href="#"> <i class="fas fa-sign-out-alt" style="color:red;"></i> Cerrar sesión </a>
+                            <a class="dropdown-item" href="<?= $data['host']?>/logout"> <i class="fas fa-sign-out-alt" style="color:red;"></i> Cerrar sesión </a>
                           </div>
                       </div>
                   </div>

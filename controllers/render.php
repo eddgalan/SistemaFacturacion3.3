@@ -2,6 +2,7 @@
   require 'models/usuario.php';
   require 'models/cliente.php';
   require 'models/pac.php';
+  require 'models/producto.php';
 
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';
@@ -244,6 +245,10 @@
       $data['title'] = "Facturación 3.3 | Facturas | Nueva Factura";
       $data['host'] = $host_name;
       $data['sitio'] = $site_name;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+
       // Obtiene los clientes del usuario (Emisor)
       $cliente = new ClientePDO();
       $data['clientes'] = $cliente->get_clientes();
@@ -262,6 +267,9 @@
       // Obtiene las monedas
       $serie = new SeriesPDO();
       $data['series'] = $serie->get_all();
+      // Obtiene los productos
+      $productos = new ProductoPDO();
+      $data['productos'] = $productos->get_all();
 
 
       $this->view = new View();

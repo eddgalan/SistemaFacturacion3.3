@@ -141,7 +141,7 @@
                                               <th>Unidad</th>
                                               <th>Precio</th>
                                               <th>Cantidad</th>
-                                              <th>Subtotal</th>
+                                              <th>Importe</th>
                                               <th>Descuento</th>
                                               <th>IVA</th>
                                               <th>IEPS</th>
@@ -150,60 +150,7 @@
                                             </tr>
                                           </thead>
                                           <tbody style="font-size:14px;">
-                                            <tr>
-                                              <td>0000-0000-0000</td>
-                                              <td>Producto de Prueba 1</td>
-                                              <td class="text-center">PZA</td>
-                                              <td class="text-center">$ 100</td>
-                                              <td class="text-center">2</td>
-                                              <td class="text-center">$ 200</td>
-                                              <td class="text-center">0</td>
-                                              <td class="text-center">$ 32</td>
-                                              <td class="text-center">$ 0</td>
-                                              <td class="text-center">$ 232</td>
-                                              <td class="text-center">
-                                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="width:100%;">
-                          												<button id="btnGroupDrop1" style="background-color: #4e73df !important;" type="button" class="btn btn-info btn_options text-center" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          													<i class="fas fa-ellipsis-h icon_btn_options"></i>
-                          												</button>
-                          												<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                          													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_editar_producto" onclick="carga_datos_producto()">
-                                                      <i class="fas fa-edit color_blue"></i> Editar
-                                                    </a>
-                          													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_eliminar_producto" onclick="carga_datos_producto()">
-                                                      <i class="fas fa-times color_red"></i> Eliminar
-                                                    </a>
-                          												</div>
-                          											</div>
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                              <td>0000-0000-0000</td>
-                                              <td>Producto de Prueba 1</td>
-                                              <td class="text-center">PZA</td>
-                                              <td class="text-center">$ 100</td>
-                                              <td class="text-center">2</td>
-                                              <td class="text-center">$ 200</td>
-                                              <td class="text-center">0</td>
-                                              <td class="text-center">$ 32</td>
-                                              <td class="text-center">$ 0</td>
-                                              <td class="text-center">$ 232</td>
-                                              <td class="text-center">
-                                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="width:100%;">
-                          												<button id="btnGroupDrop1" style="background-color: #4e73df !important;" type="button" class="btn btn-info btn_options text-center" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          													<i class="fas fa-ellipsis-h icon_btn_options"></i>
-                          												</button>
-                          												<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                          													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_editar_producto" onclick="carga_datos_producto()">
-                                                      <i class="fas fa-edit color_blue"></i> Editar
-                                                    </a>
-                          													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_eliminar_producto" onclick="carga_datos_producto()">
-                                                      <i class="fas fa-times color_red"></i> Eliminar
-                                                    </a>
-                          												</div>
-                          											</div>
-                                              </td>
-                                            </tr>
+
                                           </tbody>
                                       </table>
                                     </div>
@@ -283,13 +230,29 @@
           <div class="modal-body">
             <div class="col-lg-12 col-md-12 col-sm-12">
               <div class="row">
+                <!-- Token -->
+                <div class="col-md-12 display_none">
+                  <input type="hidden" name="token" value="<?= $data['token']?>">
+                  <!-- sku -->
+                  <input type="hidden" name="sku" disabled>
+                  <!-- descripcion -->
+                  <input type="hidden" name="descripcion" disabled>
+                  <!-- Clave Unidad -->
+                  <input type="hidden" name="clave_unidad" disabled>
+                  <!-- Nombre Unidad -->
+                  <input type="hidden" name="unidad_desc" disabled>
+                  <!-- Tipo Impuesto -->
+                  <input type="hidden" name="clave_impuesto" disabled>
+                  <!-- Tasa impuesto  -->
+                  <input type="hidden" name="tasa_impuesto" disabled>
+                </div>
                 <div class="col-lg-12 col-md-12 col-sm-8">
-                  <label for="cliente"> Producto o servicio: </label><br>
-                  <select class="from-control selectpicker" name="cliente" data-live-search="true" style="width:100%;">
+                  <label for="producto"> Producto o servicio: </label><br>
+                  <select class="from-control selectpicker" name="producto" data-live-search="true" style="width:100%;">
                     <option value="0" disabled selected>Buscar producto/servicio...</option>
                     <?php
-                      foreach ($data['clientes'] as $cliente) {
-                        $html_option = "<option value='". $cliente['Id']. "'>". $cliente['RFC'] ." | ". $cliente['Nombre'] ."</option>\n";
+                      foreach ($data['productos'] as $producto) {
+                        $html_option = "<option value='". $producto['Id']. "'>". $producto['SKU'] ." | ". $producto['Nombre'] ."</option>\n";
                         echo $html_option;
                       }
                     ?>
@@ -303,7 +266,7 @@
                 <!-- Clave Unidad -->
                 <div class="col-lg-4">
                   <label for="clave_unidad"> Unidad: </label>
-                  <input type="text" class="form-control" name="clave_unidad" placeholder="0000" disabled>
+                  <input type="text" class="form-control" name="unidad" placeholder="-----" disabled>
                 </div>
                 <!-- Precio -->
                 <div class="col-lg-4">
@@ -315,29 +278,28 @@
                   <label for="impuesto"> Impuesto:  </label>
                   <input type="text" class="form-control" name="impuesto" placeholder="IVA / IEPS | Tasa" disabled>
                 </div>
-                <!-- Impuesto -->
+                <!-- Cantidad -->
                 <div class="col-lg-4">
                   <label for="cantidad"> Cantidad:  </label>
                   <input type="text" class="form-control" name="cantidad" placeholder="0.00">
                 </div>
-                <!-- Impuesto -->
+                <!-- Descuento -->
                 <div class="col-lg-4">
                   <label for="descuento"> Descuento:  </label>
-                  <input type="text" class="form-control" name="descuento" placeholder="$ 0.00">
+                  <input type="text" class="form-control" name="descuento_prod" placeholder="$ 0.00" value="0">
                 </div>
-
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-success"> <i class="fas fa-check"></i> Agregar </button>
+            <button type="button" name="add_product"class="btn btn-success" disabled> <i class="fas fa-check"></i> Agregar </button>
             <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
           </div>
-
         </div>
       </div>
     </div>
     <?php include './views/modules/components/javascript.php'; ?>
+    <script type="text/javascript" src="<?=$data['host']?>/views/assets/js/producto.js"></script>
 </body>
 
 </html>

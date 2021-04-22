@@ -34,4 +34,30 @@
     }
   }
 
+  class ProductoAPI extends API{
+    public function get_producto($datos){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $id = $datos[1];
+          $producto = new ProductoPDO($id);
+          $data_producto = $producto->get_producto();
+          if($data_producto){
+            $this->return_data("Mostrando Productos API", 200, $data_producto);
+          }else{
+            $this->return_data("Ocurrió un error.", 500);
+          }
+        }else{
+          write_log("Token NO válido | ProductoAPI");
+          $this->return_data("Ocurrió un error... No es posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("NO se recibieron datos POST | ProductoAPI");
+        $this->return_data("No es posible procesar su solicitud", 400);
+      }
+    }
+  }
+
 ?>
