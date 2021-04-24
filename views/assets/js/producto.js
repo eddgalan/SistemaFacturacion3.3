@@ -114,7 +114,19 @@ $(document).ready(function (){
     for(let producto of productos){
       if(producto.id == id_producto){
         producto.cantidad = cantidad;
+        producto.importe = parseFloat(producto.precio) * parseFloat(cantidad);
         producto.descuento = descuento;
+
+        if(producto.impuesto_clave == "002"){
+          producto.iva = parseFloat(producto.impuesto_tasa_cuota) * parseFloat(producto.importe); // Redondear aquí
+          producto.ieps = 0;
+        }else{
+          producto.ieps = parseFloat(producto.impuesto_tasa_cuota) * parseFloat(producto.importe); // Redondear aquí
+          producto.iva = 0;
+        }
+
+        producto.impuesto_importe = parseFloat(producto.impuesto_tasa_cuota) * parseFloat(producto.importe);
+        producto.total = producto.importe - producto.descuento + (parseFloat(producto.impuesto_tasa_cuota) * producto.importe)
         break;
       }
     }
