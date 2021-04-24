@@ -33,12 +33,13 @@
                                     }
                                   ?>
                                 </select>
+                                <small class="color_red display_none" name="cliente">Seleccione un cliente</small>
                               </div>
                               <!-- Serie -->
                               <div class="col-lg-3 col-md-4 col-sm-4">
                                 <label for="serie">Serie: </label>
                                 <select class="form-control" name="serie">
-                                  <option value="">---</option>
+                                  <option value="0" selected disabled>---</option>
                                   <?php
                                     foreach ($data['series'] as $serie) {
                                       $html_option = "<option value='". $serie['Serie']. "'>". $serie['Serie'] ."</option>\n";
@@ -46,6 +47,7 @@
                                     }
                                   ?>
                                 </select>
+                                <small class="color_red display_none" name="serie">Seleccione una serie</small>
                               </div>
                               <!-- Tipo de Comprobante -->
                               <div class="col-lg-3 col-md-4 col-sm-4">
@@ -56,11 +58,13 @@
                               <div class="col-lg-3 col-md-4 col-sm-4">
                                 <label for="fecha"> Fecha: </label>
                                 <input type="date" class="form-control" name="fecha" required>
+                                <small class="color_red display_none" name="fecha">Fecha no válida</small>
                               </div>
                               <!-- Hora -->
                               <div class="col-lg-3 col-md-4 col-sm-4">
                                 <label for="hora"> Hora: </label>
                                 <input type="time" class="form-control" name="hora" required>
+                                <small class="color_red display_none" name="hora">Hora no válida</small>
                               </div>
                               <!-- Método de Pago -->
                               <div class="col-lg-3 col-md-6 col-sm-6">
@@ -74,12 +78,13 @@
                                     }
                                   ?>
                                 </select>
+                                <small class="color_red display_none" name="metodo_pago">Seleccione un Método de Pago</small>
                               </div>
                               <!-- Forma Pago -->
                               <div class="col-lg-3 col-md-6 col-sm-6">
                                 <label for="forma_pago"> Forma de Pago: </label>
                                 <select class="form-control" name="forma_pago">
-                                  <option value="">---</option>
+                                  <option value="0">---</option>
                                   <?php
                                     foreach ($data['formas_pago'] as $forma_pago) {
                                       $html_option = "<option value='". $forma_pago['ClaveFormaPago']. "'>". $forma_pago['ClaveFormaPago'] ." | ". $forma_pago['Descripcion'] ."</option>\n";
@@ -87,12 +92,18 @@
                                     }
                                   ?>
                                 </select>
+                                <small class="color_red display_none" name="forma_pago">Seleccione una forma de pago</small>
+                              </div>
+                              <!-- Condiciones de Pago -->
+                              <div class="col-lg-3 col-md-4 col-sm-4">
+                                <label for="condiciones_pago"> Codiciones de pago: </label>
+                                <input type="text" class="form-control" name="condiciones_pago">
                               </div>
                               <!-- Uso CFDI -->
                               <div class="col-lg-3 col-md-4 col-sm-4">
                                 <label for="uso_cfdi"> Uso CFDI: </label>
                                 <select class="form-control" name="uso_cfdi">
-                                  <option value="">---</option>
+                                  <option value="0">---</option>
                                   <?php
                                     foreach ($data['usos_cfdi'] as $usocfdi) {
                                       $html_option = "<option value='". $usocfdi['ClaveUso']. "'>". $usocfdi['ClaveUso'] ." | ". $usocfdi['Concepto'] ."</option>\n";
@@ -100,12 +111,13 @@
                                     }
                                   ?>
                                 </select>
+                                <small class="color_red display_none" name="uso_cfdi">Seleccione un uso de CFDI</small>
                               </div>
                               <!-- Moneda CFDI -->
                               <div class="col-lg-3 col-md-4 col-sm-4">
                                 <label for="moneda"> Moneda: </label>
                                 <select class="form-control" name="moneda">
-                                  <option value="">---</option>
+                                  <option value="0">---</option>
                                   <?php
                                     foreach ($data['monedas'] as $moneda) {
                                       $html_option = "<option value='". $moneda['ClaveMoneda']. "'>". $moneda['ClaveMoneda'] ." | ". $moneda['Nombre'] ."</option>\n";
@@ -113,6 +125,7 @@
                                     }
                                   ?>
                                 </select>
+                                <small class="color_red display_none" name="moneda">Seleccione una moneda</small>
                               </div>
                               <!-- Tipo Cambio -->
                               <div class="col-lg-3 col-md-4 col-sm-4">
@@ -153,6 +166,7 @@
 
                                           </tbody>
                                       </table>
+                                      <small class="text-center color_red display_none" name="msg_prodserv">No se ha agregado ningún producto/servicio</small>
                                     </div>
                                   </div>
                                   <!-- Totales -->
@@ -199,13 +213,21 @@
                                       </div>
                                     </div>
                                   </div>
-
+                                  <!-- Comentario/Observaciones -->
+                                  <div class="col-lg-6">
+                                    <div class="col-lg-12">
+                                      <label for="observaciones"><strong>Observaciones </strong>(Opcional): </label>
+                                    </div>
+                                    <div class="col-lg-12">
+                                      <textarea class="form-control" rows="7" maxlength="256" name="observaciones" placeholder="Comentarios u observaciones..."></textarea>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                               <div class="col-lg-12 col-md-12 col-sm-12"><hr>
                                 <div class="row">
                                   <div class="col-md-12 text-right">
-                                    btn guardar
+                                    <button type="button" class="btn btn-success" name="guardar_cfdi"> <i class="far fa-save"></i> Guardar </button>
                                   </div>
                                 </div>
                               </div>
@@ -291,6 +313,10 @@
                   <label for="descuento"> Descuento:  </label>
                   <input type="text" class="form-control" name="descuento_prod" placeholder="$ 0.00" value="0">
                 </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                  <small class="color_red display_none" name="msg_cant_desc">Valor no válido para cantidad o descuento</small>
+                  <small class="color_green display_none" name="msg_ok">Se agregó el producto/servicio seleccionado</small>
+                </div>
               </div>
             </div>
           </div>
@@ -357,7 +383,7 @@
       </div>
     </div>
     <?php include './views/modules/components/javascript.php'; ?>
-    <script type="text/javascript" src="<?=$data['host']?>/views/assets/js/producto.js"></script>
+    <script type="text/javascript" src="<?=$data['host']?>/views/assets/js/nuevo_cfdi.js"></script>
 </body>
 
 </html>

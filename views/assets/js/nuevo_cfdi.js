@@ -1,8 +1,38 @@
 var productos=[];
 
 $(document).ready(function (){
+  /* ..:: SELECT  SERIE ::.. */
+  $("select[name='serie']").change(function(){
+    var token = $("input[name='token']").val();
+    var serie = $(this).val();
+    if (serie != ""){
+      $.ajax({
+        type: "POST",
+        dataType: 'json',
+        url: "../../API/series/get_serie/" + serie,
+        data: {"token":token},
+        success: function(resp){
+          // Obtiene los datos del servicio
+          var serie = resp.data.TipoComprobante;
+          // Setea los datos en el formulario
+          $("input[name='tipo_comprobante']").val(serie);
+        },
+        error : function(xhr, status) {
+          console.log(xhr);
+        }
+      });
+    }
+  });
+  /* ..:: SELECT MONEDA ::.. */
+  $("select[name='moneda']").change(function(){
+    var moneda = $(this).val();
+    if(moneda == "MXN"){
+      $("input[name='tipo_cambio']").val("1.00");
+    }
+  });
   /* ..:: SELECT  PRODUCTO ::.. */
   $("select[name='producto']").change(function(){
+    $("small[name='msg_ok']").addClass("display_none");
     var token = $("input[name='token']").val();
     var id = $(this).val();
 
@@ -100,9 +130,13 @@ $(document).ready(function (){
         }
         productos.push(json_producto);
         create_table();
+        $("small[name='msg_prodserv']").addClass("display_none");
+        $("small[name='msg_cant_desc']").addClass("display_none");
+        $("small[name='msg_ok']").removeClass("display_none");
       }
     }else{
-      console.log("NO Numeric");
+      $("small[name='msg_cant_desc']").removeClass("display_none");
+      $("small[name='msg_ok']").addClass("display_none");
     }
   });
   /* ..:: Guarda los cambios realizados al producto ::.. */
@@ -132,6 +166,87 @@ $(document).ready(function (){
     }
     create_table();
   });
+
+  /* ..:: BOTÓN GUARDAR ::.. */
+  $("button[name='guardar_cfdi']").click(function(){
+    // Obtiene los valores del formulario
+    var cliente_id = $("select[name='cliente']").val();
+    var serie = $("select[name='serie']").val();
+    var fecha = $("input[name='fecha']").val();
+    var hora = $("input[name='hora']").val();
+    var moneda = $("select[name='moneda']").val();
+    var tipo_cambio = $("input[name='tipo_cambio']").val();
+    var tipo_comprobante = $("input[name='tipo_comprobante']").val();
+    var condiciones_pago = $("input[name='condiciones_pago']").val();
+    var metodo_pago = $("select[name='metodo_pago']").val();
+    var forma_pago = $("select[name='forma_pago']").val();
+    var uso_cfdi = $("select[name='uso_cfdi']").val();
+    var subtotal = $("input[name='subtotal']").val();
+    var iva = $("input[name='iva']").val();
+    var ieps = $("input[name='ieps']").val();
+    var descuento = $("input[name='descuento']").val();
+    var total = $("input[name='total']").val();
+    /* ..:: Valida Todos los datos del Formulario ::.. */
+    if( cliente_id!="0" && cliente_id!=null && serie!="0" && serie!=null && fecha!="" && hora!="" && metodo_pago!="0" && metodo_pago!=null && forma_pago!="0" && forma_pago!=null && uso_cfdi!="0" && uso_cfdi!=null && moneda!="0" && moneda!=null && total!="" && total!="0" ){
+      alert("campos correctos");
+    }else{
+      // Muestra que campos están incorrectos
+      if(cliente_id=="0" || cliente_id==null){
+        $("small[name='cliente']").removeClass("display_none");
+      }else{
+        $("small[name='cliente']").addClass("display_none");
+      }
+
+      if(serie=="0" || serie==null){
+        $("small[name='serie']").removeClass("display_none");
+      }else{
+        $("small[name='serie']").addClass("display_none");
+      }
+
+      if(fecha==""){
+        $("small[name='fecha']").removeClass("display_none");
+      }else{
+        $("small[name='fecha']").addClass("display_none");
+      }
+
+      if(hora==""){
+        $("small[name='hora']").removeClass("display_none");
+      }else{
+        $("small[name='hora']").addClass("display_none");
+      }
+
+      if(metodo_pago=="0" || metodo_pago==null){
+        $("small[name='metodo_pago']").removeClass("display_none");
+      }else{
+        $("small[name='metodo_pago']").addClass("display_none");
+      }
+
+      if(forma_pago=="0" || forma_pago==null){
+        $("small[name='forma_pago']").removeClass("display_none");
+      }else{
+        $("small[name='forma_pago']").addClass("display_none");
+      }
+
+      if(uso_cfdi=="0" || uso_cfdi==null){
+        $("small[name='uso_cfdi']").removeClass("display_none");
+      }else{
+        $("small[name='uso_cfdi']").addClass("display_none");
+      }
+
+      if(moneda=="0" || moneda==null){
+        $("small[name='moneda']").removeClass("display_none");
+      }else{
+        $("small[name='moneda']").addClass("display_none");
+      }
+
+      if(total=="" || total=="0"){
+        $("small[name='msg_prodserv']").removeClass("display_none");
+      }else{
+        $("small[name='msg_prodserv']").addClass("display_none");
+      }
+    }
+  });
+
 });
 
 function create_table(){
