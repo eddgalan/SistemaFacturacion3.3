@@ -60,4 +60,30 @@
     }
   }
 
+  class SerieAPI extends API{
+    public function get_serie($datos){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $serie = $datos[1];
+          $serie_pdo = new SeriePDO("", "", "", $serie);
+          $data_serie = $serie_pdo->get_serie();
+          if($data_serie){
+            $this->return_data("Mostrando Productos API", 200, $data_serie);
+          }else{
+            $this->return_data("Ocurrió un error.", 500);
+          }
+        }else{
+          write_log("Token NO válido | SerieAPI");
+          $this->return_data("Ocurrió un error... No es posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("NO se recibieron datos POST | SerieAPI");
+        $this->return_data("No es posible procesar su solicitud", 400);
+      }
+    }
+  }
+
 ?>

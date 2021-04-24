@@ -3,6 +3,7 @@
   require 'models/cliente.php';
   require 'models/pac.php';
   require 'models/producto.php';
+  require 'models/serie.php';
 
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';

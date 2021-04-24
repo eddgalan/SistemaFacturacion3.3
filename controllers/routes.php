@@ -24,6 +24,7 @@
       /* ...:: APIs ::... */
       $routes["API/usuarios/get_usuario/_data_"]="UsuarioAPI/get_usuario";
       $routes["API/productos/get_producto/_data_"]="ProductoAPI/get_producto";
+      $routes["API/series/get_serie/_data_"]="SerieAPI/get_serie";
 
 
       //Si no está vacía la variable $_GET['url'] la usamos para navegar
