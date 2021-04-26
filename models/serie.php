@@ -39,24 +39,42 @@
       public function get_serie(){
         $this->connect();
         try{
-          $sesion = new UserSession();
-          $data_session = $sesion->get_session();
-
-          $emisor = $data_session['Emisor'];
-
           $sql = "SELECT * FROM series
-          WHERE Emisor='$emisor' AND Serie='$this->serie'";
+          WHERE Emisor='$this->emisor' AND Serie='$this->serie'";
 
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-          write_log("SeriePDO\n" . serialize($result));
+          write_log("SeriePDO | get_serie()\n" . serialize($result[0]));
+          $this->disconect();
           return $result[0];
         }catch(PDOException $e) {
           write_log("Error al ejecutar la consulta. ERROR: " . $e->getMessage());
           write_log("SQL: " . $sql);
           return false;
         }
+      }
+
+      public function update_consecutivo($id, $nuevo_consecutivo){
+        $this->connect();
+        try{
+          $sql_update = "UPDATE series SET Consecutivo='$nuevo_consecutivo' WHERE Id='$id'";
+          $stmt = $this->conn->prepare($sql_update);
+          $stmt->execute();
+
+          write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e){
+          write_log("Ocurrió un error al actualizar la serie. ERROR: " .$e->getMessage());
+          write_log("SQL: " .$sql_update);
+          $this->disconect();
+          return false;
+        }
+
+
+        write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+        $this->disconect();
       }
 
     }

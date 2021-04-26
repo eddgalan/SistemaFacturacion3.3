@@ -167,7 +167,7 @@ $(document).ready(function (){
     create_table();
   });
 
-  /* ..:: BOTÓN GUARDAR ::.. */
+  /* ..:: BOTÓN GUARDAR CFDI ::.. */
   $("button[name='guardar_cfdi']").click(function(){
     // Obtiene los valores del formulario
     var cliente_id = $("select[name='cliente']").val();
@@ -186,9 +186,46 @@ $(document).ready(function (){
     var ieps = $("input[name='ieps']").val();
     var descuento = $("input[name='descuento']").val();
     var total = $("input[name='total']").val();
+    var observaciones = $("textarea[name='observaciones']").val();
     /* ..:: Valida Todos los datos del Formulario ::.. */
     if( cliente_id!="0" && cliente_id!=null && serie!="0" && serie!=null && fecha!="" && hora!="" && metodo_pago!="0" && metodo_pago!=null && forma_pago!="0" && forma_pago!=null && uso_cfdi!="0" && uso_cfdi!=null && moneda!="0" && moneda!=null && total!="" && total!="0" ){
-      alert("campos correctos");
+      var json_cfdi = {
+        "cliente_id":cliente_id,
+        "serie":serie,
+        "fecha":fecha,
+        "hora":hora,
+        "moneda":moneda,
+        "tipo_cambio":tipo_cambio,
+        "tipo_comprobante":tipo_comprobante,
+        "condiciones_pago":condiciones_pago,
+        "metodo_pago":metodo_pago,
+        "forma_pago":forma_pago,
+        "uso_cfdi":uso_cfdi,
+        "subtotal":subtotal,
+        "iva":iva,
+        "ieps":ieps,
+        "descuento":descuento,
+        "total":total,
+        "observaciones":observaciones,
+        "prodservs":productos
+      }
+    console.log(json_cfdi);
+    // Hace el INSERT del CFDI Nuevo
+    var token = $("input[name='token']").val();
+    $.ajax({
+      type: "POST",
+      dataType: 'json',
+      url: "../../API/CFDIs/facturas/process/",
+      data: {"token":token, "data":json_cfdi},
+      success: function(resp){
+        // Obtiene los datos del servicio
+        console.log(resp);
+      },
+      error : function(xhr, status) {
+        console.log(xhr);
+      }
+    });
+
     }else{
       // Muestra que campos están incorrectos
       if(cliente_id=="0" || cliente_id==null){
@@ -252,7 +289,7 @@ $(document).ready(function (){
 function create_table(){
   $("tbody").empty();
   var subtotal=0, iva=0, ieps=0, desc=0, total=0;
-  console.log(productos);
+  // console.log(productos);
   var tbody = "";
   for( let producto of productos ){
     var row = "<tr>"+

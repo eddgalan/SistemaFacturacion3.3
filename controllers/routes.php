@@ -13,18 +13,21 @@
       $routes["administrar/usuarios/switch_active/_data_/_data_"]="SwitchActivo";
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";
+
+      $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
+
       /* ..:: CATALOGOS SAT ::.. */
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
       $routes["catalogosSAT/prod_serv/add"]="ProcessProdServ";
       $routes["catalogosSAT/prod_serv/switch_active/_data_/_data_"]="SwitchActivoProdServ";
       $routes["catalogosSAT/unidades"]="ViewUnidades";
 
-      $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
 
       /* ...:: APIs ::... */
       $routes["API/usuarios/get_usuario/_data_"]="UsuarioAPI/get_usuario";
       $routes["API/productos/get_producto/_data_"]="ProductoAPI/get_producto";
       $routes["API/series/get_serie/_data_"]="SerieAPI/get_serie";
+      $routes["API/CFDIs/facturas/process"]="ComprobanteAPI/insert_cfdi";
 
 
       //Si no está vacía la variable $_GET['url'] la usamos para navegar

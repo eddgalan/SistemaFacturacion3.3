@@ -73,7 +73,7 @@
                                   <option value="0">---</option>
                                   <?php
                                     foreach ($data['metodos_pago'] as $metodo_pago) {
-                                      $html_option = "<option value='". $metodo_pago['Id']. "'>". $metodo_pago['ClaveMetodo'] ." | ". $metodo_pago['Descripcion'] ."</option>\n";
+                                      $html_option = "<option value='". $metodo_pago['ClaveMetodo']. "'>". $metodo_pago['ClaveMetodo'] ." | ". $metodo_pago['Descripcion'] ."</option>\n";
                                       echo $html_option;
                                     }
                                   ?>
@@ -170,7 +170,7 @@
                                     </div>
                                   </div>
                                   <!-- Totales -->
-                                  <div class="col-lg-6">
+                                  <div class="col-lg-5">
                                     <h5> <i class="fas fa-dollar-sign"></i> Totales </h5>
                                     <div class="col row" style="margin-bottom:5px !important;">
                                       <div class="col-md-3">
@@ -214,7 +214,7 @@
                                     </div>
                                   </div>
                                   <!-- Comentario/Observaciones -->
-                                  <div class="col-lg-6">
+                                  <div class="col-lg-7">
                                     <div class="col-lg-12">
                                       <label for="observaciones"><strong>Observaciones </strong>(Opcional): </label>
                                     </div>
