@@ -257,6 +257,25 @@
 
   }
 
+  class ViewDetalleFactura{
+    function __construct($hostname='', $sitename='', $dataurl=null){
+      $data['title'] = "Facturación 3.3 | Facturas";
+      $data['host'] = $hostname;
+
+      $id_comprobante = $dataurl[1];
+      // Obtiene el Emisor
+      $sesion = new UserSession();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+      // Crea una instancia ComprobantePDO y obtiene los datos del comprobante
+      $comprobante_pdo = new ComprobantePDO();
+      $data['comprobante'] = $comprobante_pdo->get_comprobante($id_comprobante, $emisor);
+
+      $this->view = new View();
+      $this->view->render('views/modules/cfdis/detalle_factura.php', $data, true);
+    }
+  }
+
   class ViewNuevaFactura {
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Facturas | Nueva Factura";

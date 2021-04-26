@@ -137,28 +137,42 @@
         }
       }
 
-      public function get_comprobante(){
+      public function get_comprobante($id_comprobante, $emisor){
         $this->connect();
         try{
-          $sql = "SELECT productos.Id as ProductoID, productos.SKU, productos.Nombre as ProductoNombre,
-          productos.Precio as ProductoPrecio,
-          catsatclavesprodserv.ClaveProdServ as ProductoClaveSAT,
-          catsatunidades.ClaveUnidad as UnidadClave, catsatunidades.NombreUnidad as UnidadNombre,
-          catsatimpuestos.ClaveImpuesto as ImpuestoClave, catsatimpuestos.Descripcion as ImpuestoDesc, catsatimpuestos.Tasa as ImpuestoTasa
-          FROM productos
-          INNER JOIN catsatclavesprodserv ON productos.ClaveProdServ = catsatclavesprodserv.Id
-          INNER JOIN catsatunidades ON productos.ClaveUnidad = catsatunidades.Id
-          INNER JOIN catsatimpuestos ON productos.Impuesto = catsatimpuestos.Id
-          WHERE productos.Id='$this->id'";
+          $sql = "SELECT cfdi.Id as IdCFDI, cfdi.Estatus as EstatusCFDI, cfdi.Emisor as IdEmisor, emisores.Nombre as NombreEmisor, emisores.RFC as RFCEmisor,
+          cfdi.ClienteId as IdReceptor, clientes.RFC as RFCReceptor, clientes.Nombre as NombreReceptor,
+          cfdi.Serie, cfdi.Folio, cfdi.Fecha, cfdi.Hora, cfdi.Moneda, cfdi.TipoCambio, cfdi.TipoComprobante,
+          cfdi.CondicionesPago, cfdi.NoCertificado, cfdi.MetodoPago as ClaveMetodoPago,
+          catsatmetodos.Descripcion as DescripcionMetodoPago, cfdi.FormaPago as ClaveFormaPago,
+          catsatformaspago.Descripcion as DescripcionFormaPago, cfdi.UsoCFDI as ClaveUsoCFDI, catsatusocfdi.Concepto as ConceptoUsoCFDI,
+          cfdi.LugarExpedicion, cfdi.Subtotal, cfdi.IVA, cfdi.IEPS, cfdi.RetIva, cfdi.TotalRetenido, cfdi.TotalTraslado,
+          cfdi.Descuento, cfdi.Total, cfdi.UUID, cfdi.FechaCertificado, cfdi.FechaCertificado, cfdi.HoraCertificado, cfdi.EstatusSAT,
+          cfdi.PathXML, cfdi.PathPDF, cfdi.Observaciones
+          FROM cfdi
+          INNER JOIN emisores ON cfdi.Emisor = emisores.Id
+          INNER JOIN clientes ON cfdi.ClienteId = clientes.Id
+          INNER JOIN catsatmetodos ON cfdi.MetodoPago = catsatmetodos.ClaveMetodo
+          INNER JOIN catsatformaspago ON cfdi.FormaPago = catsatformaspago.ClaveFormaPago
+          INNER JOIN catsatusocfdi ON cfdi.UsoCFDI = catsatusocfdi.ClaveUso
+          WHERE cfdi.Id='$id_comprobante'
+          AND emisores.Id='$emisor'
+          AND clientes.Emisor='$emisor'
+          AND catsatmetodos.Emisor='$emisor'
+          AND catsatformaspago.Emisor='$emisor'
+          AND catsatusocfdi.Emisor='$emisor'";
 
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-          write_log("ProductoPDO\n " . serialize($result));
+          $this->disconect();
+
+          write_log("ComprobantePDO | get_comprobante | Información del comprobante\n " . serialize($result[0]));
           return $result[0];
         }catch(PDOException $e) {
           write_log("Error al ejecutar la consulta. ERROR: " . $e->getMessage());
           write_log("SQL: " . $sql);
+          $this->disconect();
           return false;
         }
       }

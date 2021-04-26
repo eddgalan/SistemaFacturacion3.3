@@ -16,6 +16,7 @@
 
       $routes['CFDIs/facturas']="ViewsFacturas";
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
+      $routes["CFDIs/facturas/detalles/_data_"]="ViewDetalleFactura";
 
       /* ..:: CATALOGOS SAT ::.. */
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
