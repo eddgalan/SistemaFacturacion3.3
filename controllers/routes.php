@@ -14,6 +14,7 @@
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";
 
+      $routes['CFDIs/facturas']="ViewsFacturas";
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
 
       /* ..:: CATALOGOS SAT ::.. */

@@ -35,7 +35,7 @@
 
       function __construct($emisor='', $cliente_id='', $serie='', $folio='', $fecha='', $hora='', $moneda='', $tipo_cambio='',
       $tipo_comprobante='', $condiciones_pago='', $metodo_pago='', $forma_pago='', $uso_cfdi='', $lugar_exp='',
-      $regimen='', $subtotal='', $iva='', $ieps='', $descuento='', $total='', $prodservs='', $observaciones){
+      $regimen='', $subtotal='', $iva='', $ieps='', $descuento='', $total='', $prodservs='', $observaciones=''){
         parent::__construct();
         $this->emisor = $emisor;
         $this->cliente_id = $cliente_id;
@@ -101,7 +101,7 @@
               write_log("Se realizó un INSERT de Detalles");
             }
             // Actualiza el consecutivo de la serie
-            
+
             $this->conn->commit();
             return true;
           } catch (Exception $e) {
@@ -112,19 +112,29 @@
         }
       }
 
-      public function get_all(){
+      public function get_comprobantes(){
+        // Obtiene el emisor
         $sesion = new UserSession();
         $data_session = $sesion->get_session();
-
         $emisor = $data_session['Emisor'];
 
         $this->connect();
-        $sql = "SELECT * FROM productos WHERE Emisor='$emisor' AND Estatus='1'";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        write_log("ProductoPDO\n " . serialize($result));
-        return $result;
+        try{
+          $sql = "SELECT cfdi.Id, cfdi.Estatus, cfdi.Serie, cfdi.Folio, cfdi.ClienteId, clientes.Nombre as NombreCliente, cfdi.UUID, cfdi.Total
+          FROM cfdi
+          INNER JOIN clientes ON cfdi.ClienteId = clientes.Id
+          WHERE cfdi.Emisor='$emisor'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          $this->disconect();
+          write_log("ComprobantePDO | get_comprobantes() | CFDIs\n". serialize($result));
+          write_log("SQL Comprobantes: ". $sql);
+          return $result;
+        }catch(PDOException $e){
+          write_log("ComprobantePDO | get_comprobantes() | Ocurrió un error.\nError: " .$e->getMessage());
+          write_log("SQL: " .$sql);
+        }
       }
 
       public function get_comprobante(){

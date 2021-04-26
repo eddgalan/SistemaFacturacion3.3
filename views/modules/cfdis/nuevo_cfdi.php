@@ -14,7 +14,16 @@
                 <div class="card">
                     <div class="card-body">
                         <!-- ..:: Custom Content ::.. -->
-                        <h4 class="card-title">Nuevo Comprobante (CFDI)</h4>
+                        <div class="row">
+                          <div class="col-lg-8 col-md-8 col-sm-12">
+                            <h4 class="card-title"> Comprobantes | Nuevo Comprobante (CFDI) </h4>
+                          </div>
+                          <div class="col-lg-4 col-md-4 col-sm-12 text-right">
+                            <a href="<?= $data['host']?>/CFDIs/facturas" class="btn btn-primary waves-effect btn_full">
+                              <i class="fas fa-arrow-left"></i> Regresar
+                            </a>
+                          </div>
+                        </div>
                         <div class="col-lg-12 col-md-12 col-sm-12">
                           <form>
                             <div class="row">

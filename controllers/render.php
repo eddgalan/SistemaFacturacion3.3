@@ -243,6 +243,20 @@
     }
   }
 
+  class ViewsFacturas{
+    function __construct($hostname='', $site_name='', $variables=null){
+      $data['title'] = "Facturación 3.3 | Facturas";
+      $data['host'] = $hostname;
+
+      $comprobante_pdo = new ComprobantePDO();
+      $data['comprobantes'] = $comprobante_pdo->get_comprobantes();
+
+      $this->view = new View();
+      $this->view->render('views/modules/cfdis/facturas.php', $data, true);
+    }
+
+  }
+
   class ViewNuevaFactura {
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Facturas | Nueva Factura";
