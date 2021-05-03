@@ -10,7 +10,7 @@
       $this->servername = "localhost";
       $this->username = "priceshopdb";
       $this->password = "iWGnc44tHSaov5T6";
-      $this->sqldatabase = "facturacion3.3";
+      $this->sqldatabase = "facturacion";
     }
 
     function connect(){
