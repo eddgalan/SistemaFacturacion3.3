@@ -45,7 +45,7 @@
           productos.Precio as ProductoPrecio,
           catsatclavesprodserv.ClaveProdServ as ProductoClaveSAT,
           catsatunidades.ClaveUnidad as UnidadClave, catsatunidades.NombreUnidad as UnidadNombre,
-          catsatimpuestos.ClaveImpuesto as ImpuestoClave, catsatimpuestos.Descripcion as ImpuestoDesc, catsatimpuestos.Tasa as ImpuestoTasa
+          catsatimpuestos.ClaveImpuesto as ImpuestoClave, catsatimpuestos.Descripcion as ImpuestoDesc, catsatimpuestos.Tasa_Cuota as ImpuestoTasa
           FROM productos
           INNER JOIN catsatclavesprodserv ON productos.ClaveProdServ = catsatclavesprodserv.Id
           INNER JOIN catsatunidades ON productos.ClaveUnidad = catsatunidades.Id
