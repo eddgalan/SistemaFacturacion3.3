@@ -6,6 +6,7 @@
   require 'models/serie.php';
   require 'models/emisor.php';
   require 'models/comprobante.php';
+  require 'models/csd.php';
 
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';
@@ -270,6 +271,7 @@
       // Crea una instancia ComprobantePDO y obtiene los datos del comprobante
       $comprobante_pdo = new ComprobantePDO();
       $data['comprobante'] = $comprobante_pdo->get_comprobante($id_comprobante, $emisor);
+      $data['prod_serv'] = $comprobante_pdo->get_detalles($id_comprobante);
 
       $this->view = new View();
       $this->view->render('views/modules/cfdis/detalle_factura.php', $data, true);
@@ -310,6 +312,26 @@
 
       $this->view = new View();
       $this->view->render('views/modules/cfdis/nuevo_cfdi.php', $data, true);
+    }
+  }
+
+  class ProcessTimbrarCFDI{
+    function __construct($hostname='', $sitename='', $dataurl=null){
+      $id_comprobante = $dataurl[1];
+      // Obtiene el Emisor
+      $sesion = new UserSession();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+      // Obtiene el certificado y nocertificado
+      $csd_pdo = new CSD_PDO('', '', $emisor);
+      $datos_csd = $csd_pdo->get_csd();
+      $certificado = $datos_csd['Certificado'];
+      $nocertificado = $datos_csd['NoCertificado'];
+      // Crea una instancia de ComprobantePDO
+      $comprobante_pdo = new ComprobantePDO();
+      $comprobante_pdo->create_xml($id_comprobante, $emisor, $certificado, $nocertificado);
+
+
     }
   }
 
