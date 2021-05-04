@@ -329,8 +329,13 @@
       $nocertificado = $datos_csd['NoCertificado'];
       // Crea una instancia de ComprobantePDO
       $comprobante_pdo = new ComprobantePDO();
-      $comprobante_pdo->create_xml($id_comprobante, $emisor, $certificado, $nocertificado);
-
+      // Crea el XML para después poder certificarlo
+      if($comprobante_pdo->create_xml($id_comprobante, $emisor, $certificado, $nocertificado)){
+        // Certifica el CFDI
+        $comprobante_pdo->certify();
+      }else{
+        $sesion->set_notification("ERROR", "Ocurrió un error al generar el XML. Intentelo de nuevo");
+      }
 
     }
   }

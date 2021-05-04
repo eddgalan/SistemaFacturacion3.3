@@ -240,293 +240,306 @@
       }
 
       function create_xml($id, $emisor, $certificado='', $nocertificado=''){
-        // Obtiene la información del comprobante
-        $comprobante = $this->get_comprobante($id, $emisor);
-        // Obtiene los items (Productos/Servicios)
-        $detalles = $this->get_detalles($id);
-        // Obtiene los impuestos ( cfdi:Impuestos )
-        $impuestos_trasladados = $this->get_impuestos_trasladados($id);
+        try{
+          // Obtiene la información del comprobante
+          $comprobante = $this->get_comprobante($id, $emisor);
+          // Obtiene los items (Productos/Servicios)
+          $detalles = $this->get_detalles($id);
+          // Obtiene los impuestos ( cfdi:Impuestos )
+          $impuestos_trasladados = $this->get_impuestos_trasladados($id);
 
-        /* ..:: Comienza a Escribir el XML ::.. */
-        $xmlWriter = new XMLWriter();
-    		$xmlWriter->openMemory();
-    		$xmlWriter->startDocument('1.0', 'UTF-8');
-    		// Nodo principal: Comprobante
-    		$xmlWriter->startElement('cfdi:Comprobante');
-    		// Encabezados del CFDI:
-    		$xmlWriter->startAttribute('xmlns:xsi');
-    			$xmlWriter->text( "http://www.w3.org/2001/XMLSchema-instance" );
-    		$xmlWriter->endAttribute();
-    		$xmlWriter->startAttribute('xmlns:cfdi');
-    			$xmlWriter->text( "http://www.sat.gob.mx/cfd/3" );
-    		$xmlWriter->endAttribute();
-    		$xmlWriter->startAttribute('xsi:schemaLocation');
-    			$xmlWriter->text( "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd" );
-    		$xmlWriter->endAttribute();
-        // Lugar Expedición
-        $xmlWriter->startAttribute('LugarExpedicion');
-    			$xmlWriter->text( $comprobante['LugarExpedicion'] );
-    		$xmlWriter->endAttribute();
-        // Si es Traslado o Pago se omite el Metodo de Pago
-        if($comprobante['TipoComprobante'] != 'T' && $comprobante['TipoComprobante'] != 'P'){
-          $xmlWriter->startAttribute('MetodoPago');
-    				$xmlWriter->text( $comprobante["ClaveMetodoPago"] );
-    			$xmlWriter->endAttribute();
-        }
-        // Tipo Comprobante
-        $xmlWriter->startAttribute('TipoDeComprobante');
-    			$xmlWriter->text( $comprobante["TipoComprobante"] );
-    		$xmlWriter->endAttribute();
-        // Descuento
-        if( $comprobante["Descuento"] > 0 ){
-    			$xmlWriter->startAttribute('Descuento');
-    				$xmlWriter->text( number_format( $comprobante["Descuento"],2,".","" ) );
-    			$xmlWriter->endAttribute();
-    		}
-        // Subtotal
-        if( $comprobante["Subtotal"] > 0 ){
-      		$xmlWriter->startAttribute('SubTotal');
-      			$xmlWriter->text( number_format( $comprobante["Subtotal"],2,".","" ) );
+          /* ..:: Comienza a Escribir el XML ::.. */
+          $xmlWriter = new XMLWriter();
+      		$xmlWriter->openMemory();
+      		$xmlWriter->startDocument('1.0', 'UTF-8');
+      		// Nodo principal: Comprobante
+      		$xmlWriter->startElement('cfdi:Comprobante');
+      		// Encabezados del CFDI:
+      		$xmlWriter->startAttribute('xmlns:xsi');
+      			$xmlWriter->text( "http://www.w3.org/2001/XMLSchema-instance" );
       		$xmlWriter->endAttribute();
-      	}
-        // Total
-        $xmlWriter->startAttribute('Total');
-    			$xmlWriter->text( number_format( $comprobante["Total"],2,".","" ) );
-    		$xmlWriter->endAttribute();
-    		// Moneda
-    		$xmlWriter->startAttribute('Moneda');
-    			$xmlWriter->text( $comprobante["Moneda"] );
-    		$xmlWriter->endAttribute();
-        // Tipo de Cambio
-  			$xmlWriter->startAttribute('TipoCambio');
-  				$xmlWriter->text( $comprobante["TipoCambio"] );
-  			$xmlWriter->endAttribute();
-        // Certificado
-        if( $certificado != "" ){
-    			$xmlWriter->startAttribute('Certificado');
-    				$xmlWriter->text( $certificado );
+      		$xmlWriter->startAttribute('xmlns:cfdi');
+      			$xmlWriter->text( "http://www.sat.gob.mx/cfd/3" );
+      		$xmlWriter->endAttribute();
+      		$xmlWriter->startAttribute('xsi:schemaLocation');
+      			$xmlWriter->text( "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd" );
+      		$xmlWriter->endAttribute();
+          // Lugar Expedición
+          $xmlWriter->startAttribute('LugarExpedicion');
+      			$xmlWriter->text( $comprobante['LugarExpedicion'] );
+      		$xmlWriter->endAttribute();
+          // Si es Traslado o Pago se omite el Metodo de Pago
+          if($comprobante['TipoComprobante'] != 'T' && $comprobante['TipoComprobante'] != 'P'){
+            $xmlWriter->startAttribute('MetodoPago');
+      				$xmlWriter->text( $comprobante["ClaveMetodoPago"] );
+      			$xmlWriter->endAttribute();
+          }
+          // Tipo Comprobante
+          $xmlWriter->startAttribute('TipoDeComprobante');
+      			$xmlWriter->text( $comprobante["TipoComprobante"] );
+      		$xmlWriter->endAttribute();
+          // Descuento
+          if( $comprobante["Descuento"] > 0 ){
+      			$xmlWriter->startAttribute('Descuento');
+      				$xmlWriter->text( number_format( $comprobante["Descuento"],2,".","" ) );
+      			$xmlWriter->endAttribute();
+      		}
+          // Subtotal
+          if( $comprobante["Subtotal"] > 0 ){
+        		$xmlWriter->startAttribute('SubTotal');
+        			$xmlWriter->text( number_format( $comprobante["Subtotal"],2,".","" ) );
+        		$xmlWriter->endAttribute();
+        	}
+          // Total
+          $xmlWriter->startAttribute('Total');
+      			$xmlWriter->text( number_format( $comprobante["Total"],2,".","" ) );
+      		$xmlWriter->endAttribute();
+      		// Moneda
+      		$xmlWriter->startAttribute('Moneda');
+      			$xmlWriter->text( $comprobante["Moneda"] );
+      		$xmlWriter->endAttribute();
+          // Tipo de Cambio
+    			$xmlWriter->startAttribute('TipoCambio');
+    				$xmlWriter->text( $comprobante["TipoCambio"] );
     			$xmlWriter->endAttribute();
-    		}
-        // Condiciones de Pago
-        if( $comprobante["CondicionesPago"] != "" ){
-    			$xmlWriter->startAttribute('CondicionesDePago');
-    				$xmlWriter->text( $comprobante["CondicionesPago"] );
-    			$xmlWriter->endAttribute();
-    		}
-        // NoCertificado
-        $xmlWriter->startAttribute('NoCertificado');
-    			$xmlWriter->text( $nocertificado );
-    		$xmlWriter->endAttribute();
-        // Fecha
-        $xmlWriter->startAttribute('Fecha');
-    			$xmlWriter->text( $comprobante['Fecha']. "T". $comprobante['Hora'] );
-    		$xmlWriter->endAttribute();
-        // Serie
-    		$xmlWriter->startAttribute('Serie');
-    			$xmlWriter->text($comprobante['Serie'] );
-    		$xmlWriter->endAttribute();
-        // Folio
-    		$xmlWriter->startAttribute('Folio');
-    			$xmlWriter->text( $comprobante['Folio'] );
-    		$xmlWriter->endAttribute();
-        // Version
-    		$xmlWriter->startAttribute('Version');
-    			$xmlWriter->text( "3.3" );
-    		$xmlWriter->endAttribute();
-        /* :: Poner CFDIs Relacionados :: */
+          // Certificado
+          if( $certificado != "" ){
+      			$xmlWriter->startAttribute('Certificado');
+      				$xmlWriter->text( $certificado );
+      			$xmlWriter->endAttribute();
+      		}
+          // Condiciones de Pago
+          if( $comprobante["CondicionesPago"] != "" ){
+      			$xmlWriter->startAttribute('CondicionesDePago');
+      				$xmlWriter->text( $comprobante["CondicionesPago"] );
+      			$xmlWriter->endAttribute();
+      		}
+          // NoCertificado
+          $xmlWriter->startAttribute('NoCertificado');
+      			$xmlWriter->text( $nocertificado );
+      		$xmlWriter->endAttribute();
+          // Fecha
+          $xmlWriter->startAttribute('Fecha');
+      			$xmlWriter->text( $comprobante['Fecha']. "T". $comprobante['Hora'] );
+      		$xmlWriter->endAttribute();
+          // Serie
+      		$xmlWriter->startAttribute('Serie');
+      			$xmlWriter->text($comprobante['Serie'] );
+      		$xmlWriter->endAttribute();
+          // Folio
+      		$xmlWriter->startAttribute('Folio');
+      			$xmlWriter->text( $comprobante['Folio'] );
+      		$xmlWriter->endAttribute();
+          // Version
+      		$xmlWriter->startAttribute('Version');
+      			$xmlWriter->text( "3.3" );
+      		$xmlWriter->endAttribute();
+          /* :: Poner CFDIs Relacionados :: */
 
-        /* :: Emisor :: */
-    		$xmlWriter->text( "\n\t" );
-    		$xmlWriter->startElement('cfdi:Emisor');
-    			// Atributos:
-    			$xmlWriter->startAttribute('Rfc');
-    				$xmlWriter->text( $comprobante['RFCEmisor'] );
-    			$xmlWriter->endAttribute();
-    			$xmlWriter->startAttribute('Nombre');
-    				$xmlWriter->text( $comprobante['NombreEmisor'] );
-    			$xmlWriter->endAttribute();
-    			$xmlWriter->startAttribute('RegimenFiscal');
-    				$xmlWriter->text( $comprobante['Regimen'] );
-    			$xmlWriter->endAttribute();
-    		$xmlWriter->endElement();
-        /* :: Receptor :: */
-        $xmlWriter->text( "\n\t" );
-    		$xmlWriter->startElement('cfdi:Receptor');
-    			// Atributos:
-    			$xmlWriter->startAttribute('Rfc');
-    				$xmlWriter->text( $comprobante['RFCReceptor'] );
-    			$xmlWriter->endAttribute();
-    			if( $comprobante['NombreReceptor'] != "" ){
-    			$xmlWriter->startAttribute('Nombre');
-    				$xmlWriter->text( $comprobante['NombreReceptor'] );
-    			$xmlWriter->endAttribute();
-    			}
-    			$xmlWriter->startAttribute('UsoCFDI');
-    				$xmlWriter->text( $comprobante['ClaveUsoCFDI'] );
-    			$xmlWriter->endAttribute();
-    		$xmlWriter->endElement();
+          /* :: Emisor :: */
+      		$xmlWriter->text( "\n\t" );
+      		$xmlWriter->startElement('cfdi:Emisor');
+      			// Atributos:
+      			$xmlWriter->startAttribute('Rfc');
+      				$xmlWriter->text( $comprobante['RFCEmisor'] );
+      			$xmlWriter->endAttribute();
+      			$xmlWriter->startAttribute('Nombre');
+      				$xmlWriter->text( $comprobante['NombreEmisor'] );
+      			$xmlWriter->endAttribute();
+      			$xmlWriter->startAttribute('RegimenFiscal');
+      				$xmlWriter->text( $comprobante['Regimen'] );
+      			$xmlWriter->endAttribute();
+      		$xmlWriter->endElement();
+          /* :: Receptor :: */
+          $xmlWriter->text( "\n\t" );
+      		$xmlWriter->startElement('cfdi:Receptor');
+      			// Atributos:
+      			$xmlWriter->startAttribute('Rfc');
+      				$xmlWriter->text( $comprobante['RFCReceptor'] );
+      			$xmlWriter->endAttribute();
+      			if( $comprobante['NombreReceptor'] != "" ){
+      			$xmlWriter->startAttribute('Nombre');
+      				$xmlWriter->text( $comprobante['NombreReceptor'] );
+      			$xmlWriter->endAttribute();
+      			}
+      			$xmlWriter->startAttribute('UsoCFDI');
+      				$xmlWriter->text( $comprobante['ClaveUsoCFDI'] );
+      			$xmlWriter->endAttribute();
+      		$xmlWriter->endElement();
 
-        /* :: Conceptos :: */
-        $xmlWriter->text( "\n\t" );
-    		$xmlWriter->startElement('cfdi:Conceptos');
-    		foreach( $detalles as $producto ){
-    			if( empty($producto["Descripcion"]) ) continue; // Concepto vacio, saltar
-    			$xmlWriter->text( "\n\t\t" );
-    			$xmlWriter->startElement('cfdi:Concepto');
-    				// Atributos:
-    				$xmlWriter->startAttribute('ClaveProdServ');
-    					$xmlWriter->text( $producto["ClaveProdServ"] );
-    				$xmlWriter->endAttribute();
+          /* :: Conceptos :: */
+          $xmlWriter->text( "\n\t" );
+      		$xmlWriter->startElement('cfdi:Conceptos');
+      		foreach( $detalles as $producto ){
+      			if( empty($producto["Descripcion"]) ) continue; // Concepto vacio, saltar
+      			$xmlWriter->text( "\n\t\t" );
+      			$xmlWriter->startElement('cfdi:Concepto');
+      				// Atributos:
+      				$xmlWriter->startAttribute('ClaveProdServ');
+      					$xmlWriter->text( $producto["ClaveProdServ"] );
+      				$xmlWriter->endAttribute();
 
-    				if( $comprobante['TipoComprobante'] == "P" ||  $comprobante['TipoComprobante'] == "N" ){
-    					$producto["Cantidad"] = number_format( $producto["Cantidad"],0,".","" );
-    				}else{
-    					$xmlWriter->startAttribute('NoIdentificacion');
-    						$xmlWriter->text( $producto["SKU"] );
-    					$xmlWriter->endAttribute();
-    				}
+      				if( $comprobante['TipoComprobante'] == "P" ||  $comprobante['TipoComprobante'] == "N" ){
+      					$producto["Cantidad"] = number_format( $producto["Cantidad"],0,".","" );
+      				}else{
+      					$xmlWriter->startAttribute('NoIdentificacion');
+      						$xmlWriter->text( $producto["SKU"] );
+      					$xmlWriter->endAttribute();
+      				}
 
-    				$xmlWriter->startAttribute('Cantidad');
-    					$xmlWriter->text( $producto["Cantidad"] );
-    				$xmlWriter->endAttribute();
+      				$xmlWriter->startAttribute('Cantidad');
+      					$xmlWriter->text( number_format( $producto["Cantidad"],4,".","" ));
+      				$xmlWriter->endAttribute();
 
-    				$xmlWriter->startAttribute('ClaveUnidad');
-    					$xmlWriter->text( substr($producto["Unidad"], 0, 2) );
-    				$xmlWriter->endAttribute();
+      				$xmlWriter->startAttribute('ClaveUnidad');
+      					$xmlWriter->text( substr($producto["Unidad"], 0, 2) );
+      				$xmlWriter->endAttribute();
 
-    				if( $comprobante['TipoComprobante'] != "P" || $comprobante['TipoComprobante'] != "N" ){
-              $xmlWriter->startAttribute('Unidad');
-    						$xmlWriter->text( substr($producto['Unidad'], 6, strlen($producto['Unidad'])) );
-    					$xmlWriter->endAttribute();
-    				}
+      				if( $comprobante['TipoComprobante'] != "P" || $comprobante['TipoComprobante'] != "N" ){
+                $xmlWriter->startAttribute('Unidad');
+      						$xmlWriter->text( substr($producto['Unidad'], 6, strlen($producto['Unidad'])) );
+      					$xmlWriter->endAttribute();
+      				}
 
-    				$xmlWriter->startAttribute('Descripcion');
-    					$xmlWriter->text( $producto["Descripcion"] );
-    				$xmlWriter->endAttribute();
+      				$xmlWriter->startAttribute('Descripcion');
+      					$xmlWriter->text( $producto["Descripcion"] );
+      				$xmlWriter->endAttribute();
 
-    				$xmlWriter->startAttribute('ValorUnitario');
-    					if( $comprobante['TipoComprobante'] == "P" ){
-    						$xmlWriter->text( "0" );
-    					}else{
-    						$xmlWriter->text( number_format( $producto["PrecioUnitario"],4,".","" ) );
-    					}
-    				$xmlWriter->endAttribute();
+      				$xmlWriter->startAttribute('ValorUnitario');
+      					if( $comprobante['TipoComprobante'] == "P" ){
+      						$xmlWriter->text( "0" );
+      					}else{
+      						$xmlWriter->text( number_format( $producto["PrecioUnitario"],4,".","" ) );
+      					}
+      				$xmlWriter->endAttribute();
 
-    				$xmlWriter->startAttribute('Importe');
-    				if( $comprobante['TipoComprobante'] == "P" ){
-    					$xmlWriter->text( "0" );
-    				}else{
-    					$xmlWriter->text( number_format( $producto["Importe"],2,".","" ) );
-    				}
-    				$xmlWriter->endAttribute();
+      				$xmlWriter->startAttribute('Importe');
+      				if( $comprobante['TipoComprobante'] == "P" ){
+      					$xmlWriter->text( "0" );
+      				}else{
+      					$xmlWriter->text( number_format( $producto["Importe"],2,".","" ) );
+      				}
+      				$xmlWriter->endAttribute();
 
-    				if( $producto["Descuento"] > 0 ){
-    					$xmlWriter->startAttribute('Descuento');
-    						$xmlWriter->text( number_format( $producto["Descuento"],2,".","" ) );
-    					$xmlWriter->endAttribute();
-    				}
-    				// Impuestos:
-    				if( $producto["ClaveImpuesto"] != "" ){
-    					$xmlWriter->text( "\n\t\t\t" );
-    					$xmlWriter->startElement('cfdi:Impuestos');
-    					// Traslados:
-    					if( $producto["ClaveImpuesto"] == "002" ){
-    						$xmlWriter->text( "\n\t\t\t\t" );
-    						$xmlWriter->startElement('cfdi:Traslados');
-    							// Detalle del Traslado:
-    							$xmlWriter->text( "\n\t\t\t\t\t" );
-    							$xmlWriter->startElement('cfdi:Traslado');
-    								// Atributos:
-    								$xmlWriter->startAttribute('Base');
-    									$xmlWriter->text( number_format( $producto["Importe"],2,".","" ) );
-    								$xmlWriter->endAttribute();
+      				if( $producto["Descuento"] > 0 ){
+      					$xmlWriter->startAttribute('Descuento');
+      						$xmlWriter->text( number_format( $producto["Descuento"],2,".","" ) );
+      					$xmlWriter->endAttribute();
+      				}
+      				// Impuestos:
+      				if( $producto["ClaveImpuesto"] != "" ){
+      					$xmlWriter->text( "\n\t\t\t" );
+      					$xmlWriter->startElement('cfdi:Impuestos');
+      					// Traslados:
+      					if( $producto["ClaveImpuesto"] == "002" ){
+      						$xmlWriter->text( "\n\t\t\t\t" );
+      						$xmlWriter->startElement('cfdi:Traslados');
+      							// Detalle del Traslado:
+      							$xmlWriter->text( "\n\t\t\t\t\t" );
+      							$xmlWriter->startElement('cfdi:Traslado');
+      								// Atributos:
+      								$xmlWriter->startAttribute('Base');
+      									$xmlWriter->text( number_format( $producto["Importe"],2,".","" ) );
+      								$xmlWriter->endAttribute();
 
-    								$xmlWriter->startAttribute('Impuesto');
-    									$xmlWriter->text( $producto["ClaveImpuesto"] );
-    								$xmlWriter->endAttribute();
-    								$xmlWriter->startAttribute('TipoFactor');
-    									$xmlWriter->text( $producto["Factor"] );
-    								$xmlWriter->endAttribute();
-    								$xmlWriter->startAttribute('TasaOCuota');
-    									$xmlWriter->text( $producto["Tasa_Cuota"] );
-    								$xmlWriter->endAttribute();
-    								$xmlWriter->startAttribute('Importe');
-    									$xmlWriter->text( $producto["Impuestos"] );
-    								$xmlWriter->endAttribute();
-    							$xmlWriter->endElement();
+      								$xmlWriter->startAttribute('Impuesto');
+      									$xmlWriter->text( $producto["ClaveImpuesto"] );
+      								$xmlWriter->endAttribute();
+      								$xmlWriter->startAttribute('TipoFactor');
+      									$xmlWriter->text( $producto["Factor"] );
+      								$xmlWriter->endAttribute();
+      								$xmlWriter->startAttribute('TasaOCuota');
+      									$xmlWriter->text( number_format($producto["Tasa_Cuota"],6,".","") );
+      								$xmlWriter->endAttribute();
+      								$xmlWriter->startAttribute('Importe');
+      									$xmlWriter->text( $producto["Impuestos"] );
+      								$xmlWriter->endAttribute();
+      							$xmlWriter->endElement();
 
-    						$xmlWriter->text( "\n\t\t\t\t" );
-    						$xmlWriter->endElement();
-    					}
-    					$xmlWriter->text( "\n\t\t\t" );
-    					$xmlWriter->endElement();
-    				}
-    			$xmlWriter->text( "\n\t\t" );
-    			$xmlWriter->endElement();
-    		}
-        $xmlWriter->text( "\n\t" );
-        $xmlWriter->endElement();
+      						$xmlWriter->text( "\n\t\t\t\t" );
+      						$xmlWriter->endElement();
+      					}
+      					$xmlWriter->text( "\n\t\t\t" );
+      					$xmlWriter->endElement();
+      				}
+      			$xmlWriter->text( "\n\t\t" );
+      			$xmlWriter->endElement();
+      		}
+          $xmlWriter->text( "\n\t" );
+          $xmlWriter->endElement();
 
-        // Impuestos Totales:
-    		if( floatval($comprobante['TotalRetenido']) > 0 || floatval($comprobante['TotalTraslado']) > 0 ){
-    			$xmlWriter->text( "\n\t" );
-    			$xmlWriter->startElement('cfdi:Impuestos');
-    			// Atributos:
-    			if( floatval($comprobante['TotalTraslado']) > 0 ){
-    			  $xmlWriter->startAttribute('TotalImpuestosTrasladados');
-    				  $xmlWriter->text( number_format( $comprobante['TotalTraslado'],2,".","" ) );
-    			  $xmlWriter->endAttribute();
-    			}
-    			if( floatval($comprobante['TotalRetenido']) > 0 ){
-    				$xmlWriter->startAttribute('TotalImpuestosRetenidos');
-    					$xmlWriter->text( number_format( $comprobante['TotalRetenido'],2,".","" ) );
-    				$xmlWriter->endAttribute();
-    			}
-    			// Retenciones:
-    			// Traslados:
-    			// if( $this->m_info["m_impuestos"]["TotalImpuestosTrasladados"] > 0 || count( $this->m_info["m_impuestos"]["m_trasladados"] ) > 0 ){
-          if( floatval($comprobante['TotalTraslado']) > 0 || count($impuestos_trasladados) > 0 ){
-    				$xmlWriter->text( "\n\t\t" );
-    				$xmlWriter->startElement('cfdi:Traslados');
-    				// foreach( $this->m_info["m_impuestos"]["m_trasladados"] as $indice => $valor ){
-            foreach( $impuestos_trasladados as $impuesto ){
-    					$xmlWriter->text( "\n\t\t\t" );
-    					$xmlWriter->startElement('cfdi:Traslado');
-    						// Atributos:
-    						$xmlWriter->startAttribute('Impuesto');
-    							$xmlWriter->text( $impuesto["ClaveImpuesto"] );
-    						$xmlWriter->endAttribute();
+          // Impuestos Totales:
+      		if( floatval($comprobante['TotalRetenido']) > 0 || floatval($comprobante['TotalTraslado']) > 0 ){
+      			$xmlWriter->text( "\n\t" );
+      			$xmlWriter->startElement('cfdi:Impuestos');
+      			// Atributos:
+      			if( floatval($comprobante['TotalTraslado']) > 0 ){
+      			  $xmlWriter->startAttribute('TotalImpuestosTrasladados');
+      				  $xmlWriter->text( number_format( $comprobante['TotalTraslado'],2,".","" ) );
+      			  $xmlWriter->endAttribute();
+      			}
+      			if( floatval($comprobante['TotalRetenido']) > 0 ){
+      				$xmlWriter->startAttribute('TotalImpuestosRetenidos');
+      					$xmlWriter->text( number_format( $comprobante['TotalRetenido'],2,".","" ) );
+      				$xmlWriter->endAttribute();
+      			}
+      			// Retenciones:
+      			// Traslados:
+      			// if( $this->m_info["m_impuestos"]["TotalImpuestosTrasladados"] > 0 || count( $this->m_info["m_impuestos"]["m_trasladados"] ) > 0 ){
+            if( floatval($comprobante['TotalTraslado']) > 0 || count($impuestos_trasladados) > 0 ){
+      				$xmlWriter->text( "\n\t\t" );
+      				$xmlWriter->startElement('cfdi:Traslados');
+      				// foreach( $this->m_info["m_impuestos"]["m_trasladados"] as $indice => $valor ){
+              foreach( $impuestos_trasladados as $impuesto ){
+      					$xmlWriter->text( "\n\t\t\t" );
+      					$xmlWriter->startElement('cfdi:Traslado');
+      						// Atributos:
+      						$xmlWriter->startAttribute('Impuesto');
+      							$xmlWriter->text( $impuesto["ClaveImpuesto"] );
+      						$xmlWriter->endAttribute();
 
-    						$xmlWriter->startAttribute('TipoFactor');
-    							$xmlWriter->text( $impuesto["Factor"] );
-    						$xmlWriter->endAttribute();
+      						$xmlWriter->startAttribute('TipoFactor');
+      							$xmlWriter->text( $impuesto["Factor"] );
+      						$xmlWriter->endAttribute();
 
-    						$xmlWriter->startAttribute('TasaOCuota');
-    							$xmlWriter->text( $impuesto["Tasa_Cuota"] );
-    						$xmlWriter->endAttribute();
+      						$xmlWriter->startAttribute('TasaOCuota');
+      							$xmlWriter->text( number_format($impuesto["Tasa_Cuota"],6,".",""));
+      						$xmlWriter->endAttribute();
 
-    						$xmlWriter->startAttribute('Importe');
-    							$xmlWriter->text( number_format( $impuesto["Importe"],2,".","" ) );
-    						$xmlWriter->endAttribute();
+      						$xmlWriter->startAttribute('Importe');
+      							$xmlWriter->text( number_format( $impuesto["Importe"],2,".","" ) );
+      						$xmlWriter->endAttribute();
 
-    					$xmlWriter->endAttribute();
-    					$xmlWriter->endElement();
-    				}
-    			  $xmlWriter->text( "\n\t\t" );
-    			  $xmlWriter->endElement();
-    			}
-    			$xmlWriter->text( "\n\t" );
-    			$xmlWriter->endElement();
-    		}
-    		$xmlWriter->text( "\n" );
-    		$xmlWriter->endElement(); // Fin del elemento <cfdi:Comprobante
-    		$xmlWriter->endDocument();
+      					$xmlWriter->endAttribute();
+      					$xmlWriter->endElement();
+      				}
+      			  $xmlWriter->text( "\n\t\t" );
+      			  $xmlWriter->endElement();
+      			}
+      			$xmlWriter->text( "\n\t" );
+      			$xmlWriter->endElement();
+      		}
+      		$xmlWriter->text( "\n" );
+      		$xmlWriter->endElement(); // Fin del elemento <cfdi:Comprobante
+      		$xmlWriter->endDocument();
 
-        // $path_xml = "./comprobantes/" . $comprobante['RFCEmisor'] . "/". $comprobante['Serie'] . "/". $id .".xml";
-        $path_xml = "./". $id .".xml";
-    		file_put_contents( $path_xml, $xmlWriter->flush(true), FILE_APPEND );
-
+          $path_xml = "./comprobantes/" . $comprobante['RFCEmisor'] . "/". $comprobante['Serie'];
+          // Valida si el directorio 'comprobantes'
+          if(!is_dir("comprobantes")){
+            mkdir("comprobantes", 0777)// or die('ERROR!');     // Crea el directorio 'Comprobantes' (si no existe)
+          }
+          if(!is_dir("comprobantes/". $comprobante['RFCEmisor'])) {
+            mkdir("comprobantes/". $comprobante['RFCEmisor'])// or die("Error al crear directorio Emisor");
+          }
+          if(!is_dir("comprobantes/". $comprobante['RFCEmisor'] . "/" . $comprobante['Serie'])){
+            mkdir("comprobantes/". $comprobante['RFCEmisor'] . "/" . $comprobante['Serie'])// or die("Error al crear directorio Serie");
+          }
+          file_put_contents( $path_xml . "/" . $id . ".xml", $xmlWriter->flush(true), FILE_APPEND );
+          return true;
+        }catch(Exception $e){
+          write_log("ComprobantePDO | create_xml() | Error al crear XML\n " . $e->getMessage());
+          return false;
+        }
       }
-
     }
 ?>
