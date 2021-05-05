@@ -218,8 +218,7 @@ $(document).ready(function (){
       url: "../../API/CFDIs/facturas/process/",
       data: {"token":token, "data":json_cfdi},
       success: function(resp){
-        // Obtiene los datos del servicio
-        console.log(resp);
+        location.href="../../CFDIs/facturas";
       },
       error : function(xhr, status) {
         console.log(xhr);

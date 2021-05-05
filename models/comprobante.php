@@ -105,7 +105,32 @@
               $this->conn->exec($sql_insert_detalles);
               write_log("Se realizó un INSERT de Detalles");
             }
-            // Actualiza el consecutivo de la serie
+            // Obtiene los impuestos trasladados
+            $sql_select_imp = "SELECT ROUND(SUM(detallecomprobante.Impuestos),4) Importe,
+            detallecomprobante.TipoImpuesto, catsatimpuestos.ClaveImpuesto,
+            catsatimpuestos.Tasa_Cuota, catsatimpuestos.Factor
+            FROM detallecomprobante
+            INNER JOIN productos ON detallecomprobante.Producto = productos.Id
+            INNER JOIN catsatclavesprodserv ON productos.ClaveProdServ = catsatclavesprodserv.Id
+            INNER JOIN catsatimpuestos ON productos.Impuesto = catsatimpuestos.Id
+            WHERE Comprobante='$id_comprobante'
+            GROUP BY catsatimpuestos.Id";
+
+            $stmt = $this->conn->prepare($sql_select_imp);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $impuestos_trasladados = $result;
+
+            // Calcula el total de los impuestos trasladados
+            $total_trasladado = 0;
+            foreach($impuestos_trasladados as $impuesto){
+              $total_trasladado += floatval($impuesto['Importe']);
+            }
+
+            // Actualiza los Impuestos Trasladados
+            $sql_update = "UPDATE cfdi SET TotalTraslado='$total_trasladado' WHERE Id='$id_comprobante'";
+            write_log("SQL UPDATE CFDI (Inserta Impuestos Trasladados): " .$sql_update);
+            $this->conn->exec($sql_update);
 
             $this->conn->commit();
             return true;
@@ -636,9 +661,9 @@
           write_log("ComprobantePDO | timbrar() | Error al timbrar el comprobante\n: ".
           "Tipo Excepcion: ". $tipoExcepcion . "\n".
           "Numero Excepcion: ". $numeroExcepcion ."\n".
-          "Descripción Resultado". $descripcionResultado . "\n".
-          "Error Interno". $errorInterno ."\n".
-          "Mensaje Interno". $mensajeInterno);
+          "Descripción Resultado: ". $descripcionResultado . "\n".
+          "Error Interno: ". $errorInterno ."\n".
+          "Mensaje Interno: ". $mensajeInterno);
       	}
       	// FIN de certificar
         die;
