@@ -255,7 +255,7 @@
       		// Nodo principal: Comprobante
       		$xmlWriter->startElement('cfdi:Comprobante');
       		// Encabezados del CFDI:
-      		$xmlWriter->startAttribute('xmlns:xsi');
+          $xmlWriter->startAttribute('xmlns:xsi');
       			$xmlWriter->text( "http://www.w3.org/2001/XMLSchema-instance" );
       		$xmlWriter->endAttribute();
       		$xmlWriter->startAttribute('xmlns:cfdi');
@@ -299,9 +299,11 @@
       			$xmlWriter->text( $comprobante["Moneda"] );
       		$xmlWriter->endAttribute();
           // Tipo de Cambio
-    			$xmlWriter->startAttribute('TipoCambio');
-    				$xmlWriter->text( $comprobante["TipoCambio"] );
-    			$xmlWriter->endAttribute();
+          if( floatval($comprobante['TipoCambio']) > 1 ){
+      			$xmlWriter->startAttribute('TipoCambio');
+      				$xmlWriter->text( $comprobante['TipoCambio'] );
+      			$xmlWriter->endAttribute();
+      		}
           // Certificado
           if( $certificado != "" ){
       			$xmlWriter->startAttribute('Certificado');
@@ -318,6 +320,12 @@
           $xmlWriter->startAttribute('NoCertificado');
       			$xmlWriter->text( $nocertificado );
       		$xmlWriter->endAttribute();
+          // Forma de Pago | Si es Traslado / Pago se omite la forma Pago
+          if( $comprobante['TipoComprobante'] != "T" && $comprobante['TipoComprobante'] != "P" ){
+            $xmlWriter->startAttribute('FormaPago');
+      				$xmlWriter->text( $comprobante['ClaveFormaPago'] );
+      			$xmlWriter->endAttribute();
+      		}
           // Fecha
           $xmlWriter->startAttribute('Fecha');
       			$xmlWriter->text( $comprobante['Fecha']. "T". $comprobante['Hora'] );
@@ -388,17 +396,17 @@
       				}
 
       				$xmlWriter->startAttribute('Cantidad');
-      					$xmlWriter->text( number_format( $producto["Cantidad"],4,".","" ));
+      					$xmlWriter->text( $producto["Cantidad"] );
       				$xmlWriter->endAttribute();
 
       				$xmlWriter->startAttribute('ClaveUnidad');
-      					$xmlWriter->text( substr($producto["Unidad"], 0, 2) );
+      					$xmlWriter->text( substr($producto["Unidad"], 0, 3) );
       				$xmlWriter->endAttribute();
 
-      				if( $comprobante['TipoComprobante'] != "P" || $comprobante['TipoComprobante'] != "N" ){
+      				if( $comprobante['TipoComprobante'] != "P" &&  $comprobante['TipoComprobante'] != "N" ){
                 $xmlWriter->startAttribute('Unidad');
-      						$xmlWriter->text( substr($producto['Unidad'], 6, strlen($producto['Unidad'])) );
-      					$xmlWriter->endAttribute();
+                $xmlWriter->text( substr($producto["Unidad"], 6, strlen($producto["Unidad"])) );
+                $xmlWriter->endAttribute();
       				}
 
       				$xmlWriter->startAttribute('Descripcion');
@@ -414,7 +422,7 @@
       				$xmlWriter->endAttribute();
 
       				$xmlWriter->startAttribute('Importe');
-      				if( $comprobante['TipoComprobante'] == "P" ){
+      				if($comprobante['TipoComprobante'] == "P" ){
       					$xmlWriter->text( "0" );
       				}else{
       					$xmlWriter->text( number_format( $producto["Importe"],2,".","" ) );
@@ -431,7 +439,7 @@
       					$xmlWriter->text( "\n\t\t\t" );
       					$xmlWriter->startElement('cfdi:Impuestos');
       					// Traslados:
-      					if( $producto["ClaveImpuesto"] == "002" ){
+      					if( $producto["ClaveImpuesto"] == "002" || $producto["ClaveImpuesto"] == "003"){
       						$xmlWriter->text( "\n\t\t\t\t" );
       						$xmlWriter->startElement('cfdi:Traslados');
       							// Detalle del Traslado:
@@ -449,7 +457,7 @@
       									$xmlWriter->text( $producto["Factor"] );
       								$xmlWriter->endAttribute();
       								$xmlWriter->startAttribute('TasaOCuota');
-      									$xmlWriter->text( number_format($producto["Tasa_Cuota"],6,".","") );
+      									$xmlWriter->text( number_format( $producto["Tasa_Cuota"],6,".","") );
       								$xmlWriter->endAttribute();
       								$xmlWriter->startAttribute('Importe');
       									$xmlWriter->text( $producto["Impuestos"] );
@@ -469,45 +477,45 @@
           $xmlWriter->endElement();
 
           // Impuestos Totales:
-      		if( floatval($comprobante['TotalRetenido']) > 0 || floatval($comprobante['TotalTraslado']) > 0 ){
+      		if( $comprobante['TotalRetenido'] > 0 || $comprobante['TotalTraslado'] > 0 ){
       			$xmlWriter->text( "\n\t" );
       			$xmlWriter->startElement('cfdi:Impuestos');
+
       			// Atributos:
-      			if( floatval($comprobante['TotalTraslado']) > 0 ){
+      			if( $comprobante['TotalTraslado'] > 0 ){
       			  $xmlWriter->startAttribute('TotalImpuestosTrasladados');
       				  $xmlWriter->text( number_format( $comprobante['TotalTraslado'],2,".","" ) );
       			  $xmlWriter->endAttribute();
       			}
-      			if( floatval($comprobante['TotalRetenido']) > 0 ){
+      			if( $comprobante['TotalRetenido'] > 0 ){
       				$xmlWriter->startAttribute('TotalImpuestosRetenidos');
       					$xmlWriter->text( number_format( $comprobante['TotalRetenido'],2,".","" ) );
       				$xmlWriter->endAttribute();
       			}
+
       			// Retenciones:
       			// Traslados:
-      			// if( $this->m_info["m_impuestos"]["TotalImpuestosTrasladados"] > 0 || count( $this->m_info["m_impuestos"]["m_trasladados"] ) > 0 ){
-            if( floatval($comprobante['TotalTraslado']) > 0 || count($impuestos_trasladados) > 0 ){
+      			if( $comprobante["TotalTraslado"] > 0 || count( $impuestos_trasladados) > 0 ){
       				$xmlWriter->text( "\n\t\t" );
       				$xmlWriter->startElement('cfdi:Traslados');
-      				// foreach( $this->m_info["m_impuestos"]["m_trasladados"] as $indice => $valor ){
-              foreach( $impuestos_trasladados as $impuesto ){
+      				foreach( $impuestos_trasladados as $indice => $valor ){
       					$xmlWriter->text( "\n\t\t\t" );
       					$xmlWriter->startElement('cfdi:Traslado');
       						// Atributos:
       						$xmlWriter->startAttribute('Impuesto');
-      							$xmlWriter->text( $impuesto["ClaveImpuesto"] );
+      							$xmlWriter->text( $valor["ClaveImpuesto"] );
       						$xmlWriter->endAttribute();
 
       						$xmlWriter->startAttribute('TipoFactor');
-      							$xmlWriter->text( $impuesto["Factor"] );
+      							$xmlWriter->text( $valor["Factor"] );
       						$xmlWriter->endAttribute();
 
       						$xmlWriter->startAttribute('TasaOCuota');
-      							$xmlWriter->text( number_format($impuesto["Tasa_Cuota"],6,".",""));
+      							$xmlWriter->text( number_format($valor["Tasa_Cuota"], 6, ".", "") );
       						$xmlWriter->endAttribute();
 
       						$xmlWriter->startAttribute('Importe');
-      							$xmlWriter->text( number_format( $impuesto["Importe"],2,".","" ) );
+      							$xmlWriter->text( number_format( $valor["Importe"],2,".","" ) );
       						$xmlWriter->endAttribute();
 
       					$xmlWriter->endAttribute();
@@ -516,30 +524,179 @@
       			  $xmlWriter->text( "\n\t\t" );
       			  $xmlWriter->endElement();
       			}
+
       			$xmlWriter->text( "\n\t" );
       			$xmlWriter->endElement();
       		}
+
       		$xmlWriter->text( "\n" );
       		$xmlWriter->endElement(); // Fin del elemento <cfdi:Comprobante
       		$xmlWriter->endDocument();
 
-          $path_xml = "./comprobantes/" . $comprobante['RFCEmisor'] . "/". $comprobante['Serie'];
+          // Path donde se guardará el XML
+          $path_xml = "./comprobantes/" . $comprobante['RFCEmisor'] . "/". $comprobante['Serie'] . "/" . $comprobante['Folio'];
           // Valida si el directorio 'comprobantes'
           if(!is_dir("comprobantes")){
-            mkdir("comprobantes", 0777)// or die('ERROR!');     // Crea el directorio 'Comprobantes' (si no existe)
+            mkdir("comprobantes", 0777); // or die('ERROR!');     // Crea el directorio 'Comprobantes' (si no existe)
           }
           if(!is_dir("comprobantes/". $comprobante['RFCEmisor'])) {
-            mkdir("comprobantes/". $comprobante['RFCEmisor'])// or die("Error al crear directorio Emisor");
+            mkdir("comprobantes/". $comprobante['RFCEmisor']); // or die("Error al crear directorio Emisor");
           }
           if(!is_dir("comprobantes/". $comprobante['RFCEmisor'] . "/" . $comprobante['Serie'])){
-            mkdir("comprobantes/". $comprobante['RFCEmisor'] . "/" . $comprobante['Serie'])// or die("Error al crear directorio Serie");
+            mkdir("comprobantes/". $comprobante['RFCEmisor'] . "/" . $comprobante['Serie']); // or die("Error al crear directorio Serie");
           }
-          file_put_contents( $path_xml . "/" . $id . ".xml", $xmlWriter->flush(true), FILE_APPEND );
-          return true;
+          if(!is_dir("comprobantes/". $comprobante['RFCEmisor'] . "/" . $comprobante['Serie'] . "/" . $comprobante['Folio'])){
+            mkdir("comprobantes/". $comprobante['RFCEmisor'] . "/" . $comprobante['Serie'] . "/" . $comprobante['Folio']); // or die("Error al crear directorio Serie");
+          }
+          $file =  $path_xml . "/" . $id . ".xml";
+          // Si ya existe el archivo lo elimina
+          if(file_exists($file)){
+            unlink($file);
+          }
+          file_put_contents( $file, $xmlWriter->flush(true), FILE_APPEND );
+          return $file;
         }catch(Exception $e){
           write_log("ComprobantePDO | create_xml() | Error al crear XML\n " . $e->getMessage());
           return false;
         }
+      }
+
+      public function timbrar($id_comprobante, $file, $pac, $test){
+        // Verifica si está en modo TEST
+        if($test == 1){
+          $pac_url = $pac['EndPoint_Pruebas'];
+        }else{
+          $pac_url = $pac['EndPoint'];
+        }
+      	$pac_nomcor = $pac['NombreCorto'];
+        $pac_usr = $pac['UsrPAC'];
+        $pac_pass = $pac['PassPAC'];
+
+        $file_str = file_get_contents( $file );
+        write_log("File String: ".$file_str);
+        // Encripta la cadena
+      	$base64Comprobante = base64_encode($file_str);
+      	$response = '';
+      	try {
+      		$params = array();
+      		$params['xmlComprobanteBase64'] = $base64Comprobante;
+      		$params['usuarioIntegrador'] = $pac_usr;
+      		$params['idComprobante'] = $id_comprobante;
+      		$context = stream_context_create(array(
+      			'ssl' => array(
+      				'verify_peer' => false,
+      				'verify_peer_name' => false,
+      				'allow_self_signed' => true
+      			),
+      			'http' => array(
+      				'user_agent' => 'PHPSoapClient'
+      			)
+      		));
+      		$options = array();
+      		$options['stream_context'] = $context;
+      		$options['cache_wsdl'] = WSDL_CACHE_MEMORY;
+      		$options['trace'] = true;
+      		libxml_disable_entity_loader(false);
+      		$client = new \SoapClient($pac_url, $options);
+      		$response = $client->__soapCall('TimbraCFDI', array('parameters' => $params));
+      	}catch (SoapFault $fault) {
+          write_log("ComprobantePDO | timbrar() | Ocurrió un error al Timbrar el comprobante\nError: ". $fault->faultcode . " - " . $fault->faultstring);
+      		return false;
+      	}
+      	if($response->TimbraCFDIResult->anyType[4] == NULL){
+      		write_log("ComprobantePDO | timbrar() | Ocurrió un error al Timbrar el comprobante\nError: ". trim( $response->TimbrarCFDIResult->anyType[2] ));
+      		write_log("ComprobantePDO | timbrar() | Response: \n". print_r($response));
+      	}
+      	// Obtenemos resultado del response
+      	$tipoExcepcion = $response->TimbraCFDIResult->anyType[0];
+      	$numeroExcepcion = $response->TimbraCFDIResult->anyType[1];
+      	$descripcionResultado = $response->TimbraCFDIResult->anyType[2];
+      	$xmlTimbrado = $response->TimbraCFDIResult->anyType[3];
+      	$codigoQr = $response->TimbraCFDIResult->anyType[4];
+      	$cadenaOriginal = $response->TimbraCFDIResult->anyType[5];
+      	$errorInterno = $response->TimbraCFDIResult->anyType[6];
+      	$mensajeInterno = $response->TimbraCFDIResult->anyType[7];
+      	$m_uuid = $response->TimbraCFDIResult->anyType[8];
+      	$m_uuid2 = json_decode( $m_uuid );
+
+      	if($xmlTimbrado != ''){
+          // El comprobante fue timbrado correctamente
+      		if( !file_put_contents( $file, $xmlTimbrado) ){
+            write_log("Error al crear el archivo XML (". $file .")");
+      			// echo "<p> Error al crear el archivo: ".$file." </p>";
+      		}
+      		echo "
+      			<p> CFDI creado correctamente: ".$file." </p>
+      			<p>
+      				<a href='".$file."' target='_blank'> Ver XML timbrado </a>
+      			</p>
+      		";
+      	}else{
+      		echo "<p> Error: [".$tipoExcepcion."  ".$numeroExcepcion." ".$descripcionResultado."  ei=".$errorInterno." mi=".$mensajeInterno."] </p>";
+          write_log("ComprobantePDO | timbrar() | Error al timbrar el comprobante\n: ".
+          "Tipo Excepcion: ". $tipoExcepcion . "\n".
+          "Numero Excepcion: ". $numeroExcepcion ."\n".
+          "Descripción Resultado". $descripcionResultado . "\n".
+          "Error Interno". $errorInterno ."\n".
+          "Mensaje Interno". $mensajeInterno);
+      	}
+      	// FIN de certificar
+        die;
+      	// Leer el XML y actualizar la tabla cfdi:
+      	$archivo_xml = trim(file_get_contents( $xml_archivo_cfdi ));
+      	// echo "<br><textarea cols='80' rows='10'> $archivo_xml </textarea>"; // exit;
+      	// Convertir a Matriz:
+      	$p = xml_parser_create();
+      	xml_parse_into_struct($p, $archivo_xml, $vals, $index);
+      	xml_parser_free($p);
+      	// echo "<br><div style='width:600px;height:300px;overflow:auto;'> "; echo "<br><pre>"; print_r( $vals ); echo "</pre><br>"; echo "</div>"; exit;
+      	error_reporting( 1 );
+      	$cfdiuuid = "";
+      	$cfditimbver = "";
+      	$cfditimbfecha = "";
+      	$cfdicerfec = "0001-01-01";
+      	$cfdicerhor = "00:00:00";
+      	$factimbnocer = "";
+      	$factimbsello = "";
+      	$cfdisatsta = "Vigente";
+      	$facsello = "";
+      	$facsatrfc = "";
+      	$cfdixml = $xml_archivo_cfdi;
+      	foreach( $vals as $valor ){
+      		//echo "<br><pre>"; print_r( $valor ); echo "</pre><br>"; exit;
+      		$tag = 	trim( $valor[ "tag" ] );
+      		// echo "<br>TAG: $tag";
+      		if( $tag == 'TFD:TIMBREFISCALDIGITAL' ){
+      			// echo "<br><pre>"; print_r( $valor ); echo "</pre><br>"; // exit;
+      			$cfdiuuid 		= trim( $valor[ "attributes" ][ "UUID" ] );
+      			$cfditimbfecha 	= trim( $valor[ "attributes" ][ "FECHATIMBRADO" ] );
+      			$cfditimbver		= trim( $valor[ "attributes" ][ "VERSION" ] );
+      			$cfditimbnocer 	= trim( $valor[ "attributes" ][ "NOCERTIFICADOSAT" ] );
+      			$cfdisello 		= trim( $valor[ "attributes" ][ "SELLOCFD" ] );
+      			$cfditimbsello 	= trim( $valor[ "attributes" ][ "SELLOSAT" ] );
+      			$cfdisatrfc 		= trim( $valor[ "attributes" ][ "RFCPROVCERTIF" ] );
+      		}
+      	}
+      	// Actualizo el CFDI:
+      	if( strlen($cfditimbfecha) == 19 ){
+      		$m_factimbfecha = explode( "T",$cfditimbfecha );
+      		// echo "<br><pre>"; print_r( $m_factimbfecha ); echo "</pre><br>"; // exit;
+      		$cfdicerfec = $m_factimbfecha[ 0 ];
+      		$cfdicerhor = $m_factimbfecha[ 1 ];
+      	}
+      	$sql = "
+      		UPDATE cfdi
+      		SET
+      			cfdiuuid='".$cfdiuuid."',
+      			cfdicerfec='".$cfdicerfec."',
+      			cfdicerhor='".$cfdicerhor."',
+      			cfdixml='".$cfdixml."',
+      			cfdisatsta='".$cfdisatsta."'
+      		WHERE empid=".$empid." AND cfdiserid=".$cfdiserid." AND cfdiid=".$cfdiid."
+      		;
+      	";
+      	// echo "<p> $sql </p>"; // exit;
+      	$conexion1->ejecutar( $sql );
       }
     }
 ?>

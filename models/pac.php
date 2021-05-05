@@ -7,6 +7,7 @@
     private $nombre;
     private $nombre_corto;
     private $endpoint;
+    private $endpoint_pruebas;
     private $usrpac;
     private $passpac;
     private $observaciones;
@@ -39,39 +40,17 @@
       }
     }
 
-    public function actualizar_usuario(){
-      $this->connect();       // Conecta a la base de datos
-      try{
-        if($this->user_pass != ""){
-          // Actualiza contraseña
-          $sql = "UPDATE usuario SET Activo='$this->activo',
-          Nombre='$this->nombre',
-          Apellidos='$this->apellidos',
-          User_name='$this->user_name',
-          Password='$this->user_pass'
-          WHERE Id_usuario = $this->id_usuario";
-          write_log("Actualiza contraseña");
-        }else{
-          // NO Actualiza contraseña
-          $sql = "UPDATE usuario SET Activo='$this->activo',
-          Nombre='$this->nombre',
-          Apellidos='$this->apellidos',
-          User_name='$this->user_name'
-          WHERE Id_usuario = $this->id_usuario";
-          write_log("NO Actualiza contraseña");
-        }
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-
-        write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
-        $this->disconect();
-        return true;
-      }catch(PDOException $e) {
-        write_log("Ocurrió un error al realizar el INSERT del Usuario\nError: ". $e->getMessage());
-        write_log("SQL: ". $sql);
-        $this->disconect();
-        return false;
+    public function get_pac($id){
+      $this->connect();
+      $stmt = $this->conn->prepare("SELECT * FROM pac WHERE Id='$id'");
+      $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $this->disconect();
+      if(count($result) != 0){
+        write_log("PacPDO | get_pac() | datos del PAC \n" . serialize($result[0]));
+        return $result[0];
+      }else{
+        write_log("PacPDO | get_pac() | Ocurrió un error al obtener el PAC");
       }
     }
 

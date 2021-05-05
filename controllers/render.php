@@ -329,10 +329,22 @@
       $nocertificado = $datos_csd['NoCertificado'];
       // Crea una instancia de ComprobantePDO
       $comprobante_pdo = new ComprobantePDO();
-      // Crea el XML para después poder certificarlo
-      if($comprobante_pdo->create_xml($id_comprobante, $emisor, $certificado, $nocertificado)){
-        // Certifica el CFDI
-        $comprobante_pdo->certify();
+      // Crea el XML y devulve la ruta y nombre del archivo creado
+      $path_xml = $comprobante_pdo->create_xml($id_comprobante, $emisor, $certificado, $nocertificado);
+
+      if( $path_xml != false ){
+        $emisor_pdo = new EmisorPDO($emisor);
+        $datos_emisor = $emisor_pdo->get_emisor();
+        $pac_id = $datos_emisor['Id'];
+        // Obtiene la información del PAC
+        $pac_pdo = new PacPDO();
+        $pac_info = $pac_pdo->get_pac($pac_id);
+        // Timbra el comprobante con los datos del PAC
+        if($comprobante_pdo->timbrar($id_comprobante, $path_xml, $pac_info, $datos_emisor['Testing'])){
+          $sesion->set_notification("OK", "Se timbró la factura de forma correcta");
+        }else{
+          $sesion->set_notification("Error", "Ocurrió un error al momento de timbrar. Verifique los datos e intente de nuevo. Si el problema persiste, contacte al administrador");
+        }
       }else{
         $sesion->set_notification("ERROR", "Ocurrió un error al generar el XML. Intentelo de nuevo");
       }
