@@ -348,7 +348,8 @@
       }else{
         $sesion->set_notification("ERROR", "Ocurrió un error al generar el XML. Intentelo de nuevo");
       }
-
+      // Redirecciona a la página del comprobante
+      header("Location: " . $hostname . "/CFDIs/facturas/detalles/" . $id_comprobante);
     }
   }
 

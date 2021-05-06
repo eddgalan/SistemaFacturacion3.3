@@ -56,6 +56,37 @@
                                             switch ($comprobante['Estatus']) {
                                               case '0':
                                                 $estado = "Nuevo";
+                                                $opciones = "".
+                                                "<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'> \n".
+                                                  "<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> \n".
+                                                    "<i class='fas fa-ellipsis-h icon_btn_options'></i> \n".
+                                                  "</button> \n".
+                                                  "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'> \n".
+                                                      "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/detalles/". $comprobante['Id'] ."'> \n".
+                                                      "<i class='far fa-file-alt'></i> Ver detalles \n".
+                                                      "</a> \n".
+                                                  "</div> \n".
+                                                "</div> \n";
+                                                break;
+                                              case '1':
+                                                $estado = "Timbrado";
+                                                $opciones = "".
+                                                "<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'> \n".
+                                                  "<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> \n".
+                                                    "<i class='fas fa-ellipsis-h icon_btn_options'></i> \n".
+                                                  "</button> \n".
+                                                  "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'> \n".
+                                                      "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/detalles/". $comprobante['Id'] ."'> \n".
+                                                      "<i class='far fa-file-alt'></i> Ver detalles \n".
+                                                      "</a> \n".
+                                                      "<a class='dropdown-item' href='#'> \n".
+                                                      "<i class='fas fa-file-pdf color_red'></i> Descargar PDF \n".
+                                                      "</a> \n".
+                                                      "<a class='dropdown-item' href='#'> \n".
+                                                      "<i class='fas fa-file-code color_blue'></i> Descargar XML \n".
+                                                      "</a> \n".
+                                                  "</div> \n".
+                                                "</div> \n";
                                                 break;
                                               default:
                                                 $estado = "Desconocido";
@@ -69,23 +100,8 @@
                                               "\t\t\t\t\t\t\t\t<td>". $comprobante['UUID'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td class='text-center'>". $comprobante['Total'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t <td class='text-center'> \n".
-                                              "\t\t\t\t\t\t\t\t\t <div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'> \n".
-                                              "\t\t\t\t\t\t\t\t\t <button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> \n".
-                                              "\t\t\t\t\t\t\t\t\t <i class='fas fa-ellipsis-h icon_btn_options'></i> \n".
-                                              "\t\t\t\t\t\t\t\t\t </button> \n".
-                                              "\t\t\t\t\t\t\t\t\t <div class='dropdown-menu' aria-labelledby='btnGroupDrop1'> \n".
-                                              "\t\t\t\t\t\t\t\t\t <a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/detalles/". $comprobante['Id'] ."'> \n".
-                                              "\t\t\t\t\t\t\t\t\t <i class='far fa-file-alt'></i> Ver detalles \n".
-                                              "\t\t\t\t\t\t\t\t\t </a> \n".
-                                              "\t\t\t\t\t\t\t\t\t <a class='dropdown-item' href='#'> \n".
-                                              "\t\t\t\t\t\t\t\t\t <i class='fas fa-file-pdf color_red'></i> Descargar PDF \n".
-                                              "\t\t\t\t\t\t\t\t\t </a> \n".
-                                              "\t\t\t\t\t\t\t\t\t <a class='dropdown-item' href='#'> \n".
-                                              "\t\t\t\t\t\t\t\t\t <i class='fas fa-file-code color_blue'></i> Descargar XML \n".
-                                              "\t\t\t\t\t\t\t\t\t </a> \n".
-                                              "\t\t\t\t\t\t\t\t\t </div> \n".
-                                              "\t\t\t\t\t\t\t\t\t </div> \n".
-                                              "\t\t\t\t\t\t\t\t\t </td> \n".
+                                              "\t\t\t\t\t\t\t\t\t " . $opciones. "\n".
+                                              "\t\t\t\t\t\t\t\t </td> \n".
                                               "\t\t\t\t\t\t\t\t</tr>\n";
                                             echo $html_tr;
                                           }

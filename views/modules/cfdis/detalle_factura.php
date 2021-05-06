@@ -36,6 +36,27 @@
                           </div>
                           <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="row">
+                              <!-- Estatus CFDI -->
+                              <div class="col-lg-12 col-md-12 col-sm-12">
+                                <label><strong>Estatus: </strong></label>
+                                <?php
+                                  $estatus = intval($data['comprobante']['EstatusCFDI']);
+                                  switch ($estatus) {
+                                    case 0:
+                                      echo "<label class='color_blue'><strong> Nuevo </strong></label>";
+                                      break;
+                                    case 1:
+                                      echo "<label class='color_green'><strong> Certificado </strong></label>";
+                                      break;
+                                    case 2:
+                                      echo "<label class='color_red'><strong> Cancelado</strong> <label>";
+                                      break;
+                                    default:
+                                      echo "<label class='color_red'><strong> Desconocido </strong></label>";
+                                      break;
+                                  }
+                                ?>
+                              </div>
                               <!-- RFC Emisor -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Emisor: </strong></label>
@@ -51,14 +72,6 @@
                                 <label><strong>Regimen: </strong></label>
                                 <label><?= $data['comprobante']['Regimen'] ?></label>
                               </div>
-                              <!-- Forma de Pago -->
-                              <div class="col-lg-12 col-md-12 col-sm-12">
-
-                              </div>
-                              <!-- Método de Pago -->
-                              <div class="col-lg-12 col-md-12 col-sm-12">
-
-                              </div>
                               <!-- RFC Receptor (Cliente) -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>RFC Receptor: </strong></label>
@@ -68,13 +81,6 @@
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Nombre Receptor: </strong></label>
                                 <label><?= $data['comprobante']['NombreReceptor'] ?></label>
-                              </div>
-                              <!-- Fecha y Hora -->
-                              <div class="col-lg-12 col-md-12 col-sm-12">
-                                <label><strong>Fecha: </strong></label>
-                                <label><?= $data['comprobante']['Fecha'] ?></label>
-                                <label><strong>Hora: </strong></label>
-                                <label><?= $data['comprobante']['Hora'] ?></label>
                               </div>
                             </div>
                           </div>
@@ -86,6 +92,13 @@
                                 <label><?= $data['comprobante']['Serie'] ?> </label>
                                 <label><strong>Folio: </strong></label>
                                 <label><?= $data['comprobante']['Folio'] ?> </label>
+                              </div>
+                              <!-- Fecha y Hora -->
+                              <div class="col-lg-12 col-md-12 col-sm-12">
+                                <label><strong>Fecha: </strong></label>
+                                <label><?= $data['comprobante']['Fecha'] ?></label>
+                                <label><strong>Hora: </strong></label>
+                                <label><?= $data['comprobante']['Hora'] ?></label>
                               </div>
                               <!-- Método de Pago -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -166,6 +179,18 @@
                                 <label><strong>Folio Fiscal (UUID): </strong></label>
                                 <label><?= $data['comprobante']['UUID'] ?> </label>
                               </div>
+                              <!-- Estatus SAT -->
+                              <div class="col-lg-12 col-md-12 col-sm-12">
+                                <label><strong>Estatus SAT: </strong></label>
+                                <?php
+                                  $estatus_sat = $data['comprobante']['EstatusSAT'];
+                                  switch($estatus_sat){
+                                    default:
+                                      echo "<label> --- </label>";
+                                      break;
+                                  }
+                                ?>
+                              </div>
                             </div>
                           </div>
                           <div class="col-lg-4 col-md-4 col-sm-12">
@@ -201,38 +226,34 @@
                           <!-- Acciones -->
                           <div class="col-lg-12 col-md-12 col-sm-12 text-right">
                             <hr>
-                            <a href="<?= $data['host'] ?>/CFDIs/facturas/timbrar/<?= $data['comprobante']['IdCFDI']?>"class="btn btn-success"> <i class="fas fa-file-invoice-dollar"></i> Timbrar CFDI </a>
-                            <button class="btn btn-warning"> <i class="fas fa-file-pdf"></i> Descargar PDF </button>
-                            <button class="btn btn-warning"> <i class="fas fa-file-code"></i> Descargar XML </button>
-                            <button class="btn btn-primary"> <i class="far fa-paper-plane"></i> Enviar por correo </button>
+                            <?php
+                            $estatus = intval($data['comprobante']['EstatusCFDI']);
+                            switch ($estatus) {
+                              case 0: // Comprobante Nuevo
+                                echo "<a href='". $data['host'] . "/CFDIs/facturas/timbrar/". $data['comprobante']['IdCFDI'] ."'class='btn btn-success'> <i class='fas fa-file-invoice-dollar'></i> Timbrar CFDI </a>";
+                                break;
+                              case 1: // Comprobante Timbrado
+                                echo "<button class='btn btn-success'> <i class='fas fa-sync'></i> Verificar Estatus SAT </button>\n";
+                                echo "<button class='btn btn-warning'> <i class='fas fa-file-pdf color_red'></i> Descargar PDF </button>\n";
+                                echo "<button class='btn btn-warning'> <i class='fas fa-file-code color_blue'></i> Descargar XML </button>\n";
+                                echo "<button class='btn btn-primary'> <i class='far fa-paper-plane'></i> Enviar por correo </button>\n";
+                                break;
+                              case 2: // Comprobante Cancelado
+                                echo "<label class='color_red'><strong> Cancelado</strong> <label>";
+                                break;
+                              default:
+                                echo "<label class='color_red'><strong> Desconocido </strong></label>";
+                                break;
+                            }
+                            ?>
                           </div>
                         </div>
                     </div>
                 </div>
-                <?php include './views/modules/components/footer.php'; ?>
             </div>
+            <?php include './views/modules/components/footer.php'; ?>
         </div>
-        <!-- ..:: MODALES ::.. -->
-        <!-- ..:: Modal  ::.. -->
-        <div class="modal fade" id="modal_nuevo_articulo">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h4 class="modal-title"> <i class="fas fa-plus"></i> Agregar Producto o Servicio </h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-              </div>
-              <div class="modal-body">
-                <div class="col-lg-12 col-md-12 col-sm-12">
-
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" name="add_product"class="btn btn-success" disabled> <i class="fas fa-check"></i> Agregar </button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
-              </div>
-            </div>
-          </div>
-        </div>
+    </div>
 
     <?php include './views/modules/components/javascript.php'; ?>
     <script type="text/javascript" src="<?=$data['host']?>/views/assets/js/nuevo_cfdi.js"></script>

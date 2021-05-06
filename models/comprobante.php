@@ -626,11 +626,11 @@
       		$response = $client->__soapCall('TimbraCFDI', array('parameters' => $params));
       	}catch (SoapFault $fault) {
           write_log("ComprobantePDO | timbrar() | Ocurrió un error al Timbrar el comprobante\nError: ". $fault->faultcode . " - " . $fault->faultstring);
-      		return false;
       	}
       	if($response->TimbraCFDIResult->anyType[4] == NULL){
       		write_log("ComprobantePDO | timbrar() | Ocurrió un error al Timbrar el comprobante\nError: ". trim( $response->TimbrarCFDIResult->anyType[2] ));
       		write_log("ComprobantePDO | timbrar() | Response: \n". print_r($response));
+          return false;
       	}
       	// Obtenemos resultado del response
       	$tipoExcepcion = $response->TimbraCFDIResult->anyType[0];
@@ -648,14 +648,7 @@
           // El comprobante fue timbrado correctamente
       		if( !file_put_contents( $file, $xmlTimbrado) ){
             write_log("Error al crear el archivo XML (". $file .")");
-      			// echo "<p> Error al crear el archivo: ".$file." </p>";
       		}
-      		echo "
-      			<p> CFDI creado correctamente: ".$file." </p>
-      			<p>
-      				<a href='".$file."' target='_blank'> Ver XML timbrado </a>
-      			</p>
-      		";
       	}else{
       		echo "<p> Error: [".$tipoExcepcion."  ".$numeroExcepcion." ".$descripcionResultado."  ei=".$errorInterno." mi=".$mensajeInterno."] </p>";
           write_log("ComprobantePDO | timbrar() | Error al timbrar el comprobante\n: ".
@@ -665,16 +658,13 @@
           "Error Interno: ". $errorInterno ."\n".
           "Mensaje Interno: ". $mensajeInterno);
       	}
-      	// FIN de certificar
-        die;
+      	// Terminó de Certificar (Timbrar)
       	// Leer el XML y actualizar la tabla cfdi:
-      	$archivo_xml = trim(file_get_contents( $xml_archivo_cfdi ));
-      	// echo "<br><textarea cols='80' rows='10'> $archivo_xml </textarea>"; // exit;
+      	$archivo_xml = trim(file_get_contents( $file ));
       	// Convertir a Matriz:
       	$p = xml_parser_create();
       	xml_parse_into_struct($p, $archivo_xml, $vals, $index);
       	xml_parser_free($p);
-      	// echo "<br><div style='width:600px;height:300px;overflow:auto;'> "; echo "<br><pre>"; print_r( $vals ); echo "</pre><br>"; echo "</div>"; exit;
       	error_reporting( 1 );
       	$cfdiuuid = "";
       	$cfditimbver = "";
@@ -686,13 +676,10 @@
       	$cfdisatsta = "Vigente";
       	$facsello = "";
       	$facsatrfc = "";
-      	$cfdixml = $xml_archivo_cfdi;
+      	$cfdixml = $file;
       	foreach( $vals as $valor ){
-      		//echo "<br><pre>"; print_r( $valor ); echo "</pre><br>"; exit;
       		$tag = 	trim( $valor[ "tag" ] );
-      		// echo "<br>TAG: $tag";
       		if( $tag == 'TFD:TIMBREFISCALDIGITAL' ){
-      			// echo "<br><pre>"; print_r( $valor ); echo "</pre><br>"; // exit;
       			$cfdiuuid 		= trim( $valor[ "attributes" ][ "UUID" ] );
       			$cfditimbfecha 	= trim( $valor[ "attributes" ][ "FECHATIMBRADO" ] );
       			$cfditimbver		= trim( $valor[ "attributes" ][ "VERSION" ] );
@@ -702,26 +689,24 @@
       			$cfdisatrfc 		= trim( $valor[ "attributes" ][ "RFCPROVCERTIF" ] );
       		}
       	}
-      	// Actualizo el CFDI:
+      	// Obtiene los datos para actualizar el CFDI
       	if( strlen($cfditimbfecha) == 19 ){
       		$m_factimbfecha = explode( "T",$cfditimbfecha );
-      		// echo "<br><pre>"; print_r( $m_factimbfecha ); echo "</pre><br>"; // exit;
       		$cfdicerfec = $m_factimbfecha[ 0 ];
       		$cfdicerhor = $m_factimbfecha[ 1 ];
       	}
-      	$sql = "
-      		UPDATE cfdi
-      		SET
-      			cfdiuuid='".$cfdiuuid."',
-      			cfdicerfec='".$cfdicerfec."',
-      			cfdicerhor='".$cfdicerhor."',
-      			cfdixml='".$cfdixml."',
-      			cfdisatsta='".$cfdisatsta."'
-      		WHERE empid=".$empid." AND cfdiserid=".$cfdiserid." AND cfdiid=".$cfdiid."
-      		;
-      	";
-      	// echo "<p> $sql </p>"; // exit;
-      	$conexion1->ejecutar( $sql );
+
+        $path_pdf = str_replace(".xml", ".pdf", $file);
+        /* Hace el UPDATE del CFDI */
+        $this->connect();       // Conecta a la base de datos
+        $sql = "UPDATE cfdi SET UUID='$cfdiuuid', FechaCertificado='$cfdicerfec', HoraCertificado='$cfdicerhor',
+                  PathXML='$file', PathPDF='$path_pdf', Estatus=1
+                  WHERE Id = '$id_comprobante'";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa en la Tabla CFDI.");
+        $this->disconect();
+        return true;
       }
     }
 ?>

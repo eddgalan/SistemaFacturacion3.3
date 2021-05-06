@@ -40,17 +40,20 @@ select{
 .color_blue{
   color:#1D76C4;
 }
-
 .color_green{
   color:#15B337;
 }
-
 .color_red{
   color:#E42727;
 }
-
 .color_black{
   color:#000;
+}
+.color_yellow{
+  color:#F3FF00;
+}
+.color_white{
+  color:#DFDFDF;
 }
 .icon_status{
   font-size: 25px;
