@@ -179,7 +179,7 @@
                                     </div>
                                   </div>
                                   <!-- Totales -->
-                                  <div class="col-lg-5">
+                                  <div class="col-lg-5 col-md-6 col-sm-5">
                                     <h5> <i class="fas fa-dollar-sign"></i> Totales </h5>
                                     <div class="col row" style="margin-bottom:5px !important;">
                                       <div class="col-md-3">
@@ -223,7 +223,7 @@
                                     </div>
                                   </div>
                                   <!-- Comentario/Observaciones -->
-                                  <div class="col-lg-7">
+                                  <div class="col-lg-7 col-md-6 col-sm-7">
                                     <div class="col-lg-12">
                                       <label for="observaciones"><strong>Observaciones </strong>(Opcional): </label>
                                     </div>

@@ -34,7 +34,7 @@
                           <div class="col-lg-12 col-md-12 col-sm-12">
                             <h4> <i class="far fa-file-alt"></i> Detalles </h4>
                           </div>
-                          <div class="col-lg-6 col-md-6 col-sm-12">
+                          <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="row">
                               <!-- Estatus CFDI -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -84,7 +84,7 @@
                               </div>
                             </div>
                           </div>
-                          <div class="col-lg-6 col-md-6 col-sm-12">
+                          <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="row">
                               <!-- Serie -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -167,7 +167,7 @@
                               </table>
                             </div>
                           </div>
-                          <div class="col-lg-8 col-md-6 col-sm-12">
+                          <div class="col-lg-8 col-md-6 col-sm-6">
                             <div class="row">
                               <!-- Fecha y Hora Certificación -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -202,11 +202,10 @@
                                 <p>
                                   <?= $data['comprobante']['Observaciones'] ?>
                                 </p>
-
                               </div>
                             </div>
                           </div>
-                          <div class="col-lg-4 col-md-4 col-sm-12">
+                          <div class="col-lg-4 col-md-4 col-sm-6">
                             <div class="col-lg-12 col-md-12 col-sm-12">
                               <h4> <i class="fas fa-dollar-sign"></i> Totales </h4>
                             </div>

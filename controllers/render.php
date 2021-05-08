@@ -389,7 +389,7 @@
           $sesion->set_notification("ERROR", "El comprobante no existe o no tiene los permisos para poder descargarlo");
         }
       }else{
-        header("Location: " . $hostname . "login");
+        header("Location: " . $hostname . "/login");
       }
     }
   }
