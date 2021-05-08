@@ -16,7 +16,7 @@
       public function get_all_catsat(){
         $file_json = fopen('models/anexo20/c_ClaveUnidad.json','r');
         $array_unidades = json_decode(fread($file_json, filesize('models/anexo20/c_ClaveUnidad.json')),true);
-        //var_dump($array_unidades);
+        // var_dump($array_unidades);
         return $array_unidades;
       }
 

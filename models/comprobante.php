@@ -173,11 +173,12 @@
           $sql = "SELECT cfdi.Id as IdCFDI, cfdi.Estatus as EstatusCFDI, cfdi.Emisor as IdEmisor, emisores.Nombre as NombreEmisor, emisores.RFC as RFCEmisor,
           cfdi.ClienteId as IdReceptor, clientes.RFC as RFCReceptor, clientes.Nombre as NombreReceptor,
           cfdi.Serie, cfdi.Folio, cfdi.Fecha, cfdi.Hora, cfdi.Moneda, cfdi.TipoCambio, cfdi.TipoComprobante,
+          series.DescripcionTipoComp as DescTipo,
           cfdi.CondicionesPago, cfdi.NoCertificado, cfdi.MetodoPago as ClaveMetodoPago,
           catsatmetodos.Descripcion as DescripcionMetodoPago, cfdi.FormaPago as ClaveFormaPago,
           catsatformaspago.Descripcion as DescripcionFormaPago, cfdi.UsoCFDI as ClaveUsoCFDI, catsatusocfdi.Concepto as ConceptoUsoCFDI,
-          cfdi.LugarExpedicion, cfdi.Regimen, cfdi.Subtotal, cfdi.IVA, cfdi.IEPS, cfdi.RetIva, cfdi.TotalRetenido, cfdi.TotalTraslado,
-          cfdi.Descuento, cfdi.Total, cfdi.UUID, cfdi.FechaCertificado, cfdi.FechaCertificado, cfdi.HoraCertificado, cfdi.EstatusSAT,
+          cfdi.LugarExpedicion, cfdi.Regimen, emisores.DescRegimen, cfdi.Subtotal, cfdi.IVA, cfdi.IEPS, cfdi.RetIva, cfdi.TotalRetenido, cfdi.TotalTraslado,
+          cfdi.Descuento, cfdi.Total, cfdi.UUID, cfdi.FechaCertificado, cfdi.HoraCertificado, cfdi.EstatusSAT,
           cfdi.PathXML, cfdi.PathPDF, cfdi.Observaciones
           FROM cfdi
           INNER JOIN emisores ON cfdi.Emisor = emisores.Id
@@ -185,6 +186,7 @@
           INNER JOIN catsatmetodos ON cfdi.MetodoPago = catsatmetodos.ClaveMetodo
           INNER JOIN catsatformaspago ON cfdi.FormaPago = catsatformaspago.ClaveFormaPago
           INNER JOIN catsatusocfdi ON cfdi.UsoCFDI = catsatusocfdi.ClaveUso
+          INNER JOIN series ON cfdi.TipoComprobante = series.TipoComprobante
           WHERE cfdi.Id='$id_comprobante'
           AND emisores.Id='$emisor'
           AND clientes.Emisor='$emisor'
@@ -707,6 +709,39 @@
         write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa en la Tabla CFDI.");
         $this->disconect();
         return true;
+      }
+
+      public function create_pdf($id_comprobante, $file, $emisor){
+        // Obtiene la información del comprobante
+        $comprobante = $this->get_comprobante($id_comprobante, $emisor['Id']);
+        // Obtiene los items (Productos/Servicios)
+        $detalles = $this->get_detalles($id_comprobante);
+        // Crear PDF ()
+        require './libs/tcpdf.php';
+        $pdf = new MYPDF( 'P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->SetMargins(5 , 5, 5);
+        $pdf->SetHeaderMargin( PDF_MARGIN_HEADER );
+        $pdf->SetFooterMargin( PDF_MARGIN_FOOTER );
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->SetFont('helvetica', 'BI', 12);
+        // Escribe el documento PDF
+        if( $pdf->imprimir($comprobante, $detalles, $emisor['PathLogo'], $file) ){
+          $file_pdf = str_replace(".xml", ".pdf", $file);
+          if( file_exists( $file_pdf ) ){   // Si existe el archivo PDF
+        		unlink( $file_pdf );            // Lo Elimina para crear otro
+        	}
+          $pdf->Output( $file_pdf, 'F');    // Crea(Guarda) el archivo .PDF
+          write_log("ComprobantePDO | create_pdf() | Se creó el archivo PDF correctamente");
+          return true;
+        }else{
+          write_log("ComprobantePDO | create_pdf() | Ocurrió un error al escribir el Archivo PDF.");
+          return false;
+        }
       }
     }
 ?>

@@ -341,7 +341,11 @@
         $pac_info = $pac_pdo->get_pac($pac_id);
         // Timbra el comprobante con los datos del PAC
         if($comprobante_pdo->timbrar($id_comprobante, $path_xml, $pac_info, $datos_emisor['Testing'])){
-          $sesion->set_notification("OK", "Se timbró la factura de forma correcta");
+          if($comprobante_pdo->create_pdf($id_comprobante, $path_xml, $datos_emisor)){
+            $sesion->set_notification("OK", "Se timbró la factura de forma correcta. Para verificar su estatus en el SAT existe un tiempo de espera de hasta 72 horas");
+          }else{
+            $sesion->set_notification("WARNING", "Se timbró la factura, pero ocurrió un error al crear el PDF.");
+          }
         }else{
           $sesion->set_notification("Error", "Ocurrió un error al momento de timbrar. Verifique los datos e intente de nuevo. Si el problema persiste, contacte al administrador");
         }

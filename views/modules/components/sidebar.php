@@ -13,6 +13,14 @@
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/emisores"> <i class="fas fa-building"></i> Emisores</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/prodserv"> <i class="fas fa-box"></i> Productos/Servicios</a>
                   </div>
+                  <div class="seccion list-group-item list-group-item-action bg-light"><span> <i class="fas fa-money-check-alt"></i> Comprobantes</span></div>
+                  <div class="panel">
+                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/facturas"> <i class="fas fa-file-invoice-dollar"></i> Facturas</a>
+                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/notas_credito"> <i class="fas fa-search-dollar"></i> Notas de crédito</a>
+                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/traslados"> <i class="fas fa-file-invoice-dollar"></i> Traslado</a>
+                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/pagos"> <i class="fas fa-file-invoice-dollar"></i> Pago (REP)</a>
+                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/nomina"> <i class="fas fa-file-invoice-dollar"></i> Nómina</a>
+                  </div>
                   <div class="seccion list-group-item list-group-item-action bg-light"><span> <i class="fas fa-funnel-dollar"></i> Catálogos SAT</span></div>
                   <div class="panel">
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/prod_serv"> <i class="fas fa-apple-alt"></i> Claves ProdServ</a>
@@ -22,14 +30,6 @@
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/monedas"> <i class="fas fa-coins"></i> Monedas</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/impuestos"> <i class="fas fa-dollar-sign"></i> Impuestos</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/usos_cfdi"> <i class="fas fa-file-invoice-dollar"></i> Usos CFDI</a>
-                  </div>
-                  <div class="seccion list-group-item list-group-item-action bg-light"><span> <i class="fas fa-money-check-alt"></i> Comprobantes</span></div>
-                  <div class="panel">
-                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/facturas"> <i class="fas fa-file-invoice-dollar"></i> Facturas</a>
-                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/notas_credito"> <i class="fas fa-search-dollar"></i> Notas de crédito</a>
-                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/traslados"> <i class="fas fa-file-invoice-dollar"></i> Traslado</a>
-                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/pagos"> <i class="fas fa-file-invoice-dollar"></i> Pago (REP)</a>
-                    <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/nomina"> <i class="fas fa-file-invoice-dollar"></i> Nómina</a>
                   </div>
                   <div class="seccion list-group-item list-group-item-action bg-light"><span> <i class="fas fa-money-check-alt"></i> Reportes</span></div>
                   <div class="panel">

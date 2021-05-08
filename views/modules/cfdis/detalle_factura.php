@@ -60,27 +60,27 @@
                               <!-- RFC Emisor -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Emisor: </strong></label>
-                                <label><?= $data['comprobante']['RFCEmisor'] ?></label>
+                                <spam><?= $data['comprobante']['RFCEmisor'] ?></spam>
                               </div>
                               <!-- Lugar Expedición -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Lugar de Expedición: </strong></label>
-                                <label><?= $data['comprobante']['LugarExpedicion'] ?></label>
+                                <spam><?= $data['comprobante']['LugarExpedicion'] ?></spam>
                               </div>
                               <!-- Regimen -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Regimen: </strong></label>
-                                <label><?= $data['comprobante']['Regimen'] ?></label>
+                                <spam><?= $data['comprobante']['Regimen'] ?> | <?= $data['comprobante']['DescRegimen'] ?></spam>
                               </div>
                               <!-- RFC Receptor (Cliente) -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>RFC Receptor: </strong></label>
-                                <label><?= $data['comprobante']['RFCReceptor'] ?></label>
+                                <spam><?= $data['comprobante']['RFCReceptor'] ?></spam>
                               </div>
                               <!-- RFC Receptor (Cliente) -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Nombre Receptor: </strong></label>
-                                <label><?= $data['comprobante']['NombreReceptor'] ?></label>
+                                <spam><?= $data['comprobante']['NombreReceptor'] ?></spam>
                               </div>
                             </div>
                           </div>
@@ -89,33 +89,38 @@
                               <!-- Serie -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Serie: </strong></label>
-                                <label><?= $data['comprobante']['Serie'] ?> </label>
+                                <spam><?= $data['comprobante']['Serie'] ?> </spam>
                                 <label><strong>Folio: </strong></label>
-                                <label><?= $data['comprobante']['Folio'] ?> </label>
+                                <spam><?= $data['comprobante']['Folio'] ?> </spam>
                               </div>
                               <!-- Fecha y Hora -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Fecha: </strong></label>
-                                <label><?= $data['comprobante']['Fecha'] ?></label>
+                                <spam><?= $data['comprobante']['Fecha'] ?></spam>
                                 <label><strong>Hora: </strong></label>
-                                <label><?= $data['comprobante']['Hora'] ?></label>
+                                <spam><?= $data['comprobante']['Hora'] ?></spam>
                               </div>
                               <!-- Método de Pago -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Método de Pago: </strong></label>
-                                <label><?= $data['comprobante']['ClaveMetodoPago'] ?> | <?= $data['comprobante']['DescripcionMetodoPago'] ?></label>
+                                <spam><?= $data['comprobante']['ClaveMetodoPago'] ?> | <?= $data['comprobante']['DescripcionMetodoPago'] ?></spam>
                               </div>
                               <!-- Forma de Pago -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Forma de Pago: </strong></label>
-                                <label><?= $data['comprobante']['ClaveFormaPago'] ?> | <?= $data['comprobante']['DescripcionFormaPago'] ?></label>
+                                <spam><?= $data['comprobante']['ClaveFormaPago'] ?> | <?= $data['comprobante']['DescripcionFormaPago'] ?></spam>
                               </div>
                               <!-- Moneda y Tipo de Cambio -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Moneda: </strong></label>
-                                <label><?= $data['comprobante']['Moneda'] ?> </label>
+                                <spam><?= $data['comprobante']['Moneda'] ?> </spam>
                                 <label><strong>Tipo de cambio: </strong></label>
-                                <label><?= $data['comprobante']['TipoCambio'] ?> </label>
+                                <spam><?= $data['comprobante']['TipoCambio'] ?> </spam>
+                              </div>
+                              <!-- Uso CFDI -->
+                              <div class="col-lg-12 col-md-12 col-sm-12">
+                                <label><strong>Uso CFDI: </strong></label>
+                                <spam><?= $data['comprobante']['ClaveUsoCFDI'] ?> | <?= $data['comprobante']['ConceptoUsoCFDI'] ?></spam>
                               </div>
                             </div>
                           </div>
@@ -167,17 +172,17 @@
                               <!-- Fecha y Hora Certificación -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Fecha certificado: </strong></label>
-                                <label><?= $data['comprobante']['FechaCertificado'] ?>  <?= $data['comprobante']['HoraCertificado'] ?> </label>
+                                <spam><?= $data['comprobante']['FechaCertificado'] ?>  <?= $data['comprobante']['HoraCertificado'] ?> </spam>
                               </div>
                               <!-- NoCertificado -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>No. Certificado: </strong></label>
-                                <label><?= $data['comprobante']['NoCertificado'] ?></label>
+                                <spam><?= $data['comprobante']['NoCertificado'] ?></spam>
                               </div>
                               <!-- UUID -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Folio Fiscal (UUID): </strong></label>
-                                <label><?= $data['comprobante']['UUID'] ?> </label>
+                                <spam><?= $data['comprobante']['UUID'] ?> </spam>
                               </div>
                               <!-- Estatus SAT -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -186,10 +191,18 @@
                                   $estatus_sat = $data['comprobante']['EstatusSAT'];
                                   switch($estatus_sat){
                                     default:
-                                      echo "<label> --- </label>";
+                                      echo "<spam> --- </spam>";
                                       break;
                                   }
                                 ?>
+                              </div>
+                              <!-- Observaciones -->
+                              <div class="col-lg-12 col-md-12 col-sm-12">
+                                <label><strong>Observaciones :</strong></label><br>
+                                <p>
+                                  <?= $data['comprobante']['Observaciones'] ?>
+                                </p>
+
                               </div>
                             </div>
                           </div>
