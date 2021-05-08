@@ -247,8 +247,8 @@
                                 break;
                               case 1: // Comprobante Timbrado
                                 echo "<button class='btn btn-success'> <i class='fas fa-sync'></i> Verificar Estatus SAT </button>\n";
-                                echo "<button class='btn btn-warning'> <i class='fas fa-file-pdf color_red'></i> Descargar PDF </button>\n";
-                                echo "<button class='btn btn-warning'> <i class='fas fa-file-code color_blue'></i> Descargar XML </button>\n";
+                                echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/pdf/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-pdf color_red'></i> Descargar PDF </a>\n";
+                                echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/xml/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-code color_blue'></i> Descargar XML </a>\n";
                                 echo "<button class='btn btn-primary'> <i class='far fa-paper-plane'></i> Enviar por correo </button>\n";
                                 break;
                               case 2: // Comprobante Cancelado

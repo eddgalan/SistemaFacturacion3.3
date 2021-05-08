@@ -79,11 +79,11 @@
                                                       "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/detalles/". $comprobante['Id'] ."'> \n".
                                                       "<i class='far fa-file-alt'></i> Ver detalles \n".
                                                       "</a> \n".
-                                                      "<a class='dropdown-item' href='#'> \n".
-                                                      "<i class='fas fa-file-pdf color_red'></i> Descargar PDF \n".
+                                                      "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/descargar/pdf/". $comprobante['Id'] ."'> \n".
+                                                        "<i class='fas fa-file-pdf color_red'></i> Descargar PDF \n".
                                                       "</a> \n".
-                                                      "<a class='dropdown-item' href='#'> \n".
-                                                      "<i class='fas fa-file-code color_blue'></i> Descargar XML \n".
+                                                      "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/descargar/xml/". $comprobante['Id'] ."'> \n".
+                                                        "<i class='fas fa-file-code color_blue'></i> Descargar XML \n".
                                                       "</a> \n".
                                                   "</div> \n".
                                                 "</div> \n";

@@ -357,6 +357,43 @@
     }
   }
 
+  class ProcessDownloadCFDI{
+    function __construct($hostname='', $sitename='', $data_url=null){
+      // Valida el Usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        // Obtiene los datos de la URL
+        $tipo_archivo = $data_url[1];
+        $id_comprobante = $data_url[2];
+        // Obtiene los datos de la sesión
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+        // Obtiene los datos del comprobante
+        $comprobante_pdo = new ComprobantePDO();
+        $data_comprobante = $comprobante_pdo->get_comprobante($id_comprobante, $emisor);
+
+        if($data_comprobante != false){
+          $path_file = $data_comprobante['Path'. strtoupper($tipo_archivo)];
+          write_log("Descarga del archivo: " . $path_file);
+          if( file_exists($path_file) ){
+            header("Content-disposition: attachment; filename=". $path_file);
+            header("Content-type: application/". $tipo_archivo);
+            readfile($path_file);
+          }else{
+            write_log("El archivo que se desea descargar no existe.");
+            $sesion->set_notification("ERROR", "El archivo que se desea descargar no existe.");
+            header('Location:' . getenv('HTTP_REFERER'));
+          }
+        }else{
+          write_log("El comprobante no pertenece al usuario logueado o no existe.");
+          $sesion->set_notification("ERROR", "El comprobante no existe o no tiene los permisos para poder descargarlo");
+        }
+      }else{
+        header("Location: " . $hostname . "login");
+      }
+    }
+  }
+
   class ViewUnidades {
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Catalogo Unidades";

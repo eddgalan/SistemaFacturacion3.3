@@ -199,9 +199,16 @@
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
           $this->disconect();
 
-          write_log($sql);
-          write_log("ComprobantePDO | get_comprobante | Información del comprobante\n " . serialize($result[0]));
-          return $result[0];
+          write_log("ComprobantePDO | get_comprobante() | SQL\n" . $sql);
+
+          if(count($result) > 0){
+            write_log("ComprobantePDO | get_comprobante() | Información del comprobante\n " . serialize($result[0]));
+            return $result[0];
+          }else{
+            write_log("ComprobantePDO | get_comprobante() | La consulta no trajo resultados.");
+            return false;
+          }
+
         }catch(PDOException $e) {
           write_log("Error al ejecutar la consulta. ERROR: " . $e->getMessage());
           write_log("SQL: " . $sql);
