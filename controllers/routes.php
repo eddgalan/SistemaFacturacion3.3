@@ -19,6 +19,7 @@
       $routes["CFDIs/facturas/detalles/_data_"]="ViewDetalleFactura";
       $routes["CFDIs/facturas/timbrar/_data_"]="ProcessTimbrarCFDI";
       $routes["CFDIs/facturas/descargar/_data_/_data_"]="ProcessDownloadCFDI";
+      $routes["CFDIs/facturas/veriticar_sat/_data_"]="ProcessVerifyCFDI";
 
       /* ..:: CATALOGOS SAT ::.. */
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";

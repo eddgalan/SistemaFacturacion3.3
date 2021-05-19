@@ -190,6 +190,12 @@
                                 <?php
                                   $estatus_sat = $data['comprobante']['EstatusSAT'];
                                   switch($estatus_sat){
+                                    case 'Vigente':
+                                      echo "<spam class='color_green'><strong> Vigente </strong></spam>";
+                                      break;
+                                    case 'Cancelado':
+                                      echo "<spam class='color_red'><strong> Cancelado </strong></spam>";
+                                      break;
                                     default:
                                       echo "<spam> --- </spam>";
                                       break;
@@ -245,7 +251,7 @@
                                 echo "<a href='". $data['host'] . "/CFDIs/facturas/timbrar/". $data['comprobante']['IdCFDI'] ."'class='btn btn-success'> <i class='fas fa-file-invoice-dollar'></i> Timbrar CFDI </a>";
                                 break;
                               case 1: // Comprobante Timbrado
-                                echo "<button class='btn btn-success'> <i class='fas fa-sync'></i> Verificar Estatus SAT </button>\n";
+                                echo "<a href='". $data['host'] ."/CFDIs/facturas/veriticar_sat/". $data['comprobante']['IdCFDI'] ."' class='btn btn-success'> <i class='fas fa-sync'></i> Verificar Estatus SAT </a>\n";
                                 echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/pdf/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-pdf color_red'></i> Descargar PDF </a>\n";
                                 echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/xml/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-code color_blue'></i> Descargar XML </a>\n";
                                 echo "<button class='btn btn-primary'> <i class='far fa-paper-plane'></i> Enviar por correo </button>\n";

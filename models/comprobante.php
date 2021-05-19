@@ -637,7 +637,7 @@
           write_log("ComprobantePDO | timbrar() | Ocurrió un error al Timbrar el comprobante\nError: ". $fault->faultcode . " - " . $fault->faultstring);
       	}
       	if($response->TimbraCFDIResult->anyType[4] == NULL){
-      		write_log("ComprobantePDO | timbrar() | Ocurrió un error al Timbrar el comprobante\nError: ". trim( $response->TimbrarCFDIResult->anyType[2] ));
+      		write_log("ComprobantePDO | timbrar() | Ocurrió un error al Timbrar el comprobante\nError: ". trim( $response->TimbraCFDIResult->anyType[2] ) );
       		write_log("ComprobantePDO | timbrar() | Response: \n". print_r($response));
           return false;
       	}
@@ -747,6 +747,63 @@
           return true;
         }else{
           write_log("ComprobantePDO | create_pdf() | Ocurrió un error al escribir el Archivo PDF.");
+          return false;
+        }
+      }
+
+      public function verify_sat($rfc_emisor, $rfc_receptor, $total, $uuid){
+        $soap = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/"><soapenv:Header/><soapenv:Body><tem:Consulta><tem:expresionImpresa>?re='.$rfc_emisor.'&amp;rr='.$rfc_receptor.'&amp;tt='.$total.'&amp;id='.$uuid.'</tem:expresionImpresa></tem:Consulta></soapenv:Body></soapenv:Envelope>';
+        $headers = [
+           'Content-Type: text/xml;charset=utf-8',
+           'SOAPAction: http://tempuri.org/IConsultaCFDIService/Consulta',
+           'Content-length: '.strlen($soap)
+        ];
+        $url = 'https://consultaqr.facturaelectronica.sat.gob.mx/ConsultaCFDIService.svc';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $soap);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        $res = curl_exec($ch);
+        curl_close($ch);
+        $xml = simplexml_load_string($res);
+        $data_status = $xml->children('s', true)->children('', true)->children('', true);
+        $data_status = json_encode($data_status->children('a', true), JSON_UNESCAPED_UNICODE);
+        $data = array();
+
+        foreach( json_decode($data_status) as $item ){
+          array_push($data, $item);
+        }
+
+        return array(
+          "CodigoEstatus" => $data[0],
+          "EsCancelable" => $data[1],
+          "Estado" => $data[2],
+          "EstatusCancelacion" => $data[3],
+          "ValidacionEFOS" => $data[4]
+        );
+      }
+
+      public function update_status_sat($id, $estatus){
+        $this->connect();
+        try{
+          $sql = "UPDATE cfdi SET EstatusSAT='$estatus'
+                  WHERE Id = '$id'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          write_log("ComprobantePDO | update_status_sat() | Se actualizaron: " . $stmt->rowCount() .
+          " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("ComprobantePDO | update_status_sat() | Ocurrió un error al realizar el UPDATE del CFDI\nError: ".
+          $e->getMessage());
+          write_log("SQL: ". $sql);
+          $this->disconect();
           return false;
         }
       }

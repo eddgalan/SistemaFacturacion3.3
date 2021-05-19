@@ -347,7 +347,7 @@
             $sesion->set_notification("WARNING", "Se timbró la factura, pero ocurrió un error al crear el PDF.");
           }
         }else{
-          $sesion->set_notification("Error", "Ocurrió un error al momento de timbrar. Verifique los datos e intente de nuevo. Si el problema persiste, contacte al administrador");
+          $sesion->set_notification("ERROR", "Ocurrió un error al momento de timbrar. Verifique los datos e intente de nuevo. Si el problema persiste, contacte al administrador");
         }
       }else{
         $sesion->set_notification("ERROR", "Ocurrió un error al generar el XML. Intentelo de nuevo");
@@ -388,6 +388,70 @@
           write_log("El comprobante no pertenece al usuario logueado o no existe.");
           $sesion->set_notification("ERROR", "El comprobante no existe o no tiene los permisos para poder descargarlo");
         }
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
+    }
+  }
+
+  class ProcessVerifyCFDI{
+    function __construct($hostname='', $site_name='', $dataurl=null){
+      // Valida la sesión del usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        // Obtiene los datos de la URL
+        $id_comprobante = $dataurl[1];
+        // Obtiene los datos de la sesión
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+        // Obtiene los datos del comprobante
+        $comprobante_pdo = new ComprobantePDO();
+        $data_comprobante = $comprobante_pdo->get_comprobante($id_comprobante, $emisor);
+
+        if($data_comprobante != false){
+          $rfc_emisor = $data_comprobante['RFCEmisor'];
+          $rfc_receptor = $data_comprobante['RFCReceptor'];
+          $total = $data_comprobante['Total'];
+          $uuid = $data_comprobante['UUID'];
+          $data_cfdi = $comprobante_pdo->verify_sat($rfc_emisor, $rfc_receptor, $total, $uuid);
+          write_log(serialize($data_cfdi));
+
+          if($data_comprobante['EstatusSAT'] != NULL){
+            // Compara el EstatusSAT del CFDI con el de la respuesta del servicio
+            if($data_comprobante['EstatusSAT'] == $data_cfdi['Estado']){
+              write_log("ProcessVerifyCFDI | | El Estatus del comprobante no ha recibido cambios ante el SAT");
+              $sesion->set_notification("OK", "Se sincronizó correctamente con el SAT. El estatus del comprobante no ha recibido cambios.");
+            }else{
+              write_log("ProcessVerifyCFDI | | Hay cambios en el Estatus SAT del comprobante.");
+              // Actualiza el estatus del comprobante
+              if($comprobante_pdo->update_status_sat($id_comprobante, $data_cfdi['Estado'])){
+                $sesion->set_notification("OK", "Se sincronizó correctamente con el SAT. Hubo cambios en el estatus de su comprobante, ya se encuentra actualizado.");
+              }else{
+                $sesion->set_notification("WARNING", "Se sincronizó correctamente con el SAT. ".
+                "Hubo cambios en su comprobante pero no fue posible actualizarlo. Estatus: " .$data_cfdi['Estado']);
+              }
+            }
+          }else{
+            if($data_cfdi['Estado'] == "No Encontrado"){
+              write_log("El comprobante aún no se encuentra en el SAT");
+              $sesion->set_notification("WARNING", "El comprobante aún no se encuentra en el SAT. " .
+              "El tiempo de espera puede ser de hasta 72 horas después de timbrarse.\nEspere un momento y vuelva a intentarlo.");
+            }else{
+              // Hace el UPDATE con el Estatus que devolvió el SAT
+              if($comprobante_pdo->update_status_sat($id_comprobante, $data_cfdi['Estado'])){
+                $sesion->set_notification("OK", "Se sincronizó con el SAT y se actualizó el Estatus del Comprobante.");
+              }else{
+                $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el EstatusSAT del comprobante.".
+                "EstatusSAT: " . $data_cfdi['Estado']);
+              }
+            }
+          }
+
+        }else{
+          write_log("El comprobante no pertenece al usuario logueado o no existe.");
+          $sesion->set_notification("ERROR", "El comprobante no existe o no tiene los permisos para poder realizar esta operación con el comprobante");
+        }
+        header("Location: " . $hostname . "/CFDIs/facturas/detalles/". $id_comprobante);
       }else{
         header("Location: " . $hostname . "/login");
       }
