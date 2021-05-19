@@ -254,7 +254,7 @@
                                 echo "<a href='". $data['host'] ."/CFDIs/facturas/veriticar_sat/". $data['comprobante']['IdCFDI'] ."' class='btn btn-success'> <i class='fas fa-sync'></i> Verificar Estatus SAT </a>\n";
                                 echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/pdf/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-pdf color_red'></i> Descargar PDF </a>\n";
                                 echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/xml/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-code color_blue'></i> Descargar XML </a>\n";
-                                echo "<button class='btn btn-primary'> <i class='far fa-paper-plane'></i> Enviar por correo </button>\n";
+                                echo "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#modal_sendemail'> <i class='far fa-paper-plane'></i> Enviar por correo </button>\n";
                                 break;
                               case 2: // Comprobante Cancelado
                                 echo "<label class='color_red'><strong> Cancelado</strong> <label>";
@@ -271,6 +271,47 @@
             </div>
             <?php include './views/modules/components/footer.php'; ?>
         </div>
+    </div>
+
+    <!-- ..:: MODALES ::.. -->
+    <!-- ..:: Modal Enviar Email ::.. -->
+    <div class="modal fade" id="modal_sendemail">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title"> <i class="fas fa-envelope-open-text"></i> Enviar CFDI </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <form method="POST" action="<?= $data['host'] ?>/CFDIs/facturas/enviar_cfdi">
+              <div class="modal-body">
+                <div class="row">
+                  <!-- Token -->
+                  <div style="display:none;">
+                    <input type="hidden" name="token" value="<?= $data['token'] ?>">
+                    <input type='hidden' name='cfdi' value='<?= $data['comprobante']['IdCFDI'] ?>'>
+                  </div>
+                  <!-- Destinatario -->
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <label for="contacto"> Destinatario: </label>
+                    <input type='text' class='form-control' name='contacto' required>
+                    <!-- <select class='form-control' name='contacto' required>
+
+                    </select> -->
+                  </div>
+                  <!-- Destinatario -->
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <label for="username"> Mensaje: </label>
+                    <textarea class='form-control' placeholder="" name="msg_email"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary"> <i class='far fa-paper-plane'></i> Enviar Email </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+              </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <?php include './views/modules/components/javascript.php'; ?>

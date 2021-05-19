@@ -7,6 +7,7 @@
   require 'models/emisor.php';
   require 'models/comprobante.php';
   require 'models/csd.php';
+  require 'models/mailgun.php';
 
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';
@@ -272,6 +273,7 @@
       $comprobante_pdo = new ComprobantePDO();
       $data['comprobante'] = $comprobante_pdo->get_comprobante($id_comprobante, $emisor);
       $data['prod_serv'] = $comprobante_pdo->get_detalles($id_comprobante);
+      $data['token'] = $sesion->set_token();
 
       $this->view = new View();
       $this->view->render('views/modules/cfdis/detalle_factura.php', $data, true);
@@ -458,22 +460,72 @@
     }
   }
 
-  require 'vendor/autoload.php';
-  use Mailgun\Mailgun;
-  class TestingEMAIL{
-    function __construct($hostname="", $sitename="", $dataurl=null){
-      # Instantiate the client.
-      $mgClient = Mailgun::create('',
-      '');
-      $domain = "";
-      $params = array(
-        'from'    => 'Excited User <sistema_facturacion@>',
-        'to'      => 'edd.galan@hotmail.com',
-        'subject' => 'TESTING EMAIL',
-        'text'    => 'Testing some Mailgun awesomness!'
-      );
-      # Make the call to the client.
-      $mgClient->messages()->send($domain, $params);
+  class ProcessSendCFDI{
+    function __construct($hostname='', $sitename='', $dataurl=''){
+      // Verifica que se reciban datos por POST
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $id_comprobante = $_POST['cfdi'];
+          // Obtiene los datos de la sesión
+          $data_session = $sesion->get_session();
+          $emisor = $data_session['Emisor'];
+          // Obtiene los datos del comprobante
+          $comprobante_pdo = new ComprobantePDO();
+          $data_comprobante = $comprobante_pdo->get_comprobante($id_comprobante, $emisor);
+
+          if($data_comprobante != false){
+            $path_xml = $data_comprobante['PathXML'];
+            $path_pdf = $data_comprobante['PathPDF'];
+
+            if( file_exists($path_xml) && file_exists($path_pdf) ){
+              // Obtiene las opciones de configuración del ConfMailGun
+              $mailgun_pdo = new MailGunPDO();
+              $config_mail = $mailgun_pdo->get_config();
+
+              if( intval($config_mail['Testing']) == 0 ){
+                $apikey=$config_mail['APIKey'];
+                $apihost=$config_mail['APIHost'];
+                $dominio=$config_mail['Dominio'];
+                $from = "SistemaFacturacion <". str_replace(" ", "", $config_mail['Nombre']) . "@" . $dominio . ">";
+                $subject = "ENVIO DE CFDI | Sistema Facturación";
+              }else{
+                $apikey=$config_mail['Test_APIKey'];
+                $apihost=$config_mail['Test_APIHost'];
+                $dominio=$config_mail['Test_Dominio'];
+                $from = "pruebas_mailgun " . "<pruebasmailgun@" . $dominio . ">";
+                $subject = "PRUEBA DE ENVÍO DE CFDI | Sistema Facturación";
+              }
+
+              $to = $_POST['contacto'];
+              $msg = $_POST['msg_email'];
+
+              require 'libs/mailgun.php';
+              $mail_gun = new MailerGun($apikey, $apihost, $dominio);
+              $mail_gun->send_cfdi($from, $to, $subject, $msg, $path_xml, $path_pdf);
+
+            }else{
+              write_log("ProcessSendCFDI | Construct() | No se encontró el PDF o XML \n".
+              "No se encontró el archivo xml o pdf del CFDI con Id: " . $id_comprobante);
+
+              $sesion->set_notification("ERROR", "Ocurrió un error al enviar el Email. ".
+              "No se logró localizar algunos de los archivos (pdf o xml).");
+              header('Location:' . getenv('HTTP_REFERER'));
+            }
+          }else{
+            write_log("El comprobante no pertenece al usuario logueado o no existe.");
+            $sesion->set_notification("ERROR", "El comprobante no existe o no tiene los permisos para poder realizar esta operación");
+          }
+        }else{
+          write_log("ProcessSendCFDI | Construct() | Token NO válido");
+          $sesion->set_notification("ERROR", "Ocurrió un error al validar el TOKEN para procesar su solicitud. Intentelo de nuevo.");
+        }
+      }else{
+        write_log("ProcessSendCFDI | Construct() | NO se recibieron datos POST");
+        $sesion->set_notification("ERROR", "Ocurrió un error al procesar la solicitud que desea realizar");
+      }
     }
   }
 

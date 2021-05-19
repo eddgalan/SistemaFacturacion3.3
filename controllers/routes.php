@@ -20,9 +20,7 @@
       $routes["CFDIs/facturas/timbrar/_data_"]="ProcessTimbrarCFDI";
       $routes["CFDIs/facturas/descargar/_data_/_data_"]="ProcessDownloadCFDI";
       $routes["CFDIs/facturas/veriticar_sat/_data_"]="ProcessVerifyCFDI";
-
-      # Enviando EMAIL
-      $routes["testing_email"]="TestingEMAIL";
+      $routes["CFDIs/facturas/enviar_cfdi"]="ProcessSendCFDI";
 
       /* ..:: CATALOGOS SAT ::.. */
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
