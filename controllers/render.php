@@ -458,6 +458,25 @@
     }
   }
 
+  require 'vendor/autoload.php';
+  use Mailgun\Mailgun;
+  class TestingEMAIL{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      # Instantiate the client.
+      $mgClient = Mailgun::create('',
+      '');
+      $domain = "";
+      $params = array(
+        'from'    => 'Excited User <sistema_facturacion@>',
+        'to'      => 'edd.galan@hotmail.com',
+        'subject' => 'TESTING EMAIL',
+        'text'    => 'Testing some Mailgun awesomness!'
+      );
+      # Make the call to the client.
+      $mgClient->messages()->send($domain, $params);
+    }
+  }
+
   class ViewUnidades {
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Catalogo Unidades";

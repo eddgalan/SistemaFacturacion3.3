@@ -21,6 +21,9 @@
       $routes["CFDIs/facturas/descargar/_data_/_data_"]="ProcessDownloadCFDI";
       $routes["CFDIs/facturas/veriticar_sat/_data_"]="ProcessVerifyCFDI";
 
+      # Enviando EMAIL
+      $routes["testing_email"]="TestingEMAIL";
+
       /* ..:: CATALOGOS SAT ::.. */
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
       $routes["catalogosSAT/prod_serv/add"]="ProcessProdServ";
