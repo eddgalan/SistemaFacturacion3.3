@@ -8,6 +8,7 @@
   require 'models/comprobante.php';
   require 'models/csd.php';
   require 'models/mailgun.php';
+  require 'models/contacto.php';
 
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';
@@ -273,6 +274,10 @@
       $comprobante_pdo = new ComprobantePDO();
       $data['comprobante'] = $comprobante_pdo->get_comprobante($id_comprobante, $emisor);
       $data['prod_serv'] = $comprobante_pdo->get_detalles($id_comprobante);
+      // Crea una instancia ContactoPDO y obtiene los contactos
+      $contacto_pdo = new ContactoPDO();
+      $data['contactos'] = $contacto_pdo->get_contactos_cliente($data['comprobante']['IdReceptor']);
+      // Token para el <Form>
       $data['token'] = $sesion->set_token();
 
       $this->view = new View();
@@ -499,13 +504,21 @@
                 $subject = "PRUEBA DE ENVÍO DE CFDI | Sistema Facturación";
               }
 
-              $to = $_POST['contacto'];
+              $to = $_POST['email'];
               $msg = $_POST['msg_email'];
 
               require 'libs/mailgun.php';
               $mail_gun = new MailerGun($apikey, $apihost, $dominio);
-              $mail_gun->send_cfdi($from, $to, $subject, $msg, $path_xml, $path_pdf);
+              $enviado = $mail_gun->send_cfdi($from, $to, $subject, $msg, $path_xml, $path_pdf);
 
+              if($enviado){
+                $sesion->set_notification("OK", "Se ha enviado su CFDI de forma correcta al email indicado.");
+                header("Location: ". $hostname ."/CFDIs/facturas/detalles/" . $id_comprobante);
+              }else{
+                $sesion->set_notification("ERROR", "Ocurrió un error al enviar su CFDI. Puede intentarlo de nuevo, ".
+                "si el problema persiste contacte al administrador");
+                header("Location: ". $hostname ."/CFDIs/facturas/detalles/" . $id_comprobante);
+              }
             }else{
               write_log("ProcessSendCFDI | Construct() | No se encontró el PDF o XML \n".
               "No se encontró el archivo xml o pdf del CFDI con Id: " . $id_comprobante);

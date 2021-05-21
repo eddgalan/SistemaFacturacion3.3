@@ -28,6 +28,12 @@
         );
         $response = $mgClient->messages()->send($domain, $params);
         write_log(serialize($response));
+
+        if( strpos(serialize($response), "Queued") ){
+          return true;
+        }else{
+          return false;
+        }
       }
     }
 

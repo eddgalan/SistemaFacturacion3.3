@@ -293,20 +293,32 @@
                   <!-- Destinatario -->
                   <div class="col-lg-12 col-md-12 col-sm-12">
                     <label for="contacto"> Destinatario: </label>
-                    <input type='text' class='form-control' name='contacto' required>
-                    <!-- <select class='form-control' name='contacto' required>
-
-                    </select> -->
+                    <select class='form-control' name='contacto' required>
+                      <?php
+                        $html_option = "<option value='0'>Seleccione un destinatario</option>";
+                        foreach($data['contactos'] as $contacto){
+                          $html_option .= "<option value='". $contacto['Email'] ."'>". $contacto['Nombre'] ." ".
+                           $contacto['ApellidoPaterno'] . " ". $contacto['ApellidoMaterno'] . " | " .
+                           $contacto['Email'] . "</option>";
+                        }
+                        echo $html_option . "<option value='1'> Otro destinatario </option>";
+                      ?>
+                    </select>
+                  </div>
+                  <!-- Email -->
+                  <div class="col-lg-12 col-md-12 col-sm-12 display_none" id='div_email' style='margin-top:10px;'>
+                    <input type="text" class='form-control' name='email' placeholder='Escriba la dirección de correo electrónico'>
+                    <small class="display_none color_red">Inserte una dirección de correo válida</small>
                   </div>
                   <!-- Destinatario -->
                   <div class="col-lg-12 col-md-12 col-sm-12">
                     <label for="username"> Mensaje: </label>
-                    <textarea class='form-control' placeholder="" name="msg_email"></textarea>
+                    <textarea class='form-control' placeholder="" name="msg_email" rows="3"></textarea>
                   </div>
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="submit" class="btn btn-primary"> <i class='far fa-paper-plane'></i> Enviar Email </button>
+                <button type="submit" class="btn btn-primary" name='btn_send' disabled> <i class='far fa-paper-plane'></i> Enviar Email </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
               </div>
           </form>
@@ -315,7 +327,7 @@
     </div>
 
     <?php include './views/modules/components/javascript.php'; ?>
-    <script type="text/javascript" src="<?=$data['host']?>/views/assets/js/nuevo_cfdi.js"></script>
+    <script type="text/javascript" src="<?=$data['host']?>/views/assets/js/detalles_cfdi.js"></script>
 </body>
 
 </html>
