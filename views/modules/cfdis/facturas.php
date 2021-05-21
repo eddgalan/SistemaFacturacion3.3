@@ -53,9 +53,10 @@
                                       <tbody style="font-size:15px;">
                                         <?php
                                           foreach ($data['comprobantes'] as $comprobante) {
+                                            $estado = ''; $opciones = '';
                                             switch ($comprobante['Estatus']) {
                                               case '0':
-                                                $estado = "Nuevo";
+                                                $estado = "<i class='fas fa-star color_yellow'></i> Nuevo";
                                                 $opciones = "".
                                                 "<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'> \n".
                                                   "<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> \n".
@@ -69,7 +70,7 @@
                                                 "</div> \n";
                                                 break;
                                               case '1':
-                                                $estado = "Timbrado";
+                                                $estado = "<i class='fas fa-check color_green'></i> Timbrado";
                                                 $opciones = "".
                                                 "<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'> \n".
                                                   "<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> \n".
@@ -88,6 +89,40 @@
                                                   "</div> \n".
                                                 "</div> \n";
                                                 break;
+                                              case '2':
+                                                $estado = "<i class='fas fa-check-double color_green'></i> Verificado";
+                                                $opciones = "".
+                                                "<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'> \n".
+                                                  "<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> \n".
+                                                    "<i class='fas fa-ellipsis-h icon_btn_options'></i> \n".
+                                                  "</button> \n".
+                                                  "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'> \n".
+                                                      "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/detalles/". $comprobante['Id'] ."'> \n".
+                                                      "<i class='far fa-file-alt'></i> Ver detalles \n".
+                                                      "</a> \n".
+                                                      "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/descargar/pdf/". $comprobante['Id'] ."'> \n".
+                                                        "<i class='fas fa-file-pdf color_red'></i> Descargar PDF \n".
+                                                      "</a> \n".
+                                                      "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/descargar/xml/". $comprobante['Id'] ."'> \n".
+                                                        "<i class='fas fa-file-code color_blue'></i> Descargar XML \n".
+                                                      "</a> \n".
+                                                  "</div> \n".
+                                                "</div> \n";
+                                                break;
+                                                case '3':
+                                                  $estado = "<i class='fas fa-ban color_red'></i> Cancelado";
+                                                  $opciones = "".
+                                                  "<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'> \n".
+                                                    "<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> \n".
+                                                      "<i class='fas fa-ellipsis-h icon_btn_options'></i> \n".
+                                                    "</button> \n".
+                                                    "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'> \n".
+                                                        "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/detalles/". $comprobante['Id'] ."'> \n".
+                                                        "<i class='far fa-file-alt'></i> Ver detalles \n".
+                                                        "</a> \n".
+                                                    "</div> \n".
+                                                  "</div> \n";
+                                                  break;
                                               default:
                                                 $estado = "Desconocido";
                                                 break;

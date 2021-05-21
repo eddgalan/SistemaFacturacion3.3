@@ -46,11 +46,12 @@
       $stmt->execute();
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $this->disconect();
-      if(count($result) != 0){
+      if(count($result) > 0){
         write_log("PacPDO | get_pac() | datos del PAC \n" . serialize($result[0]));
         return $result[0];
       }else{
         write_log("PacPDO | get_pac() | Ocurrió un error al obtener el PAC");
+        return false;
       }
     }
 

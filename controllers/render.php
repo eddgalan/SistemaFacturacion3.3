@@ -342,14 +342,15 @@
       if( $path_xml != false ){
         $emisor_pdo = new EmisorPDO($emisor);
         $datos_emisor = $emisor_pdo->get_emisor();
-        $pac_id = $datos_emisor['Id'];
+        $pac_id = $datos_emisor['PAC'];
         // Obtiene la información del PAC
         $pac_pdo = new PacPDO();
         $pac_info = $pac_pdo->get_pac($pac_id);
         // Timbra el comprobante con los datos del PAC
         if($comprobante_pdo->timbrar($id_comprobante, $path_xml, $pac_info, $datos_emisor['Testing'])){
           if($comprobante_pdo->create_pdf($id_comprobante, $path_xml, $datos_emisor)){
-            $sesion->set_notification("OK", "Se timbró la factura de forma correcta. Para verificar su estatus en el SAT existe un tiempo de espera de hasta 72 horas");
+            $sesion->set_notification("OK", "Se timbró la factura de forma correcta. ".
+            "En un tiempo máximo de 72 horas podrá consultar su comprobante en el SAT.");
           }else{
             $sesion->set_notification("WARNING", "Se timbró la factura, pero ocurrió un error al crear el PDF.");
           }
@@ -539,6 +540,57 @@
         write_log("ProcessSendCFDI | Construct() | NO se recibieron datos POST");
         $sesion->set_notification("ERROR", "Ocurrió un error al procesar la solicitud que desea realizar");
       }
+    }
+  }
+
+  class ProcessCancelCFDI{
+    function __construct($hostname='', $sitename='', $dataurl=''){
+      // Verifica que se reciban datos por POST
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $id_comprobante = $_POST['cfdi'];
+          // Obtiene los datos de la sesión
+          $data_session = $sesion->get_session();
+          $emisor = $data_session['Emisor'];
+          // Obtiene los datos del comprobante
+          $comprobante_pdo = new ComprobantePDO();
+          $data_comprobante = $comprobante_pdo->get_comprobante($id_comprobante, $emisor);
+
+          if($data_comprobante != false){
+            // Obtiene el Emisor para poder Obtener el PAC
+            $emisor_pdo = new EmisorPDO($emisor);
+            $datos_emisor = $emisor_pdo->get_emisor();
+            $pac_id = $datos_emisor['PAC'];
+            // Obtiene la información del PAC
+            $pac_pdo = new PacPDO();
+            $pac_info = $pac_pdo->get_pac($pac_id);
+
+            if($pac_info != false){
+              if( $comprobante_pdo->cancel_cfdi($data_comprobante, $pac_info, $datos_emisor['Testing']) ){
+                $sesion->set_notification("OK", "Su comprobante será cancelado. Su estatus será actualizado en el SAT ".
+                "en un tiempo no mayor a 72 horas.");
+              }else{
+                $sesion->set_notification("ERROR", "Ocurrió un error al cancelar su comprobante.");
+              }
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al obtener la información del PAC.");
+            }
+          }else{
+            write_log("ProcessCancelCFDI | Construct() | El comprobante no pertenece al usuario logueado o no existe.");
+            $sesion->set_notification("ERROR", "El comprobante no existe o no tiene los permisos para poder realizar esta operación");
+          }
+        }else{
+          write_log("ProcessCancelCFDI | Construct() | Token NO válido");
+          $sesion->set_notification("ERROR", "Ocurrió un error al validar el TOKEN de su sesión para procesar su solicitud. Intentelo de nuevo.");
+        }
+      }else{
+        write_log("ProcessCancelCFDI | Construct() | NO se recibieron datos POST");
+        $sesion->set_notification("ERROR", "Ocurrió un error al procesar la solicitud que desea realizar.");
+      }
+      header("Location: " . $hostname . "/CFDIs/facturas/detalles/". $id_comprobante);
     }
   }
 

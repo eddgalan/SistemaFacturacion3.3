@@ -807,5 +807,74 @@
           return false;
         }
       }
+
+      public function cancel_cfdi($comprobante, $pac, $test){
+        if($test == 1){
+          $pacurl = $pac['EndPoint_Pruebas'];
+        }else{
+          $pacurl = $pac['EndPoint'];
+        }
+        $pacusu = $pac['UsrPAC'];
+        $rfcEmisor = $comprobante['RFCEmisor'];
+        $uuid = $comprobante['UUID'];
+        try{
+        	$params = [
+        		"usuarioIntegrador" => $pacusu,
+        		"rfcEmisor" => $rfcEmisor,
+        		"folioUUID" => $uuid,
+        	];
+        	$context = stream_context_create(
+        		array(
+        			'ssl' => array(
+        				// set some SSL/TLS specific options
+        				'verify_peer' => false,
+        				'verify_peer_name' => false,
+        				'allow_self_signed' => true  //--> solamente true en ambiente de pruebas
+        			),
+        			'http' => array(
+        				'user_agent' => 'PHPSoapClient'
+        			)
+        		)
+        	);
+        	$options =array();
+        	$options['stream_context'] = $context;
+        	$options['trace']= true;
+        	$client = new SoapClient($pacurl,$options);
+        	$response = $client->__soapCall('CancelaCFDI', array('parameters' => $params));
+          write_log(serialize($response));
+          if( strpos(serialize($response), "El comprobante será cancelado") ){
+            /* Actualiza el estatus del CFDI */
+            try{
+              $this->connect();
+              $id_cfdi = $comprobante['IdCFDI'];
+              $sql = "UPDATE cfdi SET Estatus=3
+                      WHERE Id = '$id_cfdi'";
+              $stmt = $this->conn->prepare($sql);
+              $stmt->execute();
+
+              write_log("ComprobantePDO | cancel_cfdi() | Se actualizaron: " . $stmt->rowCount() .
+              " registros de forma exitosa");
+              $this->disconect();
+              return true;
+            }catch(PDOException $e) {
+              write_log("ComprobantePDO | update_status_sat() | Ocurrió un error al realizar el UPDATE del CFDI\nError: ".
+              $e->getMessage());
+              write_log("SQL: ". $sql);
+              $this->disconect();
+              return false;
+            }
+          }else{
+            write_log("ComprobantePDO | cancel_cfdi() | No fue posible cancelar el comprobante");
+            return false;
+          }
+          return true;
+        }catch (SoapFault $fault){
+        	echo "SOAPFault: ".$fault->faultcode."-".$fault->faultstring."\n";
+          write_log("ComprobantePDO | cancel_cfdi() | Ocurrió un error al cancelar el CFDI\n".
+          "Error: ". $fault->faultcode."-".$fault->faultstring);
+        	return false;
+        }
+        echo "<br> Respuesta: <pre>"; print_r( $response ); echo "</pre><hr>"; exit;
+      }
     }
 ?>

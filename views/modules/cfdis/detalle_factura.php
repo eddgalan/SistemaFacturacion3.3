@@ -49,7 +49,10 @@
                                       echo "<label class='color_green'><strong> Certificado </strong></label>";
                                       break;
                                     case 2:
-                                      echo "<label class='color_red'><strong> Cancelado</strong> <label>";
+                                      echo "<label class='color_green'><strong> Verificado</strong> <label>";
+                                      break;
+                                    case 3:
+                                      echo "<label class='color_red'><strong> Cancelado </strong></label>";
                                       break;
                                     default:
                                       echo "<label class='color_red'><strong> Desconocido </strong></label>";
@@ -255,9 +258,16 @@
                                 echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/pdf/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-pdf color_red'></i> Descargar PDF </a>\n";
                                 echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/xml/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-code color_blue'></i> Descargar XML </a>\n";
                                 echo "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#modal_sendemail'> <i class='far fa-paper-plane'></i> Enviar por correo </button>\n";
+                                echo "<button type='button' class='btn btn-danger' data-toggle='modal' data-target='#modal_cancelar'> <i class='fas fa-times'></i> Cancelar CFDI </button>\n";
                                 break;
-                              case 2: // Comprobante Cancelado
-                                echo "<label class='color_red'><strong> Cancelado</strong> <label>";
+                              case 2: // Comprobante Timbrado Verificado
+                                echo "<a href='". $data['host'] ."/CFDIs/facturas/veriticar_sat/". $data['comprobante']['IdCFDI'] ."' class='btn btn-success'> <i class='fas fa-sync'></i> Verificar Estatus SAT </a>\n";
+                                echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/pdf/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-pdf color_red'></i> Descargar PDF </a>\n";
+                                echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/xml/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-code color_blue'></i> Descargar XML </a>\n";
+                                echo "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#modal_sendemail'> <i class='far fa-paper-plane'></i> Enviar por correo </button>\n";
+                                echo "<button type='button' class='btn btn-danger' data-toggle='modal' data-target='#modal_cancelar'> <i class='fas fa-times'></i> Cancelar CFDI </button>\n";
+                                break;
+                              case 3: // Comprobante Cancelado (SIN Timbrar)
                                 break;
                               default:
                                 echo "<label class='color_red'><strong> Desconocido </strong></label>";
@@ -320,6 +330,37 @@
               <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" name='btn_send' disabled> <i class='far fa-paper-plane'></i> Enviar Email </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ..:: Modal Confirmar Cancelación ::.. -->
+    <div class="modal fade" id="modal_cancelar">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title"> <i class="fas fa-exclamation-triangle"></i> Cancelar CFDI </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <form method="POST" action="<?= $data['host'] ?>/CFDIs/facturas/cancelar_cfdi">
+              <div class="modal-body">
+                <div class="row">
+                  <!-- Token -->
+                  <div style="display:none;">
+                    <input type="hidden" name="token" value="<?= $data['token'] ?>">
+                    <input type='hidden' name='cfdi' value='<?= $data['comprobante']['IdCFDI'] ?>'>
+                  </div>
+                  <!-- Email -->
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <spam>Está a punto de cancelar su comprobante. <br>¿Seguro que desea cancelarlo?</spam>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Si, cancelar CFDI </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> No, cerrar ventana </button>
               </div>
           </form>
         </div>
