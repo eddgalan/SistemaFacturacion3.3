@@ -16,7 +16,7 @@
                         <!-- ..:: Custom Content ::.. -->
                         <div class="row">
                           <div class="col-lg-8 col-md-8 col-sm-12">
-                            <h4 class="card-title"> Detalles Factura </h4>
+                            <h4 class="card-title"> <i class="fas fa-file-invoice-dollar"></i> Detalles Factura </h4>
                           </div>
                           <div class="col-lg-4 col-md-4 col-sm-12 text-right">
                             <a href="<?= $data['host']?>/CFDIs/facturas" class="btn btn-primary waves-effect btn_full">
