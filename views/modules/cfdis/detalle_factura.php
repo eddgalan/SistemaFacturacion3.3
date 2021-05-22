@@ -184,8 +184,14 @@
                               <!-- Fecha y Hora Certificación -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Fecha certificado: </strong></label>
-                                <spam><?php echo date_format(date_create($data['comprobante']['FechaCertificado'] ." ".
-                                      $data['comprobante']['HoraCertificado']), "d/m/Y H:i:s"); ?>
+                                <spam><?php
+                                      if($data['comprobante']['FechaCertificado'] != NULL && $data['comprobante']['FechaCertificado'] != NULL){
+                                        echo date_format(date_create($data['comprobante']['FechaCertificado'] ." ".
+                                        $data['comprobante']['HoraCertificado']), "d/m/Y H:i:s");
+                                      }else{
+                                        echo "---";
+                                      }
+                                      ?>
                                 </spam>
                               </div>
                               <!-- NoCertificado -->
@@ -196,7 +202,14 @@
                               <!-- UUID -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Folio Fiscal (UUID): </strong></label>
-                                <spam><?= $data['comprobante']['UUID'] ?> </spam>
+                                <spam><?php
+                                        if($data['comprobante']['UUID'] != NULL){
+                                          echo $data['comprobante']['UUID'];
+                                        }else{
+                                          echo "---";
+                                        }
+                                      ?>
+                                </spam>
                               </div>
                               <!-- Estatus SAT -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
