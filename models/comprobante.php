@@ -34,7 +34,7 @@
       private $observaciones;
 
       function __construct($emisor='', $cliente_id='', $serie='', $folio='', $fecha='', $hora='', $moneda='', $tipo_cambio='',
-      $tipo_comprobante='', $condiciones_pago='', $metodo_pago='', $forma_pago='', $uso_cfdi='', $lugar_exp='',
+      $tipo_comprobante='', $condiciones_pago='', $nocertificado='', $metodo_pago='', $forma_pago='', $uso_cfdi='', $lugar_exp='',
       $regimen='', $subtotal='', $iva='', $ieps='', $descuento='', $total='', $prodservs='', $observaciones=''){
         parent::__construct();
         $this->emisor = $emisor;
@@ -47,6 +47,7 @@
         $this->tipo_cambio = $tipo_cambio;
         $this->tipo_comprobante = $tipo_comprobante;
         $this->condiciones_pago = $condiciones_pago;
+        $this->nocertificado = $nocertificado;
         $this->metodo_pago = $metodo_pago;
         $this->forma_pago = $forma_pago;
         $this->uso_cfdi = $uso_cfdi;
@@ -68,10 +69,10 @@
             $this->conn->beginTransaction();
             // SQL INSERT Comprobante
             $sql_insert_comprobante = "INSERT INTO cfdi (Emisor, ClienteId, Serie, Folio, Fecha, Hora, Moneda, TipoCambio,
-            TipoComprobante, CondicionesPago, MetodoPago, FormaPago, UsoCFDI, LugarExpedicion, Regimen, Subtotal, IVA, IEPS, Descuento,
+            TipoComprobante, CondicionesPago, NoCertificado, MetodoPago, FormaPago, UsoCFDI, LugarExpedicion, Regimen, Subtotal, IVA, IEPS, Descuento,
             Total, Observaciones)
             VALUES ('$this->emisor', '$this->cliente_id', '$this->serie', '$this->folio',' $this->fecha', '$this->hora',
-              '$this->moneda', '$this->tipo_cambio', '$this->tipo_comprobante', '$this->condiciones_pago',
+              '$this->moneda', '$this->tipo_cambio', '$this->tipo_comprobante', '$this->condiciones_pago', '$this->nocertificado',
               '$this->metodo_pago', '$this->forma_pago', '$this->uso_cfdi', '$this->lugar_expedicion', '$this->regimen', '$this->subtotal', '$this->iva',
               '$this->ieps', '$this->descuento', '$this->total', '$this->observaciones')";
             write_log("SQL INSERT CFDI: " . $sql_insert_comprobante);

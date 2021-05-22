@@ -45,7 +45,7 @@
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-          write_log("SeriePDO | get_serie()\n" . serialize($result[0]));
+          write_log("SeriePDO | get_serie() | " . serialize($result[0]));
           $this->disconect();
           return $result[0];
         }catch(PDOException $e) {

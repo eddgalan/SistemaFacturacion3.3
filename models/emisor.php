@@ -19,12 +19,24 @@
 
       public function get_emisor(){
         $this->connect();
-        $sql = "SELECT * FROM emisores WHERE Id='$this->id'";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        write_log("EmisorPDO | get_emisor\n" . serialize($result[0]));
-        return $result[0];
+        try{
+          $sql = "SELECT * FROM emisores WHERE Id='$this->id'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("EmisorPDO | get_emisor() | \n" . serialize($result));
+          write_log("EmisorPDO | get_emisor() | Query result: ". count($result));
+
+          if( count($result) == 1 ){
+            return $result[0];
+          }else{
+            return false;
+          }
+        }catch(PDOException $e) {
+          write_log("Error al ejecutar la consulta. ERROR: " . $e->getMessage());
+          write_log("SQL: " . $sql);
+          return false;
+        }
       }
     }
 ?>
