@@ -424,7 +424,7 @@
           $data_cfdi = $comprobante_pdo->verify_sat($rfc_emisor, $rfc_receptor, $total, $uuid);
           write_log(serialize($data_cfdi));
 
-          if($data_comprobante['EstatusSAT'] != NULL){
+          if($data_comprobante['EstatusSAT'] != NULL && $data_cfdi != false){
             // Compara el EstatusSAT del CFDI con el de la respuesta del servicio
             if($data_comprobante['EstatusSAT'] == $data_cfdi['Estado']){
               write_log("ProcessVerifyCFDI | | El Estatus del comprobante no ha recibido cambios ante el SAT");
@@ -440,14 +440,20 @@
               }
             }
           }else{
-            if($data_cfdi['Estado'] == "No Encontrado"){
+            if( $data_cfdi == false ){
               write_log("El comprobante aún no se encuentra en el SAT");
               $sesion->set_notification("WARNING", "El comprobante aún no se encuentra en el SAT. " .
-              "El tiempo de espera puede ser de hasta 72 horas después de timbrarse.\nEspere un momento y vuelva a intentarlo.");
+              "El tiempo de espera puede ser de hasta 72 horas después de timbrarse.Espere un momento y vuelva a intentarlo.");
             }else{
               // Hace el UPDATE con el Estatus que devolvió el SAT
               if($comprobante_pdo->update_status_sat($id_comprobante, $data_cfdi['Estado'])){
-                $sesion->set_notification("OK", "Se sincronizó con el SAT y se actualizó el Estatus del Comprobante.");
+                // Actualiza el comprobante con el NUEVO Estatus
+                if( $comprobante_pdo->update_to_cancel($id_comprobante, $data_cfdi['Estado']) ){
+                  $sesion->set_notification("OK", "Se sincronizó con el SAT y se actualizó el Estatus del Comprobante.");
+                }else{
+                  $sesion->set_notification("WARNING", "Ocurrió un error al actualizar su comprobante con el nuevo Estatus. ".
+                  "El Estatus de su comprobante es: Cancelado");
+                }
               }else{
                 $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el EstatusSAT del comprobante.".
                 "EstatusSAT: " . $data_cfdi['Estado']);

@@ -173,6 +173,7 @@
                               </table>
                             </div>
                           </div>
+                          <!-- Información Fiscal -->
                           <div class="col-lg-8 col-md-6 col-sm-6">
                             <div class="row">
                               <!-- Fecha y Hora Creado -->
@@ -215,15 +216,9 @@
                                   }
                                 ?>
                               </div>
-                              <!-- Observaciones -->
-                              <div class="col-lg-12 col-md-12 col-sm-12">
-                                <label><strong>Observaciones :</strong></label><br>
-                                <p>
-                                  <?= $data['comprobante']['Observaciones'] ?>
-                                </p>
-                              </div>
                             </div>
                           </div>
+                          <!-- Totales -->
                           <div class="col-lg-4 col-md-4 col-sm-6">
                             <div class="col-lg-12 col-md-12 col-sm-12">
                               <h4> <i class="fas fa-dollar-sign"></i> Totales </h4>
@@ -253,6 +248,11 @@
                               <label><strong>Total: </strong></label>
                               <spam> $ <?php echo number_format( $data['comprobante']['Total'],2,".","" ); ?> </spam>
                             </div>
+                          </div>
+                          <!-- Observaciones -->
+                          <div class="col-lg-12 col-md-12 col-sm-12">
+                            <label><strong>Observaciones :</strong></label><br>
+                            <textarea class='form-control' rows='5' disabled><?= $data['comprobante']['Observaciones'] ?></textarea>
                           </div>
                           <!-- Acciones -->
                           <div class="col-lg-12 col-md-12 col-sm-12 text-right">

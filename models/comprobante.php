@@ -780,13 +780,19 @@
           array_push($data, $item);
         }
 
-        return array(
-          "CodigoEstatus" => $data[0],
-          "EsCancelable" => $data[1],
-          "Estado" => $data[2],
-          "EstatusCancelacion" => $data[3],
-          "ValidacionEFOS" => $data[4]
-        );
+        if( $data[2] == "No Encontrado" ){
+          echo "No encontrado";
+          return false;
+        }else{
+          echo "Encontrado";
+          return array(
+            "CodigoEstatus" => $data[0],
+            "EsCancelable" => $data[1],
+            "Estado" => $data[2],
+            "EstatusCancelacion" => $data[3],
+            "ValidacionEFOS" => $data[4]
+          );
+        }
       }
 
       public function update_status_sat($id, $estatus){
@@ -869,9 +875,11 @@
         if($estatus == 0){
           // Comprobante Nuevo | Debe actualizar a 4
           $nuevo_status = 3;
+          write_log("Actualizar a Cancelado (4) el comprobante Nuevo (0)");
         }elseif($estatus == 1 || $estatus == 2) {
           // El comprobante está Timbrado o Verificado | Debe actualizar a 3
           $nuevo_status = 4;
+          write_log("Actualizar a Cancelado (3) el comprobante Timbrado (1 o 2)");
         }
 
         try{
