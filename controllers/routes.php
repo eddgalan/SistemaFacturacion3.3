@@ -28,6 +28,7 @@
       $routes["catalogosSAT/prod_serv/add"]="ProcessProdServ";
       $routes["catalogosSAT/prod_serv/switch_active/_data_/_data_"]="SwitchActivoProdServ";
       $routes["catalogosSAT/unidades"]="ViewUnidades";
+      $routes["catalogosSAT/unidades/add"]="ProcessUnidad";
 
 
       /* ...:: APIs ::... */

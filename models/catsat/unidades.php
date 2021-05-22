@@ -20,13 +20,65 @@
         return $array_unidades;
       }
 
-      public function get_all(){
-        $sql = "SELECT * FROM catsatunidades WHERE emisor='1'";
+      public function get_all($emisor){
+        $sql = "SELECT * FROM catsatunidades WHERE emisor='$emisor'";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        write_log("CatSATMoneda \n " . serialize($result));
+        write_log("CatSATUnidades | get_all() | Unidades: " . serialize($result));
         return $result;
+      }
+
+      public function add_unidad($strunidad){
+        $unidad = explode(" | ", $strunidad);
+        $clave_unidad = $unidad[0];
+        $nombre_unidad = $unidad[1];
+        $simbolo = $unidad[2];
+        $descripcion = "";
+        
+        $catalogo = $this->get_all_catsat();
+        foreach($catalogo as $uni){
+          if( $uni['unidad_clave']== $clave_unidad ){
+            $descipcion = $uni['unidad_descripcion'];
+          }
+        }
+
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        $this->connect();
+        // Verifica que NO exista la clave de la unidad (Evitar Duplicado)
+        try{
+          $sql = "SELECT Id FROM catsatunidades WHERE Emisor='$emisor' AND ClaveUnidad='$clave'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+          if(count($result) != 0){
+            $this->disconect();
+            $sesion = new UserSession();
+            $sesion->set_notification("ERROR", "La Clave de la Unidad que desea agregar ya fue agregada anteriormente");
+            header("location: ../../catalogosSAT/unidades");
+          }
+        }catch(PDOException $e){
+          write_log("CatSATUnidades | add_unidad() | Ocurrió un error al realizar el SELECT\nError: ". $e->getMessage());
+          write_log("SQL: \n" . $sql);
+        }
+        // Hace el INSERT de la Clave de la Unidad
+        try{
+          $sql = "INSERT INTO catsatunidades (Emisor, ClaveUnidad, NombreUnidad, Descripcion, Simbolo)
+          VALUES ('$emisor', '$clave_unidad', '$nombre_unidad', '$descipcion', '$simbolo')";
+          $this->conn->exec($sql);
+          write_log("CatSATUnidades | add_unidad() | Se realizó el INSERT de la Clave de Unidad con Éxito");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("CatSATUnidades | add_unidad() | Ocurrió un error al realizar el INSERT de la Clave de Unidad\nError: ". $e->getMessage());
+          write_log("SQL: \n" . $sql);
+          $this->disconect();   // Cierra la conexión a la BD
+          return false;
+        }
       }
     }
 ?>

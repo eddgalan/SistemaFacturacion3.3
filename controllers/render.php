@@ -199,7 +199,7 @@
       $this->view->render('views/modules/catsat/prodserv.php',$data, true);
     }
   }
-
+  /* ..:: CAT SAT ProdServ ::.. */
   class ProcessProdServ{
     function __construct($host_name="", $site_name="", $datos=null){
       if ($_POST){
@@ -243,6 +243,45 @@
         $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
       }
       header("location: " . $host_name . "/catalogosSAT/prod_serv");
+    }
+  }
+
+  /* ..:: CAT SAT Unidades ::.. */
+  class ViewUnidades {
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Catalogo Unidades";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+
+      $unidades_pdo = new CatSATUnidades();
+      $data['cat_unidades'] = $unidades_pdo->get_all_catsat();
+      $data['unidades'] = $unidades_pdo->get_all($emisor);
+
+      $this->view = new View();
+      $this->view->render('views/modules/catsat/unidades.php',$data, true);
+    }
+  }
+
+  class ProcessUnidad{
+    function __construct($host_name="", $site_name="", $datos=null){
+      if($_POST){
+        $clave = $_POST['unidad'];
+
+        $unidad_pdo = new CatSATUnidades();
+        $sesion = new UserSession();
+
+        if($unidad_pdo->add_unidad($clave)){
+          $sesion->set_notification("OK", "Se agregó la Clave de Producto o Servicio a su catálogo");
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al agregar la Clave de Producto o Servicio. Intente de nuevo");
+        }
+        header("location: " . $host_name . "/catalogosSAT/unidades");
+      }else{
+        write_log("ProcessUnidad | construct() | NO se recibieron datos por POST");
+      }
     }
   }
 
@@ -611,19 +650,6 @@
         $sesion->set_notification("ERROR", "Ocurrió un error al procesar la solicitud que desea realizar.");
       }
       header("Location: " . $hostname . "/CFDIs/facturas/detalles/". $id_comprobante);
-    }
-  }
-
-  class ViewUnidades {
-    function __construct($host_name="", $site_name="", $variables=null){
-      $data['title'] = "Facturación 3.3 | Catalogo Unidades";
-      $data['host'] = $host_name;
-
-      $unidades = new CatSATUnidades();
-      $data['cat_unidades'] = $unidades->get_all_catsat();
-
-      $this->view = new View();
-      $this->view->render('views/modules/catsat/unidades.php',$data, true);
     }
   }
 
