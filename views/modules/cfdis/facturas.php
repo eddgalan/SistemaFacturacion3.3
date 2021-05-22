@@ -51,7 +51,7 @@
                                           <th>Acciones</th>
                                         </tr>
                                       </thead>
-                                      <tbody style="font-size:15px;">
+                                      <tbody style="font-size:13px;">
                                         <?php
                                           foreach ($data['comprobantes'] as $comprobante) {
                                             $estado = ''; $opciones = '';
@@ -147,7 +147,7 @@
                                               "\t\t\t\t\t\t\t\t<td class='text-center'>". $comprobante['Serie'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td class='text-center'>". $comprobante['Folio'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td>". $comprobante['NombreCliente'] . "</td>  \n".
-                                              "\t\t\t\t\t\t\t\t<td>". date_format(date_create(substr($comprobante['Creado'], 0, 10)), "d/m/Y")  . "</td>  \n".
+                                              "\t\t\t\t\t\t\t\t<td class='text-center'>". date_format(date_create(substr($comprobante['Creado'], 0, 10)), "d/m/Y")  . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td>". $comprobante['UUID'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td class='text-center'> $ ". number_format( $comprobante['Total'],2,".","" ) . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t <td class='text-center'> \n".
