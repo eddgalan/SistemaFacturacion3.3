@@ -150,10 +150,12 @@
 
         $this->connect();
         try{
-          $sql = "SELECT cfdi.Id, cfdi.Estatus, cfdi.Serie, cfdi.Folio, cfdi.ClienteId, clientes.Nombre as NombreCliente, cfdi.UUID, cfdi.Total
+          $sql = "SELECT cfdi.Id, cfdi.Estatus, cfdi.Serie, cfdi.Folio, cfdi.ClienteId, clientes.Nombre as NombreCliente,
+          cfdi.Creado, cfdi.UUID, cfdi.Total
           FROM cfdi
           INNER JOIN clientes ON cfdi.ClienteId = clientes.Id
-          WHERE cfdi.Emisor='$emisor'";
+          WHERE cfdi.Emisor='$emisor'
+          ORDER BY Id DESC";
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -179,7 +181,7 @@
           catsatformaspago.Descripcion as DescripcionFormaPago, cfdi.UsoCFDI as ClaveUsoCFDI, catsatusocfdi.Concepto as ConceptoUsoCFDI,
           cfdi.LugarExpedicion, cfdi.Regimen, emisores.DescRegimen, cfdi.Subtotal, cfdi.IVA, cfdi.IEPS, cfdi.RetIva, cfdi.TotalRetenido, cfdi.TotalTraslado,
           cfdi.Descuento, cfdi.Total, cfdi.UUID, cfdi.FechaCertificado, cfdi.HoraCertificado, cfdi.EstatusSAT,
-          cfdi.PathXML, cfdi.PathPDF, cfdi.Observaciones
+          cfdi.PathXML, cfdi.PathPDF, cfdi.Creado, cfdi.Observaciones
           FROM cfdi
           INNER JOIN emisores ON cfdi.Emisor = emisores.Id
           INNER JOIN clientes ON cfdi.ClienteId = clientes.Id
@@ -843,24 +845,10 @@
         	$response = $client->__soapCall('CancelaCFDI', array('parameters' => $params));
           write_log(serialize($response));
           if( strpos(serialize($response), "El comprobante será cancelado") ){
-            /* Actualiza el estatus del CFDI */
-            try{
-              $this->connect();
-              $id_cfdi = $comprobante['IdCFDI'];
-              $sql = "UPDATE cfdi SET Estatus=3
-                      WHERE Id = '$id_cfdi'";
-              $stmt = $this->conn->prepare($sql);
-              $stmt->execute();
-
-              write_log("ComprobantePDO | cancel_cfdi() | Se actualizaron: " . $stmt->rowCount() .
-              " registros de forma exitosa");
-              $this->disconect();
+            /* Actualiza el estatus del CFDI en la BD*/
+            if( $this->update_to_cancel($comprobante['IdCFDI'], $comprobante['EstatusCFDI']) ){
               return true;
-            }catch(PDOException $e) {
-              write_log("ComprobantePDO | update_status_sat() | Ocurrió un error al realizar el UPDATE del CFDI\nError: ".
-              $e->getMessage());
-              write_log("SQL: ". $sql);
-              $this->disconect();
+            }else{
               return false;
             }
           }else{
@@ -875,6 +863,35 @@
         	return false;
         }
         echo "<br> Respuesta: <pre>"; print_r( $response ); echo "</pre><hr>"; exit;
+      }
+
+      public function update_to_cancel( $id_comprobante, $estatus ){
+        if($estatus == 0){
+          // Comprobante Nuevo | Debe actualizar a 4
+          $nuevo_status = 3;
+        }elseif($estatus == 1 || $estatus == 2) {
+          // El comprobante está Timbrado o Verificado | Debe actualizar a 3
+          $nuevo_status = 4;
+        }
+
+        try{
+          $this->connect();
+          $sql = "UPDATE cfdi SET Estatus=$nuevo_status
+                  WHERE Id = '$id_comprobante'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          write_log("ComprobantePDO | update_to_cancel() | Se actualizaron: " . $stmt->rowCount() .
+          " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("ComprobantePDO | update_to_cancel() | Ocurrió un error al realizar el UPDATE del CFDI\nError: ".
+          $e->getMessage());
+          write_log("SQL: ". $sql);
+          $this->disconect();
+          return false;
+        }
       }
     }
 ?>

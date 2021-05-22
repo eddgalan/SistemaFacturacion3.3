@@ -45,6 +45,7 @@
                                           <th>Serie</th>
                                           <th>Folio</th>
                                           <th>Cliente</th>
+                                          <th>Creado</th>
                                           <th>UUID</th>
                                           <th>Total</th>
                                           <th>Acciones</th>
@@ -123,6 +124,20 @@
                                                     "</div> \n".
                                                   "</div> \n";
                                                   break;
+                                                case '4':
+                                                  $estado = "<i class='fas fa-ban color_red'></i> Cancelado";
+                                                  $opciones = "".
+                                                  "<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'> \n".
+                                                    "<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> \n".
+                                                      "<i class='fas fa-ellipsis-h icon_btn_options'></i> \n".
+                                                    "</button> \n".
+                                                    "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'> \n".
+                                                        "<a class='dropdown-item' href='". $data['host'] ."/CFDIs/facturas/detalles/". $comprobante['Id'] ."'> \n".
+                                                        "<i class='far fa-file-alt'></i> Ver detalles \n".
+                                                        "</a> \n".
+                                                    "</div> \n".
+                                                  "</div> \n";
+                                                  break;
                                               default:
                                                 $estado = "Desconocido";
                                                 break;
@@ -132,8 +147,9 @@
                                               "\t\t\t\t\t\t\t\t<td class='text-center'>". $comprobante['Serie'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td class='text-center'>". $comprobante['Folio'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td>". $comprobante['NombreCliente'] . "</td>  \n".
+                                              "\t\t\t\t\t\t\t\t<td>". date_format(date_create(substr($comprobante['Creado'], 0, 10)), "d/m/Y")  . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td>". $comprobante['UUID'] . "</td>  \n".
-                                              "\t\t\t\t\t\t\t\t<td class='text-center'>". $comprobante['Total'] . "</td>  \n".
+                                              "\t\t\t\t\t\t\t\t<td class='text-center'> $ ". number_format( $comprobante['Total'],2,".","" ) . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t <td class='text-center'> \n".
                                               "\t\t\t\t\t\t\t\t\t " . $opciones. "\n".
                                               "\t\t\t\t\t\t\t\t </td> \n".

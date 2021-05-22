@@ -569,11 +569,25 @@
             $pac_info = $pac_pdo->get_pac($pac_id);
 
             if($pac_info != false){
-              if( $comprobante_pdo->cancel_cfdi($data_comprobante, $pac_info, $datos_emisor['Testing']) ){
-                $sesion->set_notification("OK", "Su comprobante será cancelado. Su estatus será actualizado en el SAT ".
-                "en un tiempo no mayor a 72 horas.");
+              // Verifica si el comprobante ya fue timbrado o verificado
+              $estatus_comprobante = intval($data_comprobante['EstatusCFDI']);
+              if( $estatus_comprobante == 1 || $estatus_comprobante == 2 ){
+                // Cancela el comprobante que ya fue Timbrado
+                if( $comprobante_pdo->cancel_cfdi($data_comprobante, $pac_info, $datos_emisor['Testing']) ){
+                  $sesion->set_notification("OK", "Su comprobante será cancelado. Su estatus será actualizado en el SAT ".
+                  "en un tiempo no mayor a 72 horas.");
+                }else{
+                  $sesion->set_notification("ERROR", "Ocurrió un error al cancelar su comprobante.");
+                }
+              }elseif ( $estatus_comprobante == 0 ) {
+                // Cancela el comprobante nuevo (SÓLO ACTUALIZA EL ESTATUS EN LA BD)
+                if( $comprobante_pdo->update_to_cancel($data_comprobante['IdCFDI'], $data_comprobante['EstatusCFDI']) ){
+                  $sesion->set_notification("OK", "Se canceló su comprobante de forma correcta.");
+                }else{
+                  $sesion->set_notification("ERROR", "Ocurrió un error al cancelar su comprobante. Inténtalo de nuevo.");
+                }
               }else{
-                $sesion->set_notification("ERROR", "Ocurrió un error al cancelar su comprobante.");
+                $sesion->set_notification("ERROR", "No se puede cancelar el comprobante, se encuentra en un Estatus no permitido para cancelar.");
               }
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al obtener la información del PAC.");

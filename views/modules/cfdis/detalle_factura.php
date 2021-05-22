@@ -54,6 +54,9 @@
                                     case 3:
                                       echo "<label class='color_red'><strong> Cancelado </strong></label>";
                                       break;
+                                    case 4:
+                                      echo "<label class='color_red'><strong> Cancelado </strong></label>";
+                                      break;
                                     default:
                                       echo "<label class='color_red'><strong> Desconocido </strong></label>";
                                       break;
@@ -172,10 +175,17 @@
                           </div>
                           <div class="col-lg-8 col-md-6 col-sm-6">
                             <div class="row">
+                              <!-- Fecha y Hora Creado -->
+                              <div class="col-lg-12 col-md-12 col-sm-12">
+                                <label><strong>Fecha creado: </strong></label>
+                                <spam><?php echo date_format(date_create($data['comprobante']['Creado']), "d/m/Y H:i:s"); ?> </spam>
+                              </div>
                               <!-- Fecha y Hora Certificación -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Fecha certificado: </strong></label>
-                                <spam><?= $data['comprobante']['FechaCertificado'] ?>  <?= $data['comprobante']['HoraCertificado'] ?> </spam>
+                                <spam><?php echo date_format(date_create($data['comprobante']['FechaCertificado'] ." ".
+                                      $data['comprobante']['HoraCertificado']), "d/m/Y H:i:s"); ?>
+                                </spam>
                               </div>
                               <!-- NoCertificado -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -220,28 +230,28 @@
                             </div>
                             <!-- Subtotal -->
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                              <label><strong>Subtotal $: </strong></label>
-                              <label><?= $data['comprobante']['Subtotal'] ?></label>
+                              <label><strong>Subtotal: </strong></label>
+                              <spam> $ <?php echo number_format( $data['comprobante']['Subtotal'],2,".","" ); ?> </spam>
                             </div>
                             <!-- IVA -->
                             <div class="col-lg-12 col-md-12 col-sm-12">
                               <label><strong>IVA: </strong></label>
-                              <label><?= $data['comprobante']['IVA'] ?></label>
+                              <spam> $ <?php echo number_format( $data['comprobante']['IVA'],2,".","" ); ?> </spam>
                             </div>
                             <!-- IEPS -->
                             <div class="col-lg-12 col-md-12 col-sm-12">
                               <label><strong>IEPS: </strong></label>
-                              <label><?= $data['comprobante']['IEPS'] ?></label>
+                              <spam> $ <?php echo number_format( $data['comprobante']['IEPS'],2,".","" ); ?> </spam>
                             </div>
                             <!-- Descuento -->
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                              <label><strong>Descuento $: </strong></label>
-                              <label><?= $data['comprobante']['Descuento'] ?></label>
+                              <label><strong>Descuento: </strong></label>
+                              <spam> $ <?php echo number_format( $data['comprobante']['Descuento'],2,".","" ); ?> </spam>
                             </div>
                             <!-- Total -->
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                              <label><strong>Total $: </strong></label>
-                              <label><?= $data['comprobante']['Total'] ?></label>
+                              <label><strong>Total: </strong></label>
+                              <spam> $ <?php echo number_format( $data['comprobante']['Total'],2,".","" ); ?> </spam>
                             </div>
                           </div>
                           <!-- Acciones -->
@@ -251,7 +261,8 @@
                             $estatus = intval($data['comprobante']['EstatusCFDI']);
                             switch ($estatus) {
                               case 0: // Comprobante Nuevo
-                                echo "<a href='". $data['host'] . "/CFDIs/facturas/timbrar/". $data['comprobante']['IdCFDI'] ."'class='btn btn-success'> <i class='fas fa-file-invoice-dollar'></i> Timbrar CFDI </a>";
+                                echo "<a href='". $data['host'] . "/CFDIs/facturas/timbrar/". $data['comprobante']['IdCFDI'] ."'class='btn btn-success'> <i class='fas fa-file-invoice-dollar'></i> Timbrar CFDI </a>\n";
+                                echo "<button type='button' class='btn btn-danger' data-toggle='modal' data-target='#modal_cancelar'> <i class='fas fa-times'></i> Cancelar CFDI </button>\n";
                                 break;
                               case 1: // Comprobante Timbrado
                                 echo "<a href='". $data['host'] ."/CFDIs/facturas/veriticar_sat/". $data['comprobante']['IdCFDI'] ."' class='btn btn-success'> <i class='fas fa-sync'></i> Verificar Estatus SAT </a>\n";
@@ -267,7 +278,14 @@
                                 echo "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#modal_sendemail'> <i class='far fa-paper-plane'></i> Enviar por correo </button>\n";
                                 echo "<button type='button' class='btn btn-danger' data-toggle='modal' data-target='#modal_cancelar'> <i class='fas fa-times'></i> Cancelar CFDI </button>\n";
                                 break;
-                              case 3: // Comprobante Cancelado (SIN Timbrar)
+                              case 3: // Comprobante Cancelado (Cancelado SIN Timbrar)
+                                // No imprime ninguna opción
+                                break;
+                              case 4: // Comprobante Cancelado (Comprobante Tibrado y Cancelado)
+                                echo "<a href='". $data['host'] ."/CFDIs/facturas/veriticar_sat/". $data['comprobante']['IdCFDI'] ."' class='btn btn-success'> <i class='fas fa-sync'></i> Verificar Estatus SAT </a>\n";
+                                echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/pdf/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-pdf color_red'></i> Descargar PDF </a>\n";
+                                echo "<a href='". $data['host'] ."/CFDIs/facturas/descargar/xml/". $data['comprobante']['IdCFDI'] ."' class='btn btn-warning'> <i class='fas fa-file-code color_blue'></i> Descargar XML </a>\n";
+                                echo "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#modal_sendemail'> <i class='far fa-paper-plane'></i> Enviar por correo </button>\n";
                                 break;
                               default:
                                 echo "<label class='color_red'><strong> Desconocido </strong></label>";
