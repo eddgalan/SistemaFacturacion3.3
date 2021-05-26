@@ -24,12 +24,18 @@
       $routes["CFDIs/facturas/cancelar_cfdi"]="ProcessCancelCFDI";
 
       /* ..:: CATALOGOS SAT ::.. */
+      // Productos y Servicios
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
       $routes["catalogosSAT/prod_serv/add"]="ProcessProdServ";
       $routes["catalogosSAT/prod_serv/switch_active/_data_/_data_"]="SwitchActivoProdServ";
+      // Unidades
       $routes["catalogosSAT/unidades"]="ViewUnidades";
       $routes["catalogosSAT/unidades/add"]="ProcessUnidad";
       $routes["catalogosSAT/unidades/switch_active/_data_/_data_"]="SwitchActivoUnidades";
+      // Formas de Pago
+      $routes["catalogosSAT/formas_pago"]="ViewFormasPago";
+      $routes["catalogosSAT/formas_pago/add"]="ProcessFormasPago";
+      $routes["catalogosSAT/formas_pago/switch_active/_data_/_data_"]="SwitchActivoFormasPago";
 
 
       /* ...:: APIs ::... */

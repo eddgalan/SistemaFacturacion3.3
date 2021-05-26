@@ -335,6 +335,85 @@
     }
   }
 
+  /* ..:: CAT SAT Formas de Pago ::.. */
+  class ViewFormasPago{
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Catalogo Formas de Pago";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+
+      $formaspago_pdo = new CatSATFormaPago();
+      $data['cat_formaspago'] = $formaspago_pdo->get_all_catsat();
+      $data['formaspago'] = $formaspago_pdo->get_all($emisor);
+
+      $this->view = new View();
+      $this->view->render('views/modules/catsat/formaspago.php',$data, true);
+    }
+  }
+
+  class ProcessFormasPago{
+    function __construct($host_name="", $site_name="", $datos=null){
+      if($_POST){
+        $clave = $_POST['formapago'];
+
+        $formapago_pdo = new CatSATFormaPago();
+        $sesion = new UserSession();
+
+        if($formapago_pdo->add_formapago($clave)){
+          $sesion->set_notification("OK", "Se agregó la Clave de Producto o Servicio a su catálogo");
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al agregar la Clave de Producto o Servicio. Intente de nuevo");
+        }
+        header("location: " . $host_name . "/catalogosSAT/formas_pago");
+      }else{
+        write_log("ProcessUnidad | construct() | NO se recibieron datos por POST");
+      }
+    }
+  }
+
+  class SwitchActivoFormasPago{
+    function __construct($hostname="", $site_name="", $dataurl=null){
+      // Valida la sesión del usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        // Obtiene el Emisor
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        $formapago_id = $dataurl[1];
+        $formapago_pdo = new CatSATFormaPago($formapago_id, $nuevo_status);
+        // Verifica que la Unidad pertenezca al usuario logueado
+        if( $formapago_pdo->get_formapago($formapago_id, $emisor) != false ){
+          $status_actual = $dataurl[2];
+
+          if($status_actual == 1){
+            $nuevo_status = 0;
+            $msg_status="Se ha desactivado la Forma de pago de su catálogo.";
+          }else{
+            $nuevo_status = 1;
+            $msg_status="Se ha activado la Forma de pago de su catálogo.";
+          }
+
+          if( $formapago_pdo->cambiar_activo($formapago_id, $nuevo_status, $emisor) ){
+            $sesion->set_notification("OK", $msg_status);
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus de la Forma de Pago.");
+          }
+        }else{
+          $sesion->set_notification("ERROR", "No fue posible actualizar el Estatus de la Forma de Pago. No se encontró la ".
+          "Forma de Pago o no tiene los permisos para poder editarla.");
+        }
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
+      header("location: " . $hostname . "/catalogosSAT/formas_pago");
+    }
+  }
+
   class ViewsFacturas{
     function __construct($hostname='', $site_name='', $variables=null){
       $data['title'] = "Facturación 3.3 | Facturas";
@@ -383,6 +462,10 @@
       $sesion = new UserSession();
       $data['token'] = $sesion->set_token();
 
+      // Obtiene el Emisor para obtener toda su configuración de los catálogos del SAT
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+
       // Obtiene los clientes del usuario (Emisor)
       $cliente = new ClientePDO();
       $data['clientes'] = $cliente->get_clientes();
@@ -391,7 +474,7 @@
       $data['metodos_pago'] = $metodo->get_all();
       // Obtiene las formas de pago
       $forma_pago = new CatSATFormaPago();
-      $data['formas_pago'] = $forma_pago->get_all();
+      $data['formas_pago'] = $forma_pago->get_all_actives($emisor);
       // Obtiene los usos CFDI
       $usos_cfdi = new CatSATUsosCFDI();
       $data['usos_cfdi'] = $usos_cfdi->get_all();
