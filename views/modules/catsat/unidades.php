@@ -41,7 +41,6 @@
                                           <th>Nombre</th>
                                           <th>Descripción</th>
                                           <th>Simbolo</th>
-                                          <th>Acciones</th>
                                         </tr>
                                       </thead>
                                       <tbody style="font-size:15px;">
@@ -58,26 +57,26 @@
                                               $label_accion = " Activar";
                                             }
                                             $html_row = ""."\n\t\t\t\t\t\t\t<tr>\n".
-                                                        "\t\t\t\t\t\t\t\t<td class='text-center'>" . $icon . "</td> \n".
+                                                        "\t\t\t\t\t\t\t\t<td class='text-center'><a href='". $data['host'] ."/catalogosSAT/unidades/switch_active/". $unidad['Id'] ."/". $unidad['Estatus'] ."'>" . $icon . " </a></td> \n".
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'>". $unidad['ClaveUnidad'] ."</td>\n".
                                                         "\t\t\t\t\t\t\t\t<td>". $unidad['NombreUnidad'] ."</td>\n".
                                                         "\t\t\t\t\t\t\t\t<td>". $unidad['Descripcion'] ."</td>\n".
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'>". $unidad['Simbolo'] ."</td>\n".
-                                                        "\t\t\t\t\t\t\t\t<td class='text-center'>\n".
-                                                          "\t\t\t\t\t\t\t\t\t<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'>\n".
-                                    												"\t\t\t\t\t\t\t\t\t\t<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>\n".
-                                    													"\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-ellipsis-h icon_btn_options'></i>\n".
-                                    												"\t\t\t\t\t\t\t\t\t\t</button>\n".
-                                    												"\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
-                                    													"\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_producto' onclick='carga_datos_producto()'>\n".
-                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-edit color_blue'></i> Editar\n".
-                                                              "\t\t\t\t\t\t\t\t\t\t\t</a>\n".
-                                    													"\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_eliminar_producto' onclick='carga_datos_producto()'>\n".
-                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-times color_red'></i> Eliminar\n".
-                                                              "\t\t\t\t\t\t\t\t\t\t\t</a>\n".
-                                    												"\t\t\t\t\t\t\t\t\t\t</div>\n".
-                                    											"\t\t\t\t\t\t\t\t</div>\n".
-                                                        "\t\t\t\t\t\t\t\t\t</td>\n".
+                                                        // "\t\t\t\t\t\t\t\t<td class='text-center'>\n".
+                                                        //   "\t\t\t\t\t\t\t\t\t<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'>\n".
+                                    										// 		"\t\t\t\t\t\t\t\t\t\t<button id='btnGroupDrop1' style='background-color: #4e73df !important;' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>\n".
+                                    										// 			"\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-ellipsis-h icon_btn_options'></i>\n".
+                                    										// 		"\t\t\t\t\t\t\t\t\t\t</button>\n".
+                                    										// 		"\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
+                                    										// 			"\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_producto' onclick='carga_datos_producto()'>\n".
+                                                        //         "\t\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-edit color_blue'></i> Editar\n".
+                                                        //       "\t\t\t\t\t\t\t\t\t\t\t</a>\n".
+                                    										// 			"\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_eliminar_producto' onclick='carga_datos_producto()'>\n".
+                                                        //         "\t\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-times color_red'></i> Eliminar\n".
+                                                        //       "\t\t\t\t\t\t\t\t\t\t\t</a>\n".
+                                    										// 		"\t\t\t\t\t\t\t\t\t\t</div>\n".
+                                    										// 	"\t\t\t\t\t\t\t\t</div>\n".
+                                                        // "\t\t\t\t\t\t\t\t\t</td>\n".
                                                         "\t\t\t\t\t\t\t\t<tr>\n";
                                             echo $html_row;
                                           }

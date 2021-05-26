@@ -247,7 +247,7 @@
   }
 
   /* ..:: CAT SAT Unidades ::.. */
-  class ViewUnidades {
+  class ViewUnidades{
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Catalogo Unidades";
       $data['host'] = $host_name;
@@ -282,6 +282,46 @@
       }else{
         write_log("ProcessUnidad | construct() | NO se recibieron datos por POST");
       }
+    }
+  }
+
+  class SwitchActivoUnidades{
+    function __construct($host_name="", $site_name="", $dataurl=null){
+      // Valida la sesión del usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        // Obtiene el Emisor
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        $unidad_id = $dataurl[1];
+        $catsatunidad_pdo = new CatSATUnidades($unidad_id, $nuevo_status);
+        // Verifica que la Unidad pertenezca al usuario logueado
+        if( $catsatunidad_pdo->get_unidad($unidad_id, $emisor) != false ){
+          $status_actual = $dataurl[2];
+
+          if($status_actual == 1){
+            $nuevo_status = 0;
+            $msg_status="Se ha desactivado la Unidad de su catálogo.";
+          }else{
+            $nuevo_status = 1;
+            $msg_status="Se ha activado la Unidad de su catálogo.";
+          }
+
+          if( $catsatunidad_pdo->cambiar_activo($unidad_id, $nuevo_status, $emisor) ){
+            $sesion->set_notification("OK", $msg_status);
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus de la Unidad.");
+          }
+        }else{
+          $sesion->set_notification("ERROR", "No fue posible actualizar el Estatus de la Unidad. No se encontró la ".
+          "Unidad o no tiene los permisos para poder editarla.");
+        }
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
+      header("location: " . $host_name . "/catalogosSAT/unidades");
     }
   }
 
