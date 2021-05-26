@@ -81,26 +81,31 @@
 
   class SwitchActivo{
     function __construct($host_name="", $site_name="", $datos=null){
-      // PONER TOKEN!!!!
-      $user_id = $datos[1];
-      $status_actual = $datos[2];
-
-      if($status_actual == 1){
-        $nuevo_status = 0;
-        $msg_status="Se ha desactivado el usuario.";
-      }else{
-        $nuevo_status = 1;
-        $msg_status="Se ha activado el usuario.";
-      }
-
-      $usuario = new UsuarioPDO($user_id, $nuevo_status);
+      // Valida la sesión del usuario (Debe estar logueado)
       $sesion = new UserSession();
-      if($usuario->cambiar_activo()){
-        $sesion->set_notification("OK", $msg_status);
+      if( $sesion->validate_session() ){
+        $user_id = $datos[1];
+        $status_actual = $datos[2];
+
+        if($status_actual == 1){
+          $nuevo_status = 0;
+          $msg_status="Se ha desactivado el usuario.";
+        }else{
+          $nuevo_status = 1;
+          $msg_status="Se ha activado el usuario.";
+        }
+
+        $usuario = new UsuarioPDO($user_id, $nuevo_status);
+        $sesion = new UserSession();
+        if($usuario->cambiar_activo()){
+          $sesion->set_notification("OK", $msg_status);
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
+        }
+        header("location: " . $host_name . "/administrar/usuarios");
       }else{
-        $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
+        header("Location: " . $hostname . "/login");
       }
-      header("location: " . $host_name . "/administrar/usuarios");
     }
   }
 
@@ -222,27 +227,32 @@
 
   class SwitchActivoProdServ{
     function __construct($host_name="", $site_name="", $datos=null){
-      // PONER TOKEN!!!!
-      $prodserv_id = $datos[1];
-      $status_actual = $datos[2];
-
-      if($status_actual == 1){
-        $nuevo_status = 0;
-        $msg_status="Se ha desactivado la Clave de Producto o Servicio.";
-      }else{
-        $nuevo_status = 1;
-        $msg_status="Se ha activado la Clave de Producto o Servicio.";
-      }
-
-      $prodserv = new CatSATProdServ($prodserv_id, $nuevo_status);
+      // Valida la sesión del usuario (Debe estar logueado)
       $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        $prodserv_id = $datos[1];
+        $status_actual = $datos[2];
 
-      if($prodserv->cambiar_activo()){
-        $sesion->set_notification("OK", $msg_status);
+        if($status_actual == 1){
+          $nuevo_status = 0;
+          $msg_status="Se ha desactivado la Clave de Producto o Servicio.";
+        }else{
+          $nuevo_status = 1;
+          $msg_status="Se ha activado la Clave de Producto o Servicio.";
+        }
+
+        $prodserv = new CatSATProdServ($prodserv_id, $nuevo_status);
+        $sesion = new UserSession();
+
+        if($prodserv->cambiar_activo()){
+          $sesion->set_notification("OK", $msg_status);
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
+        }
+        header("location: " . $host_name . "/catalogosSAT/prod_serv");
       }else{
-        $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
+        header("Location: " . $hostname . "/login");
       }
-      header("location: " . $host_name . "/catalogosSAT/prod_serv");
     }
   }
 

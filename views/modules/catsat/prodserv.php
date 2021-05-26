@@ -39,7 +39,6 @@
                                           <th>Activo</th>
                                           <th>Clave</th>
                                           <th>Descripción</th>
-                                          <th>Acciones</th>
                                         </tr>
                                       </thead>
                                       <tbody style="font-size:13px;">
@@ -56,19 +55,19 @@
                                               $label_accion = " Activar";
                                             }
                                             $html_row = ""."\n\t\t\t\t\t\t\t<tr>\n".
-                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>" . $icon . "</td> \n".
+                                                          "\t\t\t\t\t\t\t\t<td class='text-center'><a href='". $data['host'] ."/catalogosSAT/prod_serv/switch_active/". $clave_prodserv['Id'] ."/". $clave_prodserv['Estatus'] ."'>" . $icon . "</a></td> \n".
                                                           "\t\t\t\t\t\t\t\t<td class='text-center'>". $clave_prodserv['ClaveProdServ'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td>". $clave_prodserv['Descripcion'] ."</td>\n".
-                                                          "\t\t\t\t\t\t\t\t<td>\n".
-                                                            "\t\t\t\t\t\t\t\t\t<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'>\n".
-                                                              "\t\t\t\t\t\t\t\t\t\t<button id='btnGroupDrop1' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>\n".
-                                                                "\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-ellipsis-h icon_btn_options'></i>\n".
-                                                              "\t\t\t\t\t\t\t\t\t\t</button>\n".
-                                                              "\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
-                                                                "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='". $data['host'] ."/catalogosSAT/prod_serv/switch_active/". $clave_prodserv['Id'] ."/". $clave_prodserv['Estatus'] ."' >". $icon_option . $label_accion ."</a>\n".
-                                                              "\t\t\t\t\t\t\t\t\t\t</div>\n".
-                                                            "\t\t\t\t\t\t\t\t\t</div>\n".
-                                                          "\t\t\t\t\t\t\t\t</td>\n".
+                                                          // "\t\t\t\t\t\t\t\t<td>\n".
+                                                          //   "\t\t\t\t\t\t\t\t\t<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'>\n".
+                                                          //     "\t\t\t\t\t\t\t\t\t\t<button id='btnGroupDrop1' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>\n".
+                                                          //       "\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-ellipsis-h icon_btn_options'></i>\n".
+                                                          //     "\t\t\t\t\t\t\t\t\t\t</button>\n".
+                                                          //     "\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
+                                                          //       "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='". $data['host'] ."/catalogosSAT/prod_serv/switch_active/". $clave_prodserv['Id'] ."/". $clave_prodserv['Estatus'] ."' >". $icon_option . $label_accion ."</a>\n".
+                                                          //     "\t\t\t\t\t\t\t\t\t\t</div>\n".
+                                                          //   "\t\t\t\t\t\t\t\t\t</div>\n".
+                                                          // "\t\t\t\t\t\t\t\t</td>\n".
                                                         "\t\t\t\t\t\t\t\t</tr>\n";
                                             echo $html_row;
                                           }

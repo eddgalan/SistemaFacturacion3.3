@@ -43,7 +43,7 @@
                                           <th>Simbolo</th>
                                         </tr>
                                       </thead>
-                                      <tbody style="font-size:15px;">
+                                      <tbody style="font-size:13px;">
                                         <?php
                                           foreach($data['unidades'] as $unidad){
                                             $icon=""; $icon_option = ""; $label_accion ="";

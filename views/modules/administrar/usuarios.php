@@ -48,7 +48,7 @@
                                           <th>Acciones</th>
                                         </tr>
                                       </thead>
-                                      <tbody style="font-size:15px;">
+                                      <tbody style="font-size:13px;">
                                         <?php
                                           foreach ($data['usuarios'] as $usuario) {
                                             $icon=""; $icon_option = ""; $label_accion ="";
@@ -63,7 +63,8 @@
                                             }
                                             $html_row = ""."\n\t\t\t\t\t\t\t<tr>\n".
                                                           "\t\t\t\t\t\t\t\t<td class='text-center'>". $usuario['Id'] ."</td>\n".
-                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>" . $icon . "</td> \n".
+                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>".
+                                                            "\t\t\t\t\t\t\t\t\t<a href='". $data['host'] ."/administrar/usuarios/switch_active/". $usuario['Id'] ."/". $usuario['Estatus'] ."'>" . $icon . "</td> \n".
                                                           "\t\t\t\t\t\t\t\t<td>". $usuario['Username'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td>". $usuario['Email'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td>\n".
