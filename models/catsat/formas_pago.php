@@ -102,6 +102,7 @@
           $sql = "UPDATE catsatformaspago
           SET Estatus='$nuevo_status'
           WHERE Id = $formapago_id AND Emisor = $emisor";
+          write_log("CatSATFormaPago | cambiar_activo() | SQL: " . $sql);
           write_log($sql);
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();

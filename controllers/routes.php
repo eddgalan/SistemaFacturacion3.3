@@ -36,6 +36,10 @@
       $routes["catalogosSAT/formas_pago"]="ViewFormasPago";
       $routes["catalogosSAT/formas_pago/add"]="ProcessFormasPago";
       $routes["catalogosSAT/formas_pago/switch_active/_data_/_data_"]="SwitchActivoFormasPago";
+      // Monedas
+      $routes["catalogosSAT/monedas"]="ViewMonedas";
+      $routes["catalogosSAT/monedas/add"]="ProcessMonedas";
+      $routes["catalogosSAT/monedas/switch_active/_data_/_data_"]="SwitchActivoMonedas";
 
 
       /* ...:: APIs ::... */

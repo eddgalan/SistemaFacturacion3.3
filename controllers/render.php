@@ -414,6 +414,85 @@
     }
   }
 
+  /* ..:: CAT SAT Monedas ::.. */
+  class ViewMonedas{
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Catalogo Monedas";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+
+      $monedas_pdo = new CatSATMoneda();
+      $data['cat_monedas'] = $monedas_pdo->get_all_catsat();
+      $data['monedas'] = $monedas_pdo->get_all($emisor);
+
+      $this->view = new View();
+      $this->view->render('views/modules/catsat/monedas.php',$data, true);
+    }
+  }
+
+  class ProcessMonedas{
+    function __construct($hostname="", $site_name="", $datos=null){
+      if($_POST){
+        $moneda = $_POST['moneda'];
+
+        $moneda_pdo = new CatSATMoneda();
+        $sesion = new UserSession();
+
+        if($moneda_pdo->add_moneda($moneda)){
+          $sesion->set_notification("OK", "Se agregó la Clave de Producto o Servicio a su catálogo");
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al agregar la Clave de Producto o Servicio. Intente de nuevo");
+        }
+        header("location: " . $hostname . "/catalogosSAT/monedas");
+      }else{
+        write_log("ProcessUnidad | construct() | NO se recibieron datos por POST");
+      }
+    }
+  }
+
+  class SwitchActivoMonedas{
+    function __construct($hostname="", $site_name="", $dataurl=null){
+      // Valida la sesión del usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        // Obtiene el Emisor
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        $moneda_id = $dataurl[1];
+        $moneda_pdo = new CatSATMoneda();
+        // Verifica que la Moneda pertenezca al usuario logueado
+        if( $moneda_pdo->get_moneda($moneda_id, $emisor) != false ){
+          $status_actual = $dataurl[2];
+
+          if($status_actual == 1){
+            $nuevo_status = 0;
+            $msg_status="Se ha desactivado la Moneda de su catálogo.";
+          }else{
+            $nuevo_status = 1;
+            $msg_status="Se ha activado la Moneda de su catálogo.";
+          }
+
+          if( $moneda_pdo->cambiar_activo($moneda_id, $nuevo_status, $emisor) ){
+            $sesion->set_notification("OK", $msg_status);
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus de la Moneda.");
+          }
+        }else{
+          $sesion->set_notification("ERROR", "No fue posible actualizar el Estatus de la Moneda. No se encontró la ".
+          "Moneda o no tiene los permisos para poder editarla.");
+        }
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
+      header("location: " . $hostname . "/catalogosSAT/monedas");
+    }
+  }
+
   class ViewsFacturas{
     function __construct($hostname='', $site_name='', $variables=null){
       $data['title'] = "Facturación 3.3 | Facturas";
@@ -480,8 +559,8 @@
       $data['usos_cfdi'] = $usos_cfdi->get_all();
       // Obtiene las monedas
       $moneda = new CatSATMoneda();
-      $data['monedas'] = $moneda->get_all();
-      // Obtiene las monedas
+      $data['monedas'] = $moneda->get_all_actives($emisor);
+      // Obtiene las series
       $serie = new SeriesPDO();
       $data['series'] = $serie->get_all();
       // Obtiene los productos
