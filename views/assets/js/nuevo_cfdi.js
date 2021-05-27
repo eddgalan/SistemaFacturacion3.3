@@ -1,6 +1,37 @@
 var productos=[];
 
 $(document).ready(function (){
+  /* ..:: SELECT CLIENTE ::.. */
+  $("select[name='cliente']").change(function(){
+    $("select[name='uso_cfdi']").val("0");
+    var token = $("input[name='token']").val();
+    var id_cliente = $(this).val();
+
+    $.ajax({
+      type: "POST",
+      dataType: 'json',
+      url: "../../API/catsat/get_usos_cfdi/",
+      data: {"token":token, "id_cliente":id_cliente},
+      success: function(resp){
+        // Limpia las opciones del select
+        $("select[name='uso_cfdi']").empty();
+        // Obtiene los datos del servicio
+        var usos_cfdi = resp.data;
+        var html_option="<option value='0'>---</option>";
+        for(let uso_cfdi of usos_cfdi){
+          html_option+= "<option value='"+ uso_cfdi['uso_clave'] + "'>"+
+            uso_cfdi['uso_clave'] + " | " + uso_cfdi['uso_concepto'] +
+          "</option>";
+        }
+        $("select[name='uso_cfdi']").append(html_option);
+      },
+      error : function(xhr, status) {
+        console.log(xhr);
+      }
+    });
+
+  });
+
   /* ..:: SELECT  SERIE ::.. */
   $("select[name='serie']").change(function(){
     var token = $("input[name='token']").val();

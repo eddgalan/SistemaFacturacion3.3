@@ -15,6 +15,13 @@
         $this->connect();
       }
 
+      public function get_all_catsat(){
+        $file_json = fopen('models/anexo20/c_UsoCFDI.json','r');
+        $array_usos_cfdi = json_decode(fread($file_json, filesize('models/anexo20/c_UsoCFDI.json')),true);
+        // var_dump($array_monedas);
+        return $array_usos_cfdi;
+      }
+
       public function get_all(){
         $sql = "SELECT * FROM catsatusocfdi WHERE emisor='1'";
         $stmt = $this->conn->prepare($sql);

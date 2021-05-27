@@ -47,6 +47,7 @@
       $routes["API/productos/get_producto/_data_"]="ProductoAPI/get_producto";
       $routes["API/series/get_serie/_data_"]="SerieAPI/get_serie";
       $routes["API/CFDIs/facturas/process"]="ComprobanteAPI/insert_cfdi";
+      $routes["API/catsat/get_usos_cfdi"]="CatSATAPI/get_usos_cfdi";
 
 
       //Si no está vacía la variable $_GET['url'] la usamos para navegar

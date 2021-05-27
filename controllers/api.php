@@ -34,6 +34,60 @@
     }
   }
 
+  class CatSATAPI extends API{
+    public function get_usos_cfdi(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $sesion = new UserSession();
+          // Obtiene el Emisor para obtener toda su configuración de los catálogos del SAT
+          $data_session = $sesion->get_session();
+          $emisor = $data_session['Emisor'];
+          // Obtiene la información del cliente para saber si es Persona Moral o Física
+          $id_cliente = $_POST['id_cliente'];
+          $cliente_pdo = new ClientePDO();
+          $data_cliente = $cliente_pdo->get_cliente($id_cliente, $emisor);
+          $tipo_persona = $data_cliente['TipoPersona'];
+          // Obtiene todos los usos CFDI del Catálogo del SAT
+          $usos_cfdi_pdo = new CatSATUsosCFDI();
+          $array_usos = $usos_cfdi_pdo->get_all_catsat();
+          $usos = array();
+
+          if($tipo_persona == 'F'){
+            foreach($array_usos as $uso_cfdi){
+              if($uso_cfdi['uso_fisica']=='Sí'){
+                array_push($usos, array(
+                  'uso_clave'=>$uso_cfdi['uso_clave'],
+                  'uso_concepto'=>$uso_cfdi['uso_concepto'],
+                  'uso_fisica'=>$uso_cfdi['uso_fisica']
+                ));
+              }
+            }
+          }elseif($tipo_persona == 'M'){
+            foreach($array_usos as $uso_cfdi){
+              if($uso_cfdi['uso_moral']=='Sí'){
+                array_push($usos, array(
+                  'uso_clave'=>$uso_cfdi['uso_clave'],
+                  'uso_concepto'=>$uso_cfdi['uso_concepto'],
+                  'uso_moral'=>$uso_cfdi['uso_moral']
+                ));
+              }
+            }
+          }
+          $this -> return_data("Mostrando Usos CFDI API", 200, $usos);
+        }else{
+          write_log("Token NO válido | UsuarioAPI");
+          $this->return_data("Ocurrió un error... No es posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("NO se recibieron datos POST");
+        $this->return_data("No es posible procesar su solicitud", 400);
+      }
+    }
+  }
+
   class ProductoAPI extends API{
     public function get_producto($datos){
       if($_POST){

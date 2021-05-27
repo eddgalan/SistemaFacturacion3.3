@@ -554,9 +554,9 @@
       // Obtiene las formas de pago
       $forma_pago = new CatSATFormaPago();
       $data['formas_pago'] = $forma_pago->get_all_actives($emisor);
-      // Obtiene los usos CFDI
-      $usos_cfdi = new CatSATUsosCFDI();
-      $data['usos_cfdi'] = $usos_cfdi->get_all();
+      // // Obtiene los usos CFDI
+      // $usos_cfdi = new CatSATUsosCFDI();
+      // $data['usos_cfdi'] = $usos_cfdi->get_all();
       // Obtiene las monedas
       $moneda = new CatSATMoneda();
       $data['monedas'] = $moneda->get_all_actives($emisor);
