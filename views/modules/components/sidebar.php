@@ -29,7 +29,6 @@
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/formas_pago"> <i class="fas fa-hand-holding-usd"></i> Formas de Pago</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/monedas"> <i class="fas fa-coins"></i> Monedas</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/impuestos"> <i class="fas fa-dollar-sign"></i> Impuestos</a>
-                    <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/usos_cfdi"> <i class="fas fa-file-invoice-dollar"></i> Usos CFDI</a>
                   </div>
                   <div class="seccion list-group-item list-group-item-action bg-light"><span> <i class="fas fa-money-check-alt"></i> Reportes</span></div>
                   <div class="panel">

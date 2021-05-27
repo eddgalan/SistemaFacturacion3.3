@@ -284,7 +284,7 @@
         $sesion = new UserSession();
 
         if($unidad_pdo->add_unidad($clave)){
-          $sesion->set_notification("OK", "Se agregó la Clave de Producto o Servicio a su catálogo");
+          $sesion->set_notification("OK", "Se agregó la Unidad a su catálogo");
         }else{
           $sesion->set_notification("ERROR", "Ocurrió un error al agregar la Clave de Producto o Servicio. Intente de nuevo");
         }
@@ -316,7 +316,7 @@
             $msg_status="Se ha desactivado la Unidad de su catálogo.";
           }else{
             $nuevo_status = 1;
-            $msg_status="Se ha activado la Unidad de su catálogo.";
+            $msg_status="Se ha activado la Unidad seleccionada en el catálogo.";
           }
 
           if( $catsatunidad_pdo->cambiar_activo($unidad_id, $nuevo_status, $emisor) ){
