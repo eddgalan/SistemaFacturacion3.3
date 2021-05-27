@@ -34,7 +34,7 @@
                               <div class="col-lg-12 col-md-12 col-sm-8">
                                 <label for="cliente"> Cliente: </label><br>
                                 <select class="from-control selectpicker" name="cliente" data-live-search="true" style="width:100%;">
-                                  <option value="0" disabled selected>Buscar cliente...</option>
+                                  <option value="0" disabled selected>Buscar por RFC o Nombre del cliente...</option>
                                   <?php
                                     foreach ($data['clientes'] as $cliente) {
                                       $html_option = "<option value='". $cliente['Id']. "'>". $cliente['RFC'] ." | ". $cliente['Nombre'] ."</option>\n";

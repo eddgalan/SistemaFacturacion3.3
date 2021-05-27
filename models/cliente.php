@@ -22,5 +22,20 @@
         write_log(serialize($result));
         return $result;
       }
+
+      public function get_cliente($id, $emisor){
+        $sql = "SELECT * FROM clientes WHERE Id='$id' AND Emisor='$emisor'";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        write_log("ClientePDO | get_cliente() | SQL: " . $sql);
+        write_log("ClientePDO | get_cliente() | Result: " . serialize($result));
+        if( count($result) > 0 ){
+          return $result[0];
+        }else{
+          return false;
+        }
+      }
+
     }
 ?>
