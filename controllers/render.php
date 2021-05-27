@@ -521,6 +521,9 @@
       $comprobante_pdo = new ComprobantePDO();
       $data['comprobante'] = $comprobante_pdo->get_comprobante($id_comprobante, $emisor);
       $data['prod_serv'] = $comprobante_pdo->get_detalles($id_comprobante);
+      // Obtiene el uso_concepto del CFDI
+      $usocfdi_pdo = new CatSATUsosCFDI();
+      $data['uso_concepto'] = $usocfdi_pdo->get_uso_concepto($data['comprobante']['ClaveUsoCFDI']);
       // Crea una instancia ContactoPDO y obtiene los contactos
       $contacto_pdo = new ContactoPDO();
       $data['contactos'] = $contacto_pdo->get_contactos_cliente($data['comprobante']['IdReceptor']);

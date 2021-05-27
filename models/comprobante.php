@@ -179,7 +179,7 @@
           series.DescripcionTipoComp as DescTipo,
           cfdi.CondicionesPago, cfdi.NoCertificado, cfdi.MetodoPago as ClaveMetodoPago,
           catsatmetodos.Descripcion as DescripcionMetodoPago, cfdi.FormaPago as ClaveFormaPago,
-          catsatformaspago.Descripcion as DescripcionFormaPago, cfdi.UsoCFDI as ClaveUsoCFDI, catsatusocfdi.Concepto as ConceptoUsoCFDI,
+          catsatformaspago.Descripcion as DescripcionFormaPago, cfdi.UsoCFDI as ClaveUsoCFDI,
           cfdi.LugarExpedicion, cfdi.Regimen, emisores.DescRegimen, cfdi.Subtotal, cfdi.IVA, cfdi.IEPS, cfdi.RetIva, cfdi.TotalRetenido, cfdi.TotalTraslado,
           cfdi.Descuento, cfdi.Total, cfdi.UUID, cfdi.FechaCertificado, cfdi.HoraCertificado, cfdi.EstatusSAT,
           cfdi.PathXML, cfdi.PathPDF, cfdi.Creado, cfdi.Observaciones
@@ -188,14 +188,12 @@
           INNER JOIN clientes ON cfdi.ClienteId = clientes.Id
           INNER JOIN catsatmetodos ON cfdi.MetodoPago = catsatmetodos.ClaveMetodo
           INNER JOIN catsatformaspago ON cfdi.FormaPago = catsatformaspago.ClaveFormaPago
-          INNER JOIN catsatusocfdi ON cfdi.UsoCFDI = catsatusocfdi.ClaveUso
           INNER JOIN series ON cfdi.TipoComprobante = series.TipoComprobante
           WHERE cfdi.Id='$id_comprobante'
           AND emisores.Id='$emisor'
           AND clientes.Emisor='$emisor'
           AND catsatmetodos.Emisor='$emisor'
-          AND catsatformaspago.Emisor='$emisor'
-          AND catsatusocfdi.Emisor='$emisor'";
+          AND catsatformaspago.Emisor='$emisor'";
 
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();

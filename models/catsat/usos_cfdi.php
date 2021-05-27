@@ -22,6 +22,15 @@
         return $array_usos_cfdi;
       }
 
+      public function get_uso_concepto($clave_uso){
+        $usos_cfdi = $this->get_all_catsat();
+        foreach($usos_cfdi as $uso){
+          if($uso['uso_clave'] == $clave_uso){
+            return $uso['uso_concepto'];
+          }
+        }
+      }
+
       public function get_all(){
         $sql = "SELECT * FROM catsatusocfdi WHERE emisor='1'";
         $stmt = $this->conn->prepare($sql);

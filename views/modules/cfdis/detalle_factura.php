@@ -126,7 +126,7 @@
                               <!-- Uso CFDI -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Uso CFDI: </strong></label>
-                                <spam><?= $data['comprobante']['ClaveUsoCFDI'] ?> | <?= $data['comprobante']['ConceptoUsoCFDI'] ?></spam>
+                                <spam><?= $data['comprobante']['ClaveUsoCFDI'] ?> | <?= $data['uso_concepto'] ?></spam>
                               </div>
                             </div>
                           </div>
