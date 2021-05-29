@@ -40,6 +40,10 @@
       $routes["catalogosSAT/monedas"]="ViewMonedas";
       $routes["catalogosSAT/monedas/add"]="ProcessMonedas";
       $routes["catalogosSAT/monedas/switch_active/_data_/_data_"]="SwitchActivoMonedas";
+      // Impuestos
+      $routes["catalogosSAT/impuestos"]="ViewImpuestos";
+      $routes["catalogosSAT/impuestos/add"]="ProcessImpuestos";
+      $routes["catalogosSAT/impuestos/switch_active/_data_/_data_"]="SwitchActivoImpuestos";
 
 
       /* ...:: APIs ::... */

@@ -17,6 +17,7 @@
   require 'models/catsat/moneda.php';
   require 'models/catsat/series.php';
   require 'models/catsat/unidades.php';
+  require 'models/catsat/impuestos.php';
 
   class Login {
     function __construct($host_name="", $site_name="", $variables=null){
@@ -448,7 +449,7 @@
         }
         header("location: " . $hostname . "/catalogosSAT/monedas");
       }else{
-        write_log("ProcessUnidad | construct() | NO se recibieron datos por POST");
+        write_log("ProcessMonedas | construct() | NO se recibieron datos por POST");
       }
     }
   }
@@ -465,6 +466,97 @@
 
         $moneda_id = $dataurl[1];
         $moneda_pdo = new CatSATMoneda();
+        // Verifica que la Moneda pertenezca al usuario logueado
+        if( $moneda_pdo->get_moneda($moneda_id, $emisor) != false ){
+          $status_actual = $dataurl[2];
+
+          if($status_actual == 1){
+            $nuevo_status = 0;
+            $msg_status="Se ha desactivado la Moneda de su catálogo.";
+          }else{
+            $nuevo_status = 1;
+            $msg_status="Se ha activado la Moneda de su catálogo.";
+          }
+
+          if( $moneda_pdo->cambiar_activo($moneda_id, $nuevo_status, $emisor) ){
+            $sesion->set_notification("OK", $msg_status);
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus de la Moneda.");
+          }
+        }else{
+          $sesion->set_notification("ERROR", "No fue posible actualizar el Estatus de la Moneda. No se encontró la ".
+          "Moneda o no tiene los permisos para poder editarla.");
+        }
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
+      header("location: " . $hostname . "/catalogosSAT/monedas");
+    }
+  }
+
+  /* ..:: CAT SAT Impuestos ::.. */
+  class ViewImpuestos{
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Catalogo Impuestos";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+
+      $impuestos_pdo = new CatSATImpuestos();
+      $data['cat_impuestos'] = $impuestos_pdo->get_all_catsat();
+      $data['impuestos'] = $impuestos_pdo->get_all($emisor);
+
+      $this->view = new View();
+      $this->view->render('views/modules/catsat/impuestos.php',$data, true);
+    }
+  }
+
+  class ProcessImpuestos{
+    function __construct($hostname="", $site_name="", $datos=null){
+      if($_POST){
+        if( empty($_POST['id_impuesto']) ){
+          // INSERT
+          $impuestos = $_POST['impuesto'];
+          $descripcion = $_POST['descripcion_impuesto'];
+          $factor = $_POST['tipo_factor'];
+          $tasa_cuota = $_POST['tasa_cuota'];
+
+          $impuestos_pdo = new CatSATImpuestos();
+          $sesion = new UserSession();
+
+          $data_session = $sesion->get_session();
+          $emisor = $data_session['Emisor'];
+
+          if( $impuestos_pdo->add_impuesto($emisor, $impuestos, $descripcion, $factor, $tasa_cuota) ){
+            $sesion->set_notification("OK", "Se agregó el Nuevo Impuesto a su Catálogo");
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al agregar el Impuesto a su catálogo. Intente de nuevo");
+          }
+          header("location: " . $hostname . "/catalogosSAT/impuestos");
+        }else{
+          // UPDATE
+
+        }
+      }else{
+        write_log("ProcessImpuestos | construct() | NO se recibieron datos por POST");
+      }
+    }
+  }
+
+  class SwitchActivoImpuestos{
+    function __construct($hostname="", $site_name="", $dataurl=null){
+      // Valida la sesión del usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        // Obtiene el Emisor
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        $moneda_id = $dataurl[1];
+        $moneda_pdo = new CatSATImpuestos();
         // Verifica que la Moneda pertenezca al usuario logueado
         if( $moneda_pdo->get_moneda($moneda_id, $emisor) != false ){
           $status_actual = $dataurl[2];
