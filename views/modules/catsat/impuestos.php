@@ -19,7 +19,7 @@
                             <h4 class="card-title"> Catálogo Impuestos </h4>
                           </div>
                           <div class="col-lg-4 col-md-4 col-sm-12 text-right">
-                            <button type="button" class="btn btn-success waves-effect btn_full" data-toggle="modal" data-target="#modal_agregar_moneda">
+                            <button type="button" class="btn btn-success waves-effect btn_full" data-toggle="modal" data-target="#modal_agregar_impuesto">
                               <i class="fas fa-plus-circle fa-sm"></i> Agregar Impuesto
                             </button>
                           </div>
@@ -69,7 +69,7 @@
                                                               "\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-ellipsis-h icon_btn_options'></i>\n".
                                                             "\t\t\t\t\t\t\t\t\t\t</button>\n".
                                                             "\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
-                                                              "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_usuario' onclick='carga_datos(". $impuesto['Id'] .")'> <i class='fas fa-edit'></i> Editar Impuesto</a>\n".
+                                                              "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_impuesto' onclick='carga_datos(". $impuesto['Id'] .")'> <i class='fas fa-edit'></i> Editar Impuesto</a>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='". $data['host'] ."/catalogosSAT/impuestos/switch_active/". $impuesto['Id'] ."/". $impuesto['Estatus'] ."' >". $icon_option . $label_accion ."</a>\n".
                                                             "\t\t\t\t\t\t\t\t\t\t</div>\n".
                                                           "\t\t\t\t\t\t\t\t\t</div>\n".
@@ -92,9 +92,9 @@
     </div>
     <!-- ..:: MODALES ::.. -->
     <!-- ..:: Modal Agregar Impuesto ::.. -->
-    <div class="modal fade" id="modal_agregar_moneda">
+    <div class="modal fade" id="modal_agregar_impuesto">
       <div class="modal-dialog modal-lg">
-        <form action="<?= $data['host'] ?>/catalogosSAT/impuestos/add" method="POST">
+        <form action="<?= $data['host'] ?>/catalogosSAT/impuestos/process" method="POST">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title"> <i class="fas fa-plus"></i> Agregar Impuesto </h4>
@@ -145,6 +145,67 @@
             </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-success" name='agregar' disabled> <i class="fas fa-check"></i> Agregar </button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- ..:: Modal Editar Impuesto ::.. -->
+    <div class="modal fade" id="modal_editar_impuesto">
+      <div class="modal-dialog modal-lg">
+        <form action="<?= $data['host'] ?>/catalogosSAT/impuestos/process" method="POST">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title"> <i class="fas fa-edit"></i> Editar Impuesto </h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                  <!-- Token -->
+                  <div style="display:none;">
+                    <input type="hidden" name="token" value="<?= $data['token']?>">
+                    <input type="hidden" name="id_impuesto">
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-8">
+                    <label for="impuesto_edit"> Tipo de Impuesto: </label><br>
+                    <select class='form-control' name='impuesto_edit' required>
+                      <option value='0'> Seleccione un tipo </option>
+                      <?php
+                        foreach ($data['cat_impuestos'] as $impuesto) {
+                          $html_option = "<option value='". $impuesto['impuesto_clave']. " | ". $impuesto['impuesto_retencion'] . " | ". $impuesto['impuesto_traslado'] ."'>".
+                            $impuesto['impuesto_clave'] ." | ". $impuesto['impuesto_concepto'] .
+                          "</option>\n";
+                          echo $html_option;
+                        }
+                      ?>
+                    </select>
+                  </div>
+                  <!-- Descripción -->
+                  <div class="col-lg-6 col-md-12 col-sm-8">
+                    <label for="descripcion_impuesto_edit"> Descripción: </label>
+                    <input type='text' class='form-control' name='descripcion_impuesto_edit' placeholder='Breve descripción del impuesto' required autocomplete="off">
+                  </div>
+                  <!-- Factor -->
+                  <div class="col-lg-6 col-md-12 col-sm-8">
+                    <label for="tipo_factor_edit"> Factor: </label>
+                    <select class='form-control' name='tipo_factor_edit' required>
+                      <option value='0'>Seleccione un tipo</option>
+                      <option value='Tasa'>Tasa</option>
+                      <option value='Cuota'>Cuota</option>
+                    </select>
+                  </div>
+                  <!-- Tasa o Cuota -->
+                  <div class="col-lg-6 col-md-12 col-sm-8">
+                    <label for="tasa_cuota_edit"> Tasa o cuota: </label>
+                    <input type='text' class='form-control' name='tasa_cuota_edit' placeholder='Ejemplo: 0.16' required autocomplete="off">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success" name='agregar'> <i class="fas fa-check"></i> Guardar </button>
               <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
             </div>
           </div>

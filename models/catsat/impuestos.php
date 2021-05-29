@@ -40,15 +40,27 @@
         return $result;
       }
 
-      public function add_impuesto($emisor, $strimpuesto, $descripcion, $factor, $tasa_cuota){
+      public function insert_impuesto($emisor, $strimpuesto, $descripcion, $factor, $tasa_cuota){
         $array_impuesto = explode(" | ", $strimpuesto);
         $clave_impuesto = $array_impuesto[0];
         $retencion = $array_impuesto[1];
         $traslado = $array_impuesto[2];
 
+        if($retencion == "Si"){
+          $retencion = 1;
+        }else{
+          $retencion = 0;
+        }
+
+        if($traslado == "Si"){
+          $traslado = 1;
+        }else{
+          $traslado = 0;
+        }
+
         try{
           $sql = "INSERT INTO catsatimpuestos (Emisor, ClaveImpuesto, Descripcion, Retencion, Traslado, Factor, Tasa_Cuota)
-          VALUES ('$emisor', '$clave_impuesto', '$descripcion', '$retencion', '$traslado', '$factor', '$tasa_cuota')";
+          VALUES ('$emisor', '$clave_impuesto', '$descripcion', $retencion, $traslado, '$factor', '$tasa_cuota')";
           $this->conn->exec($sql);
           write_log("CatSATImpuestos | add_impuesto() | SQL: ". $sql);
           write_log("CatSATImpuestos | add_impuesto() | Se realizó el INSERT del Impuesto con Éxito");
@@ -60,6 +72,43 @@
           $this->disconect();   // Cierra la conexión a la BD
           return false;
         }
+      }
+
+      public function update_impuesto($id, $emisor, $strimpuesto, $descripcion, $factor, $tasa_cuota){
+        $array_impuesto = explode(" | ", $strimpuesto);
+        $clave_impuesto = $array_impuesto[0];
+        $retencion = $array_impuesto[1];
+        $traslado = $array_impuesto[2];
+
+        if($retencion = "Si"){
+          $retencion = 1;
+        }else{
+          $retencion = 0;
+        }
+
+        if($traslado = "Si"){
+          $traslado = 1;
+        }else{
+          $traslado = 0;
+        }
+
+        try{
+          $sql = "UPDATE catsatimpuestos SET  ClaveImpuesto = '$clave_impuesto', Descripcion = '$descripcion',
+          Retencion = $retencion, Traslado = $traslado, Factor = '$factor', Tasa_Cuota = '$tasa_cuota'
+          WHERE Id = '$id'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          write_log("CatSATImpuestos | update_impuesto() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("CatSATImpuestos | update_impuesto() | Ocurrió un error al realizar el UPDATE del Impuesto\nError: ". $e->getMessage());
+          write_log("SQL: ". $sql);
+          $this->disconect();
+          return false;
+        }
+
       }
 
       public function get_impuesto($id_impuesto, $emisor){

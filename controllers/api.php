@@ -86,6 +86,30 @@
         $this->return_data("No es posible procesar su solicitud", 400);
       }
     }
+
+    public function get_impuesto(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $id_impuesto = $_POST['id_impuesto'];
+          $impuesto_pdo = new CatSATImpuestos();
+
+          $data_session = $sesion->get_session();
+          $emisor = $data_session['Emisor'];
+
+          $data_impuesto = $impuesto_pdo->get_impuesto($id_impuesto, $emisor);
+          $this -> return_data("Mostrando Usuarios API", 200, $data_impuesto);
+        }else{
+          write_log("CatSATAPI | get_impuesto() | Token NO válido");
+          $this->return_data("Ocurrió un error... No es posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("NO se recibieron datos POST");
+        $this->return_data("No es posible procesar su solicitud", 400);
+      }
+    }
   }
 
   class ProductoAPI extends API{

@@ -501,6 +501,7 @@
       $data['host'] = $host_name;
 
       $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
       $data_session = $sesion->get_session();
       $emisor = $data_session['Emisor'];
 
@@ -516,6 +517,12 @@
   class ProcessImpuestos{
     function __construct($hostname="", $site_name="", $datos=null){
       if($_POST){
+        $impuestos_pdo = new CatSATImpuestos();
+
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
         if( empty($_POST['id_impuesto']) ){
           // INSERT
           $impuestos = $_POST['impuesto'];
@@ -523,13 +530,7 @@
           $factor = $_POST['tipo_factor'];
           $tasa_cuota = $_POST['tasa_cuota'];
 
-          $impuestos_pdo = new CatSATImpuestos();
-          $sesion = new UserSession();
-
-          $data_session = $sesion->get_session();
-          $emisor = $data_session['Emisor'];
-
-          if( $impuestos_pdo->add_impuesto($emisor, $impuestos, $descripcion, $factor, $tasa_cuota) ){
+          if( $impuestos_pdo->insert_impuesto($emisor, $impuestos, $descripcion, $factor, $tasa_cuota) ){
             $sesion->set_notification("OK", "Se agregó el Nuevo Impuesto a su Catálogo");
           }else{
             $sesion->set_notification("ERROR", "Ocurrió un error al agregar el Impuesto a su catálogo. Intente de nuevo");
@@ -537,7 +538,18 @@
           header("location: " . $hostname . "/catalogosSAT/impuestos");
         }else{
           // UPDATE
+          $id_impuesto = $_POST['id_impuesto'];
+          $strimpuesto = $_POST['impuesto_edit'];
+          $descripcion = $_POST['descripcion_impuesto_edit'];
+          $factor = $_POST['tipo_factor_edit'];
+          $tasa_cuota = $_POST['tasa_cuota_edit'];
 
+          if( $impuestos_pdo->update_impuesto($id_impuesto, $emisor, $strimpuesto, $descripcion, $factor, $tasa_cuota) ){
+            $sesion->set_notification("OK", "Se actualizaron los datos del Impuesto de Forma correcta.");
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Impuesto. Puede intentarlo de nuevo.");
+          }
+          header("location: ". $hostname ."/catalogosSAT/impuestos");
         }
       }else{
         write_log("ProcessImpuestos | construct() | NO se recibieron datos por POST");
@@ -563,7 +575,7 @@
 
           if($status_actual == 1){
             $nuevo_status = 0;
-            $msg_status="Se ha desactivado el Impuesto catálogo.";
+            $msg_status="Se ha desactivado el Impuesto de su catálogo.";
           }else{
             $nuevo_status = 1;
             $msg_status="Se ha activado el Impuesto de su catálogo.";
