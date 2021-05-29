@@ -62,13 +62,13 @@
         }
       }
 
-      public function get_moneda($id_moneda, $emisor){
-        $sql = "SELECT * FROM catsatmoneda WHERE Id='$id_moneda' AND Emisor='$emisor'";
+      public function get_impuesto($id_impuesto, $emisor){
+        $sql = "SELECT * FROM catsatimpuestos WHERE Id='$id_impuesto' AND Emisor='$emisor'";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        write_log("CatSATImpuestos | get_moneda() | SQL: " . $sql);
-        write_log("CatSATImpuestos | get_moneda() | Result: " . serialize($result));
+        write_log("CatSATImpuestos | get_impuesto() | SQL: " . $sql);
+        write_log("CatSATImpuestos | get_impuesto() | Result: " . serialize($result));
         if( count($result) > 0 ){
           return $result[0];
         }else{
@@ -76,22 +76,22 @@
         }
       }
 
-      public function cambiar_activo($moneda_id, $nuevo_status, $emisor){
+      public function cambiar_activo($impuesto_id, $nuevo_status, $emisor){
         try{
           $this->connect();
-          $sql = "UPDATE catsatmoneda
+          $sql = "UPDATE catsatimpuestos
           SET Estatus='$nuevo_status'
-          WHERE Id = $moneda_id AND Emisor = $emisor";
+          WHERE Id = $impuesto_id AND Emisor = $emisor";
           write_log("CatSATImpuestos | cambiar_activo() | SQL: " . $sql);
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
 
           if( $stmt->rowCount() == 1){
-            write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+            write_log("CatSATImpuestos | cambiar_activo() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
             $this->disconect();
             return true;
           }else{
-            write_log("Se actualizaron mas de un registro");
+            write_log("CatSATImpuestos | cambiar_activo() | Se actualizaron mas de un registro");
             return false;
           }
         }catch(PDOException $e){

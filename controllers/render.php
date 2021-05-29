@@ -546,7 +546,7 @@
   }
 
   class SwitchActivoImpuestos{
-    function __construct($hostname="", $site_name="", $dataurl=null){
+    function __construct($hostname="", $sitename="", $dataurl=null){
       // Valida la sesión del usuario (Debe estar logueado)
       $sesion = new UserSession();
       if( $sesion->validate_session() ){
@@ -555,33 +555,33 @@
         $data_session = $sesion->get_session();
         $emisor = $data_session['Emisor'];
 
-        $moneda_id = $dataurl[1];
-        $moneda_pdo = new CatSATImpuestos();
-        // Verifica que la Moneda pertenezca al usuario logueado
-        if( $moneda_pdo->get_moneda($moneda_id, $emisor) != false ){
+        $impuesto_id = $dataurl[1];
+        $impuesto_pdo = new CatSATImpuestos();
+        // Verifica que el Impuesto Pertenezca al Emisor
+        if( $impuesto_pdo->get_impuesto($impuesto_id, $emisor) != false ){
           $status_actual = $dataurl[2];
 
           if($status_actual == 1){
             $nuevo_status = 0;
-            $msg_status="Se ha desactivado la Moneda de su catálogo.";
+            $msg_status="Se ha desactivado el Impuesto catálogo.";
           }else{
             $nuevo_status = 1;
-            $msg_status="Se ha activado la Moneda de su catálogo.";
+            $msg_status="Se ha activado el Impuesto de su catálogo.";
           }
 
-          if( $moneda_pdo->cambiar_activo($moneda_id, $nuevo_status, $emisor) ){
+          if( $impuesto_pdo->cambiar_activo($impuesto_id, $nuevo_status, $emisor) ){
             $sesion->set_notification("OK", $msg_status);
           }else{
-            $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus de la Moneda.");
+            $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus del Impuesto.");
           }
         }else{
-          $sesion->set_notification("ERROR", "No fue posible actualizar el Estatus de la Moneda. No se encontró la ".
+          $sesion->set_notification("ERROR", "No fue posible actualizar el Estatus del Impuesto. No se encontró la ".
           "Moneda o no tiene los permisos para poder editarla.");
         }
       }else{
         header("Location: " . $hostname . "/login");
       }
-      header("location: " . $hostname . "/catalogosSAT/monedas");
+      header("location: " . $hostname . "/catalogosSAT/impuestos");
     }
   }
 
