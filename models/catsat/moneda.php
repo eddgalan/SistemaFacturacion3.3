@@ -22,8 +22,8 @@
         return $array_monedas;
       }
 
-      public function get_all(){
-        $sql = "SELECT * FROM catsatmoneda WHERE emisor='1'";
+      public function get_all($emisor){
+        $sql = "SELECT * FROM catsatmoneda WHERE emisor='$emisor'";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
