@@ -4,7 +4,7 @@ $(document).ready(function (){
     if(clave != 0){
       $("button[name='agregar']").removeAttr("disabled");
     }else{
-      $("button[name='agregar']").addAttr("disabled","disabled");
+      $("button[name='agregar']").attr("disabled","disabled");
     }
   });
 });
