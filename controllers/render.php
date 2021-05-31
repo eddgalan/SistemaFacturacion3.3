@@ -15,7 +15,6 @@
   require 'models/catsat/formas_pago.php';
   require 'models/catsat/usos_cfdi.php';
   require 'models/catsat/moneda.php';
-  require 'models/catsat/series.php';
   require 'models/catsat/unidades.php';
   require 'models/catsat/impuestos.php';
 
@@ -597,6 +596,117 @@
     }
   }
 
+  /* ..:: Series & CSD ::.. */
+  class ViewSeries{
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Series";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+
+      $csd_pdo = new CSD_PDO();
+      $data['csd'] = $csd_pdo->get_csd($emisor);
+
+      $serie_pdo = new SeriePDO();
+      $data['series'] = $serie_pdo->get_all($emisor);
+      $data['tipo_comprobantes'] = $serie_pdo->get_tpocomprobantes_catsat();
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/series.php',$data, true);
+    }
+  }
+
+  class ProcessSeries{
+    function __construct($hostname="", $site_name="", $datos=null){
+      if($_POST){
+        $serie_pdo = new SeriePDO();
+
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        if( empty($_POST['id_serie']) ){
+          // INSERT
+          $serie = $_POST['serie'];
+          $descripcion = $_POST['descripcion'];
+          $tipo_comprobante = $_POST['tipo_comprobante'];
+          $consecutivo = $_POST['consecutivo'];
+          $csd = $_POST['id_csd'];
+
+          if( $serie_pdo->get_serie($emisor, $serie) != false ){
+            $sesion->set_notification("ERROR", "No fue posible agregar la serie. La serie que desea agregar ya existe.");
+          }else{
+            if( $serie_pdo->insert_serie($emisor, $serie, $descripcion, $tipo_comprobante, $consecutivo, $csd) ){
+              $sesion->set_notification("OK", "Se agregó correctamente la Nueva Serie.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al agregar la Serie. Intente de nuevo");
+            }
+          }
+          header("location: " . $hostname . "/catalogosSAT/series");
+        }else{
+          // UPDATE
+          $id_impuesto = $_POST['id_impuesto'];
+          $strimpuesto = $_POST['impuesto_edit'];
+          $descripcion = $_POST['descripcion_impuesto_edit'];
+          $factor = $_POST['tipo_factor_edit'];
+          $tasa_cuota = $_POST['tasa_cuota_edit'];
+
+          if( $serie_pdo->update_impuesto($id_impuesto, $emisor, $strimpuesto, $descripcion, $factor, $tasa_cuota) ){
+            $sesion->set_notification("OK", "Se actualizaron los datos del Impuesto de Forma correcta.");
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Impuesto. Puede intentarlo de nuevo.");
+          }
+          header("location: ". $hostname ."/catalogosSAT/impuestos");
+        }
+      }else{
+        write_log("ProcessImpuestos | construct() | NO se recibieron datos por POST");
+      }
+    }
+  }
+
+  class SwitchActivoSeries{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      // Valida la sesión del usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        // Obtiene el Emisor
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        $impuesto_id = $dataurl[1];
+        $impuesto_pdo = new CatSATImpuestos();
+        // Verifica que el Impuesto Pertenezca al Emisor
+        if( $impuesto_pdo->get_impuesto($impuesto_id, $emisor) != false ){
+          $status_actual = $dataurl[2];
+
+          if($status_actual == 1){
+            $nuevo_status = 0;
+            $msg_status="Se ha desactivado el Impuesto de su catálogo.";
+          }else{
+            $nuevo_status = 1;
+            $msg_status="Se ha activado el Impuesto de su catálogo.";
+          }
+
+          if( $impuesto_pdo->cambiar_activo($impuesto_id, $nuevo_status, $emisor) ){
+            $sesion->set_notification("OK", $msg_status);
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus del Impuesto.");
+          }
+        }else{
+          $sesion->set_notification("ERROR", "No fue posible actualizar el Estatus del Impuesto. No se encontró la ".
+          "Moneda o no tiene los permisos para poder editarla.");
+        }
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
+      header("location: " . $hostname . "/catalogosSAT/impuestos");
+    }
+  }
+
   class ViewsFacturas{
     function __construct($hostname='', $site_name='', $variables=null){
       $data['title'] = "Facturación 3.3 | Facturas";
@@ -668,8 +778,8 @@
       $moneda = new CatSATMoneda();
       $data['monedas'] = $moneda->get_all_actives($emisor);
       // Obtiene las series
-      $serie = new SeriesPDO();
-      $data['series'] = $serie->get_all();
+      $serie = new SeriePDO();
+      $data['series'] = $serie->get_all_actives($emisor);
       // Obtiene los productos
       $productos = new ProductoPDO();
       $data['productos'] = $productos->get_all();
@@ -689,7 +799,7 @@
       $emisor = $data_session['Emisor'];
       // Obtiene el certificado y nocertificado
       $csd_pdo = new CSD_PDO('', '', $emisor);
-      $datos_csd = $csd_pdo->get_csd();
+      $datos_csd = $csd_pdo->get_csd($emisor);
       $certificado = $datos_csd['Certificado'];
       $nocertificado = $datos_csd['NoCertificado'];
       // Crea una instancia de ComprobantePDO

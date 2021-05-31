@@ -28,21 +28,25 @@
         $this->pathpem = $pathpem;
       }
 
-      public function get_csd(){
+      public function get_csd($emisor){
         $this->connect();
         try{
           $sql = "SELECT * FROM csd
-          WHERE Emisor='$this->emisor'";
+          WHERE Emisor='$emisor'";
 
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-          write_log("SQL CSD: " . $sql);
-          write_log("CSD_PDO | get_csd()\n" . serialize($result[0]));
+          write_log("CSD_PDO | get_csd() | SQL: " . $sql);
+          write_log("CSD_PDO | get_csd() | Result: " . serialize($result[0]));
           $this->disconect();
-          return $result[0];
+          if( count($result) >= 1 ){
+            return $result[0];
+          }else{
+            return false;
+          }
         }catch(PDOException $e) {
-          write_log("Error al ejecutar la consulta. ERROR: " . $e->getMessage());
+          write_log("CSD_PDO | get_csd() | Error al ejecutar la consulta. ERROR: " . $e->getMessage());
           write_log("SQL: " . $sql);
           return false;
         }

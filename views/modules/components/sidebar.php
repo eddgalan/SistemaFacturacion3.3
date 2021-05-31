@@ -12,6 +12,7 @@
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/grupos"> <i class="fas fa-users"></i> Grupos</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/emisores"> <i class="fas fa-building"></i> Emisores</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/prodserv"> <i class="fas fa-box"></i> Productos/Servicios</a>
+                    <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/series"> <i class="fas fa-font"></i> Series</a>
                   </div>
                   <div class="seccion list-group-item list-group-item-action bg-light"><span> <i class="fas fa-money-check-alt"></i> Comprobantes</span></div>
                   <div class="panel">
@@ -25,7 +26,6 @@
                   <div class="panel">
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/prod_serv"> <i class="fas fa-apple-alt"></i> Claves ProdServ</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/unidades"> <i class="fas fa-weight"></i> Unidades</a>
-                    <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/series"> <i class="fas fa-font"></i> Series</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/formas_pago"> <i class="fas fa-hand-holding-usd"></i> Formas de Pago</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/monedas"> <i class="fas fa-coins"></i> Monedas</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/impuestos"> <i class="fas fa-dollar-sign"></i> Impuestos</a>

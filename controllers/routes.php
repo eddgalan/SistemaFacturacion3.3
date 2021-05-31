@@ -44,6 +44,10 @@
       $routes["catalogosSAT/impuestos"]="ViewImpuestos";
       $routes["catalogosSAT/impuestos/process"]="ProcessImpuestos";
       $routes["catalogosSAT/impuestos/switch_active/_data_/_data_"]="SwitchActivoImpuestos";
+      // Series
+      $routes["catalogosSAT/series"]="ViewSeries";
+      $routes["catalogosSAT/series/process"]="ProcessSeries";
+      $routes["catalogosSAT/series/switch_active/_data_/_data_"]="SwitchActivoSeries";
 
 
       /* ...:: APIs ::... */

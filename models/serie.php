@@ -21,36 +21,77 @@
         $this->csd = $csd;
       }
 
-      public function get_all(){
-        $sesion = new UserSession();
-        $data_session = $sesion->get_session();
+      public function get_tpocomprobantes_catsat(){
+        $file_json = fopen('models/anexo20/c_TipoDeComprobante.json','r');
+        $array_tpocomprobantes = json_decode(fread($file_json, filesize('models/anexo20/c_TipoDeComprobante.json')),true);
+        // var_dump($array_monedas);
+        return $array_tpocomprobantes;
+      }
 
-        $emisor = $data_session['Emisor'];
-
+      public function get_all($emisor){
         $this->connect();
-        $sql = "SELECT * FROM productos WHERE Emisor='$emisor' AND Estatus='1'";
+        $sql = "SELECT * FROM series WHERE Emisor='$emisor'";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        write_log("ProductoPDO\n " . serialize($result));
+        write_log("SeriePDO | get_all() | SQL: " . $sql);
+        write_log("SeriePDO | get_all() | Result: " . serialize($result));
         return $result;
       }
 
-      public function get_serie(){
+      public function get_all_actives($emisor){
+        $this->connect();
+        $sql = "SELECT * FROM series WHERE Emisor='$emisor' AND Estatus=1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        write_log("SeriePDO | get_all_actives() | SQL: " . $sql);
+        write_log("SeriePDO | get_all_actives() | Result: " . serialize($result));
+        return $result;
+      }
+
+      public function get_serie($emisor, $serie){
         $this->connect();
         try{
           $sql = "SELECT * FROM series
-          WHERE Emisor='$this->emisor' AND Serie='$this->serie'";
+          WHERE Emisor='$emisor' AND Serie='$serie'";
 
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-          write_log("SeriePDO | get_serie() | " . serialize($result[0]));
+          write_log("SeriePDO | get_serie() | SQL: " . $sql);
+          write_log("SeriePDO | get_serie() | Result: " . serialize($result));
           $this->disconect();
-          return $result[0];
+          if( count($result) >0 ){
+            return $result[0];
+          }else{
+            return false;
+          }
         }catch(PDOException $e) {
           write_log("Error al ejecutar la consulta. ERROR: " . $e->getMessage());
           write_log("SQL: " . $sql);
+          return false;
+        }
+      }
+
+      public function insert_serie($emisor, $serie, $descripcion, $strtpo_comprobante, $consecutivo, $csd){
+        $array_tpocomprobante = explode(" | ", $strtpo_comprobante);
+        $tipo_comprobante = $array_tpocomprobante[0];
+        $desc_tpo_comp = $array_tpocomprobante[1];
+
+        try{
+          $this->connect();
+          $sql = "INSERT INTO series (Emisor, Serie, Descripcion, TipoComprobante, DescripcionTipoComp, Consecutivo, CSD)
+          VALUES ('$emisor', '$serie', '$descripcion', '$tipo_comprobante', '$desc_tpo_comp', '$consecutivo', '$csd')";
+          $this->conn->exec($sql);
+          write_log("SeriePDO | insert_serie() | SQL: ". $sql);
+          write_log("SeriePDO | insert_serie() | Se realizó el INSERT de la Serie con Éxito");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("SeriePDO | insert_serie() | Ocurrió un error al realizar el INSERT de la Serie\nError: ". $e->getMessage());
+          write_log("SQL: " . $sql);
+          $this->disconect();
           return false;
         }
       }
