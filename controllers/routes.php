@@ -53,7 +53,8 @@
       /* ...:: APIs ::... */
       $routes["API/usuarios/get_usuario/_data_"]="UsuarioAPI/get_usuario";
       $routes["API/productos/get_producto/_data_"]="ProductoAPI/get_producto";
-      $routes["API/series/get_serie/_data_"]="SerieAPI/get_serie";
+      $routes["API/series/get_serie_by_nom_serie"]="SerieAPI/get_serie_by_nom_serie";
+      $routes["API/series/get_serie"]="SerieAPI/get_serie";
       $routes["API/CFDIs/facturas/process"]="ComprobanteAPI/insert_cfdi";
       $routes["API/catsat/get_usos_cfdi"]="CatSATAPI/get_usos_cfdi";
       $routes["API/catsat/get_impuesto"]="CatSATAPI/get_impuesto";

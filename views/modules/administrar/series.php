@@ -162,7 +162,7 @@
     <!-- ..:: Modal Editar Serie ::.. -->
     <div class="modal fade" id="modal_editar_serie">
       <div class="modal-dialog modal-lg">
-        <form action="<?= $data['host'] ?>/catalogosSAT/impuestos/process" method="POST">
+        <form action="<?= $data['host'] ?>/catalogosSAT/series/process" method="POST">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title"> <i class="fas fa-edit"></i> Editar Serie </h4>
@@ -174,46 +174,41 @@
                   <!-- Token -->
                   <div style="display:none;">
                     <input type="hidden" name="token" value="<?= $data['token']?>">
-                    <input type="hidden" name="id_impuesto">
+                    <input type="hidden" name="id_serie">
                   </div>
-                  <div class="col-lg-6 col-md-6 col-sm-8">
-                    <label for="impuesto_edit"> Tipo de Impuesto: </label><br>
-                    <select class='form-control' name='impuesto_edit' required>
-                      <option value='0'> Seleccione un tipo </option>
+                  <!-- Serie -->
+                  <div class="col-lg-3 col-md-4 col-sm-8">
+                    <label for="serie"> Serie: </label><br>
+                    <input type="text" class="form-control" name="serie_edit" placeholder="A, B, C, D, etc"autocomplete="off" required>
+                  </div>
+                  <!-- Descripción -->
+                  <div class="col-lg-9 col-md-8 col-sm-8">
+                    <label for="descripcion"> Descripción: </label>
+                    <input type='text' class='form-control' name='descripcion_edit' placeholder='Breve descripción de la serie...' autocomplete="off" required>
+                  </div>
+                  <!-- Tipo Comprobante -->
+                  <div class="col-lg-7 col-md-12 col-sm-8">
+                    <label for="tipo_comprobante"> Tipo de comprobante: </label>
+                    <select class='form-control' name='tipo_comprobante_edit' required>
+                      <option value='0'>Seleccione un tipo de comprobante </option>
                       <?php
-                        foreach ($data['cat_impuestos'] as $impuesto) {
-                          $html_option = "<option value='". $impuesto['impuesto_clave']. " | ". $impuesto['impuesto_retencion'] . " | ". $impuesto['impuesto_traslado'] ."'>".
-                            $impuesto['impuesto_clave'] ." | ". $impuesto['impuesto_concepto'] .
-                          "</option>\n";
-                          echo $html_option;
+                        foreach( $data['tipo_comprobantes'] as $tipo_comprobante ){
+                          echo "<option value='". $tipo_comprobante['tcomprobante_clave'] ." | ". $tipo_comprobante['tcomprobante_concepto'] ."'>".
+                              $tipo_comprobante['tcomprobante_clave'] . " | " . $tipo_comprobante['tcomprobante_concepto'] . "</option>";
                         }
                       ?>
                     </select>
                   </div>
-                  <!-- Descripción -->
-                  <div class="col-lg-6 col-md-12 col-sm-8">
-                    <label for="descripcion_impuesto_edit"> Descripción: </label>
-                    <input type='text' class='form-control' name='descripcion_impuesto_edit' placeholder='Breve descripción del impuesto' required autocomplete="off">
-                  </div>
-                  <!-- Factor -->
-                  <div class="col-lg-6 col-md-12 col-sm-8">
-                    <label for="tipo_factor_edit"> Factor: </label>
-                    <select class='form-control' name='tipo_factor_edit' required>
-                      <option value='0'>Seleccione un tipo</option>
-                      <option value='Tasa'>Tasa</option>
-                      <option value='Cuota'>Cuota</option>
-                    </select>
-                  </div>
-                  <!-- Tasa o Cuota -->
-                  <div class="col-lg-6 col-md-12 col-sm-8">
-                    <label for="tasa_cuota_edit"> Tasa o cuota: </label>
-                    <input type='text' class='form-control' name='tasa_cuota_edit' placeholder='Ejemplo: 0.16' required autocomplete="off">
+                  <!-- Consecutivo -->
+                  <div class="col-lg-5 col-md-12 col-sm-8">
+                    <label for="consecutivo"> Consecutivo: </label>
+                    <input type='text' class='form-control' name='consecutivo_edit' placeholder='Comenzar el conteo en el núm...' required autocomplete="off">
                   </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-success" name='agregar'> <i class="fas fa-check"></i> Guardar </button>
+              <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Guardar </button>
               <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
             </div>
           </div>

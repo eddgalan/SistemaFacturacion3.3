@@ -40,8 +40,8 @@ $(document).ready(function (){
       $.ajax({
         type: "POST",
         dataType: 'json',
-        url: "../../API/series/get_serie/" + serie,
-        data: {"token":token},
+        url: "../../API/series/get_serie_by_nom_serie",
+        data: {"token":token, "nom_serie":serie},
         success: function(resp){
           // Obtiene los datos del servicio
           var serie = resp.data.TipoComprobante;

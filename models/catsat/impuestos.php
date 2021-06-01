@@ -108,7 +108,6 @@
           $this->disconect();
           return false;
         }
-
       }
 
       public function get_impuesto($id_impuesto, $emisor){

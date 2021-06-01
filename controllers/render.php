@@ -636,7 +636,7 @@
           $consecutivo = $_POST['consecutivo'];
           $csd = $_POST['id_csd'];
 
-          if( $serie_pdo->get_serie($emisor, $serie) != false ){
+          if( $serie_pdo->get_serie_by_serie_emisor($emisor, $serie) != false ){
             $sesion->set_notification("ERROR", "No fue posible agregar la serie. La serie que desea agregar ya existe.");
           }else{
             if( $serie_pdo->insert_serie($emisor, $serie, $descripcion, $tipo_comprobante, $consecutivo, $csd) ){
@@ -648,21 +648,21 @@
           header("location: " . $hostname . "/catalogosSAT/series");
         }else{
           // UPDATE
-          $id_impuesto = $_POST['id_impuesto'];
-          $strimpuesto = $_POST['impuesto_edit'];
-          $descripcion = $_POST['descripcion_impuesto_edit'];
-          $factor = $_POST['tipo_factor_edit'];
-          $tasa_cuota = $_POST['tasa_cuota_edit'];
+          $id_serie = $_POST['id_serie'];
+          $serie = $_POST['serie_edit'];
+          $descripcion = $_POST['descripcion_edit'];
+          $tipo_comprobante = $_POST['tipo_comprobante_edit'];
+          $consecutivo = $_POST['consecutivo_edit'];
 
-          if( $serie_pdo->update_impuesto($id_impuesto, $emisor, $strimpuesto, $descripcion, $factor, $tasa_cuota) ){
-            $sesion->set_notification("OK", "Se actualizaron los datos del Impuesto de Forma correcta.");
+          if( $serie_pdo->update_serie($id_serie, $serie, $descripcion, $tipo_comprobante, $consecutivo) ){
+            $sesion->set_notification("OK", "Se actualizaron los datos de la Serie de Forma correcta.");
           }else{
-            $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Impuesto. Puede intentarlo de nuevo.");
+            $sesion->set_notification("ERROR", "Ocurrió un error al actualizar la Serie. Intentelo nuevamente.");
           }
-          header("location: ". $hostname ."/catalogosSAT/impuestos");
+          header("location: ". $hostname ."/catalogosSAT/series");
         }
       }else{
-        write_log("ProcessImpuestos | construct() | NO se recibieron datos por POST");
+        write_log("ProcessSeries | construct() | NO se recibieron datos por POST");
       }
     }
   }

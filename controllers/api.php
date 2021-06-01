@@ -139,7 +139,7 @@
   }
 
   class SerieAPI extends API{
-    public function get_serie($datos){
+    public function get_serie(){
       if($_POST){
         $token = $_POST['token'];
         $sesion = new UserSession();
@@ -148,9 +148,36 @@
         $emisor = $data_session['Emisor'];
 
         if($sesion->validate_token($token)){
-          $serie = $datos[1];
+          $serie_id = $_POST['serie_id'];
           $serie_pdo = new SeriePDO();
-          $data_serie = $serie_pdo->get_serie($emisor, $serie);
+          $data_serie = $serie_pdo->get_serie($serie_id, $emisor);
+          if($data_serie){
+            $this->return_data("SerieAPI | get_serie() | Mostrando datos de la Serie", 200, $data_serie);
+          }else{
+            $this->return_data("SerieAPI | get_serie() | Ocurrió un error.", 500);
+          }
+        }else{
+          write_log("SerieAPI | get_serie() | Token NO válido");
+          $this->return_data("Ocurrió un error... No es posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("NO se recibieron datos POST | SerieAPI");
+        $this->return_data("No es posible procesar su solicitud", 400);
+      }
+    }
+
+    public function get_serie_by_nom_serie(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        // Obtiene el emisor
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        if($sesion->validate_token($token)){
+          $serie = $_POST['nom_serie'];
+          $serie_pdo = new SeriePDO();
+          $data_serie = $serie_pdo->get_serie_by_serie_emisor($emisor, $serie);
           if($data_serie){
             $this->return_data("Mostrando Productos API", 200, $data_serie);
           }else{
@@ -165,6 +192,7 @@
         $this->return_data("No es posible procesar su solicitud", 400);
       }
     }
+
   }
 
   class ComprobanteAPI extends API{

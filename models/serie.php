@@ -50,7 +50,30 @@
         return $result;
       }
 
-      public function get_serie($emisor, $serie){
+      public function get_serie($id_serie, $emisor){
+        $this->connect();
+        try{
+          $sql = "SELECT * FROM series
+          WHERE  Id='$id_serie' AND Emisor='$emisor'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("SeriePDO | get_serie() | SQL: " . $sql);
+          write_log("SeriePDO | get_serie() | Result: " . serialize($result));
+          $this->disconect();
+          if( count($result) >0 ){
+            return $result[0];
+          }else{
+            return false;
+          }
+        }catch(PDOException $e) {
+          write_log("SeriePDO | get_serie() | Error al ejecutar la consulta. ERROR: " . $e->getMessage());
+          write_log("SQL: " . $sql);
+          return false;
+        }
+      }
+
+      public function get_serie_by_serie_emisor($emisor, $serie){
         $this->connect();
         try{
           $sql = "SELECT * FROM series
@@ -59,8 +82,8 @@
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-          write_log("SeriePDO | get_serie() | SQL: " . $sql);
-          write_log("SeriePDO | get_serie() | Result: " . serialize($result));
+          write_log("SeriePDO | get_serie_by_serie_emisor() | SQL: " . $sql);
+          write_log("SeriePDO | get_serie_by_serie_emisor() | Result: " . serialize($result));
           $this->disconect();
           if( count($result) >0 ){
             return $result[0];
@@ -91,6 +114,30 @@
         }catch(PDOException $e) {
           write_log("SeriePDO | insert_serie() | Ocurrió un error al realizar el INSERT de la Serie\nError: ". $e->getMessage());
           write_log("SQL: " . $sql);
+          $this->disconect();
+          return false;
+        }
+      }
+
+      public function update_serie($id, $serie, $descripcion, $strtpo_comprobante, $consecutivo){
+        $array_tpocomprobante = explode(" | ", $strtpo_comprobante);
+        $tipo_comprobante = $array_tpocomprobante[0];
+        $desc_tpo_comp = $array_tpocomprobante[1];
+
+        try{
+          $this->connect();
+          $sql = "UPDATE series SET  Serie = '$serie', Descripcion = '$descripcion',
+          TipoComprobante = '$tipo_comprobante', DescripcionTipoComp = '$desc_tpo_comp', Consecutivo = '$consecutivo'
+          WHERE Id = '$id'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          write_log("SeriePDO | update_serie() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("SeriePDO | update_serie() | Ocurrió un error al realizar el UPDATE de la Serie\nError: ". $e->getMessage());
+          write_log("SQL: ". $sql);
           $this->disconect();
           return false;
         }
