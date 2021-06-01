@@ -30,7 +30,7 @@
                             <?php require './views/modules/components/notifications.php'; ?>
                           </div>
                           <div class="row">
-                            <!-- ..:: Tabla Claves ProdServ ::.. -->
+                            <!-- ..:: Tabla Monedas ::.. -->
                             <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:5px;">
                                 <div class="table-sm table-responsive">
                                   <table class="table table-bordered table-hover">

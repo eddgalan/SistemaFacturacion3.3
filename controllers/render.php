@@ -798,7 +798,7 @@
       $data_session = $sesion->get_session();
       $emisor = $data_session['Emisor'];
       // Obtiene el certificado y nocertificado
-      $csd_pdo = new CSD_PDO('', '', $emisor);
+      $csd_pdo = new CSD_PDO();
       $datos_csd = $csd_pdo->get_csd($emisor);
       $certificado = $datos_csd['Certificado'];
       $nocertificado = $datos_csd['NoCertificado'];

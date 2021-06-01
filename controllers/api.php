@@ -149,8 +149,8 @@
 
         if($sesion->validate_token($token)){
           $serie = $datos[1];
-          $serie_pdo = new SeriePDO("", "", $emisor, $serie);
-          $data_serie = $serie_pdo->get_serie();
+          $serie_pdo = new SeriePDO();
+          $data_serie = $serie_pdo->get_serie($emisor, $serie);
           if($data_serie){
             $this->return_data("Mostrando Productos API", 200, $data_serie);
           }else{
@@ -178,8 +178,8 @@
           $data_session = $sesion->get_session();
           $emisor = $data_session['Emisor'];
           // Obtiene el NoCertificado
-          $csd_pdo = new CSD_PDO('', '', $emisor);
-          $datos_csd = $csd_pdo->get_csd();
+          $csd_pdo = new CSD_PDO();
+          $datos_csd = $csd_pdo->get_csd($emisor);
           $nocertificado = $datos_csd['NoCertificado'];
           if($nocertificado != false){
             // Obtiene los datos POST
@@ -202,8 +202,8 @@
             $productos_servicios = $_POST['data']['prodservs'];
             $observaciones = $_POST['data']['observaciones'];
             // Obtiene el consecutivo de la serie
-            $serie_pdo = new SeriePDO("", "", $emisor, $serie);
-            $data_serie = $serie_pdo->get_serie();
+            $serie_pdo = new SeriePDO();
+            $data_serie = $serie_pdo->get_serie($emisor, $serie);
             if($data_serie != false){
               $consecutivo = intval($data_serie['Consecutivo']);
               $folio = $consecutivo + 1;
