@@ -182,7 +182,7 @@
             return false;
           }
         }catch(PDOException $e){
-          write_log("CatSATMoneda | cambiar_activo() | Ocurrió un error al activar/desactivar la Moneda.\nError: ". $e->getMessage());
+          write_log("SeriePDO | cambiar_activo() | Ocurrió un error al activar/desactivar la Moneda.\nError: ". $e->getMessage());
           write_log("SQL: ". $sql);
           $this->disconect();
         }
