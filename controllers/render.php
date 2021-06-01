@@ -677,21 +677,21 @@
         $data_session = $sesion->get_session();
         $emisor = $data_session['Emisor'];
 
-        $impuesto_id = $dataurl[1];
-        $impuesto_pdo = new CatSATImpuestos();
-        // Verifica que el Impuesto Pertenezca al Emisor
-        if( $impuesto_pdo->get_impuesto($impuesto_id, $emisor) != false ){
+        $serie_id = $dataurl[1];
+        $serie_pdo = new SeriePDO();
+        // Verifica que la Serie Pertenezca al Emisor
+        if( $serie_pdo->get_serie($serie_id, $emisor) != false ){
           $status_actual = $dataurl[2];
 
           if($status_actual == 1){
             $nuevo_status = 0;
-            $msg_status="Se ha desactivado el Impuesto de su catálogo.";
+            $msg_status="Se ha desactivado la Serie seleccionada.";
           }else{
             $nuevo_status = 1;
-            $msg_status="Se ha activado el Impuesto de su catálogo.";
+            $msg_status="Se ha activado la Serie seleccionada.";
           }
 
-          if( $impuesto_pdo->cambiar_activo($impuesto_id, $nuevo_status, $emisor) ){
+          if( $serie_pdo->cambiar_activo($serie_id, $nuevo_status, $emisor) ){
             $sesion->set_notification("OK", $msg_status);
           }else{
             $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus del Impuesto.");
@@ -703,7 +703,7 @@
       }else{
         header("Location: " . $hostname . "/login");
       }
-      header("location: " . $hostname . "/catalogosSAT/impuestos");
+      header("location: " . $hostname . "/catalogosSAT/series");
     }
   }
 

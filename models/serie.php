@@ -159,10 +159,33 @@
           $this->disconect();
           return false;
         }
-
-
         write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
         $this->disconect();
+      }
+
+      public function cambiar_activo($serie_id, $nuevo_status, $emisor){
+        try{
+          $this->connect();
+          $sql = "UPDATE series
+          SET Estatus='$nuevo_status'
+          WHERE Id = $serie_id AND Emisor = $emisor";
+          write_log("SeriePDO | cambiar_activo() | SQL: " . $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          if( $stmt->rowCount() == 1){
+            write_log("SeriePDO | cambiar_activo() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+            $this->disconect();
+            return true;
+          }else{
+            write_log("SeriePDO | cambiar_activo() | Se actualizaron mas de un registro");
+            return false;
+          }
+        }catch(PDOException $e){
+          write_log("CatSATMoneda | cambiar_activo() | Ocurrió un error al activar/desactivar la Moneda.\nError: ". $e->getMessage());
+          write_log("SQL: ". $sql);
+          $this->disconect();
+        }
       }
 
     }
