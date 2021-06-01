@@ -4,13 +4,19 @@
 
   class Routes{
     function __construct($host_name, $site_name){
-      /* ...:: Views :::.. */
+      /* ...:: VIEWS :::.. */
       $routes["login"]="Login";
       $routes["logout"]="Logout";
       $routes["dashboard"]="Dashboard";
+      /* ..:: ADMINISTRAR ::.. */
+      // Usuarios
       $routes["administrar/usuarios"]="ViewUsuarios";
       $routes["administrar/usuarios/process"]="ProcessUsuario";
-      $routes["administrar/usuarios/switch_active/_data_/_data_"]="SwitchActivo";
+      $routes["administrar/usuarios/switch_active/_data_/_data_"]="SwitchActivoUsuarios";
+      // Grupos
+      $routes["administrar/grupos"]="ViewGrupos";
+      $routes["administrar/grupos/process"]="ProcessGrupos";
+      // Emisores
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";
 
@@ -52,6 +58,7 @@
 
       /* ...:: APIs ::... */
       $routes["API/usuarios/get_usuario/_data_"]="UsuarioAPI/get_usuario";
+      $routes["API/grupos/get_grupo"]="GrupoAPI/get_grupo";
       $routes["API/productos/get_producto/_data_"]="ProductoAPI/get_producto";
       $routes["API/series/get_serie_by_nom_serie"]="SerieAPI/get_serie_by_nom_serie";
       $routes["API/series/get_serie"]="SerieAPI/get_serie";

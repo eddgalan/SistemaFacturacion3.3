@@ -34,6 +34,32 @@
     }
   }
 
+  class GrupoAPI extends API{
+    public function get_grupo(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $id_grupo = $_POST['id_grupo'];
+          $grupo_pdo = new GrupoPDO();
+          $data_grupo = $grupo_pdo->get_grupo($id_grupo);
+          if( $data_grupo != false ){
+            $this-> return_data("GrupoAPI | get_grupo() | Información del grupo", 200, $data_grupo);
+          }else{
+            $this-> return_data("GrupoAPI | get_grupo() | NO fue posible obtener la información solicitada", 400);
+          }
+        }else{
+          write_log("GrupoAPI | get_grupo() | Token no válido");
+          $this->return_data("No fue posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("GrupoAPI | get_grupo() | NO se recibieron datos POST");
+        $this->return_data("No fue posible procesar su solicitud", 400);
+      }
+    }
+  }
+
   class CatSATAPI extends API{
     public function get_usos_cfdi(){
       if($_POST){

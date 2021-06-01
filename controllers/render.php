@@ -9,6 +9,7 @@
   require 'models/csd.php';
   require 'models/mailgun.php';
   require 'models/contacto.php';
+  require 'models/administrador/grupos.php';
 
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';
@@ -79,7 +80,7 @@
     }
   }
 
-  class SwitchActivo{
+  class SwitchActivoUsuarios{
     function __construct($host_name="", $site_name="", $datos=null){
       // Valida la sesión del usuario (Debe estar logueado)
       $sesion = new UserSession();
@@ -168,6 +169,92 @@
       }
       // Redirecciona a la página de administrar/usuarios
       header("location: " . $host_name . "/administrar/usuarios");
+    }
+  }
+
+  class ViewGrupos{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Grupos";
+      $data['host'] = $hostname;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+
+      $grupo_pdo = new GrupoPDO();
+      $data['grupos'] = $grupo_pdo->get_all();
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/grupos.php', $data, true);
+    }
+  }
+
+  class ProcessGrupos{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if ($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          if (empty($_POST['id_grupo'])){
+            // INSERT Grupo
+            $grupo = $_POST['grupo'];
+            $descripcion = $_POST['descripcion'];
+
+            $grupo_pdo = new GrupoPDO();
+            if( $grupo_pdo->insert_grupo($grupo, $descripcion) ){
+              $sesion->set_notification("OK", "Se ha creado un nuevo grupo");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al crear el Grupo. Intente de nuevo.");
+            }
+          }else{
+            // UPDATE Grupo
+            $id_grupo = $_POST['id_grupo'];
+            $grupo = $_POST['grupo_edit'];
+            $descripcion = $_POST['descripcion_edit'];
+
+            $grupo_pdo = new GrupoPDO();
+            if( $grupo_pdo->update_grupo($id_grupo, $grupo, $descripcion) ){
+              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Grupo.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+      }
+      // Redirecciona a la página de administrar/usuarios
+      header("location: " . $hostname . "/administrar/grupos");
+    }
+  }
+
+  class SwitchActivoGrupos{
+    function __construct($host_name="", $site_name="", $datos=null){
+      // Valida la sesión del usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        $user_id = $datos[1];
+        $status_actual = $datos[2];
+
+        if($status_actual == 1){
+          $nuevo_status = 0;
+          $msg_status="Se ha desactivado el usuario.";
+        }else{
+          $nuevo_status = 1;
+          $msg_status="Se ha activado el usuario.";
+        }
+
+        $usuario = new UsuarioPDO($user_id, $nuevo_status);
+        $sesion = new UserSession();
+        if($usuario->cambiar_activo()){
+          $sesion->set_notification("OK", $msg_status);
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
+        }
+        header("location: " . $host_name . "/administrar/usuarios");
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
     }
   }
 
