@@ -231,7 +231,7 @@
             $observaciones = $_POST['data']['observaciones'];
             // Obtiene el consecutivo de la serie
             $serie_pdo = new SeriePDO();
-            $data_serie = $serie_pdo->get_serie($emisor, $serie);
+            $data_serie = $serie_pdo->get_serie_by_serie_emisor($emisor, $serie);
             if($data_serie != false){
               $consecutivo = intval($data_serie['Consecutivo']);
               $folio = $consecutivo + 1;
