@@ -60,6 +60,32 @@
     }
   }
 
+  class EmisorAPI extends API{
+    public function get_emisor(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if( $sesion->validate_token($token) ){
+          $id_emisor = $_POST['id_emisor'];
+          $emisor_pdo = new EmisorPDO();
+          $data_emisor = $emisor_pdo->get_emisor($id_emisor);
+          if( $data_emisor != false ){
+            $this-> return_data("EmisorAPI | get_emisor() | Información del grupo", 200, $data_emisor);
+          }else{
+            $this-> return_data("EmisorAPI | get_emisor() | NO fue posible obtener la información solicitada", 400);
+          }
+        }else{
+          write_log("EmisorAPI | get_emisor() | Token no válido");
+          $this->return_data("No fue posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("EmisorAPI | get_emisor() | NO se recibieron datos POST");
+        $this->return_data("No fue posible procesar su solicitud", 400);
+      }
+    }
+  }
+
   class CatSATAPI extends API{
     public function get_usos_cfdi(){
       if($_POST){
@@ -102,9 +128,9 @@
               }
             }
           }
-          $this -> return_data("Mostrando Usos CFDI API", 200, $usos);
+          $this -> return_data("CatSATAPI | get_usos_cfdi() | Mostrando Usos CFDI API", 200, $usos);
         }else{
-          write_log("Token NO válido | UsuarioAPI");
+          write_log("Token NO válido | CatSATAPI");
           $this->return_data("Ocurrió un error... No es posible procesar su solicitud", 400);
         }
       }else{
@@ -126,9 +152,30 @@
           $emisor = $data_session['Emisor'];
 
           $data_impuesto = $impuesto_pdo->get_impuesto($id_impuesto, $emisor);
-          $this -> return_data("Mostrando Usuarios API", 200, $data_impuesto);
+          $this -> return_data("CatSATAPI | get_impuestos() | Mostrando Impuestos API", 200, $data_impuesto);
         }else{
           write_log("CatSATAPI | get_impuesto() | Token NO válido");
+          $this->return_data("Ocurrió un error... No es posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("NO se recibieron datos POST");
+        $this->return_data("No es posible procesar su solicitud", 400);
+      }
+    }
+
+    public function get_regimenes(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $tpo_persona = $_POST['tpo_persona'];
+          $regimen_pdo = new CatSATRegimenesPDO();
+
+          $data_regimen = $regimen_pdo->get_regimenes_persona($tpo_persona);
+          $this -> return_data("CatSATAPI | get_regimenes() | Mostrando Regimenes API", 200, $data_regimen);
+        }else{
+          write_log("CatSATAPI | get_regimenes() | Token NO válido");
           $this->return_data("Ocurrió un error... No es posible procesar su solicitud", 400);
         }
       }else{
@@ -262,8 +309,8 @@
               $consecutivo = intval($data_serie['Consecutivo']);
               $folio = $consecutivo + 1;
               // Obtiene el lugar de expedición de la información del Emisor
-              $emisor_pdo = new EmisorPDO($emisor);
-              $data_emisor = $emisor_pdo->get_emisor();
+              $emisor_pdo = new EmisorPDO();
+              $data_emisor = $emisor_pdo->get_emisor($emisor);
               if($data_emisor != false){
                 $lugar_exp = $data_emisor['CP'];
                 $regimen = $data_emisor['Regimen'];

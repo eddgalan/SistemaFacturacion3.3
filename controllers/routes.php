@@ -19,6 +19,7 @@
       // Emisores
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";
+      $routes["administrar/emisores/switch_active/_data_/_data_"]="SwitchActivoEmisores";
 
       $routes['CFDIs/facturas']="ViewsFacturas";
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
@@ -59,12 +60,14 @@
       /* ...:: APIs ::... */
       $routes["API/usuarios/get_usuario/_data_"]="UsuarioAPI/get_usuario";
       $routes["API/grupos/get_grupo"]="GrupoAPI/get_grupo";
+      $routes["API/emisores/get_emisor"]="EmisorAPI/get_emisor";
       $routes["API/productos/get_producto/_data_"]="ProductoAPI/get_producto";
       $routes["API/series/get_serie_by_nom_serie"]="SerieAPI/get_serie_by_nom_serie";
       $routes["API/series/get_serie"]="SerieAPI/get_serie";
       $routes["API/CFDIs/facturas/process"]="ComprobanteAPI/insert_cfdi";
       $routes["API/catsat/get_usos_cfdi"]="CatSATAPI/get_usos_cfdi";
       $routes["API/catsat/get_impuesto"]="CatSATAPI/get_impuesto";
+      $routes["API/catsat/get_regimenes"]="CatSATAPI/get_regimenes";
 
 
       //Si no está vacía la variable $_GET['url'] la usamos para navegar

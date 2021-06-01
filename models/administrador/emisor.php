@@ -1,0 +1,101 @@
+<?php
+    Class EmisorPDO extends Connection_PDO{
+      private $id;
+      private $estatus;
+      private $nombre;
+      private $rfc;
+      private $domicilio;
+      private $cp;
+      private $persona;
+      private $regimen;
+      private $pathlogo;
+      private $pac;
+
+      function __construct($id=''){
+        $this->id=$id;
+        parent::__construct();
+
+      }
+
+      public function get_all(){
+        $this->connect();
+        try{
+          $sql = "SELECT * FROM emisores";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("EmisorPDO | get_all() | SQL: " . $sql);
+          write_log("EmisorPDO | get_all() | Result: ". serialize($result));
+          return $result;
+        }catch(PDOException $e) {
+          write_log("EmisorPDO | get_all() | Ocurrió un error al ejecutar la consulta. ERROR: " . $e->getMessage());
+          write_log("SQL: " . $sql);
+          return false;
+        }
+      }
+
+      public function insert_emisor($nombre, $rfc, $pac, $tpo_persona){
+        $this->connect();
+        try{
+          $sql = "INSERT INTO emisores (Nombre, RFC, Persona, PAC)
+          VALUES ('$nombre', '$rfc', '$tpo_persona', '$pac')";
+          $this->conn->exec($sql);
+          write_log("EmisorPDO | insert_emisor() | Se realizó el INSERT con Éxito.");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("EmisorPDO | insert_emisor() | Ocurrió un error al realizar el INSERT del Emisor\nError: ". $e->getMessage());
+          $this->disconect();
+          return false;
+        }
+      }
+
+      public function get_emisor($id){
+        $this->connect();
+        try{
+          $sql = "SELECT * FROM emisores WHERE Id='$id'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("EmisorPDO | get_emisor() | SQL: " . $sql);
+          write_log("EmisorPDO | get_emisor() | Result: ". serialize($result));
+
+          if( count($result) == 1 ){
+            return $result[0];
+          }else{
+            return false;
+          }
+        }catch(PDOException $e) {
+          write_log("EmisorPDO | get_emisor() | Error al ejecutar la consulta. ERROR: " . $e->getMessage());
+          write_log("SQL: " . $sql);
+          return false;
+        }
+      }
+
+      public function cambiar_activo($id_emisor, $nuevo_status){
+        try{
+          $this->connect();
+          $sql = "UPDATE emisores
+          SET Estatus='$nuevo_status'
+          WHERE Id = $id_emisor";
+          write_log("EmisorPDO | cambiar_activo() | SQL: " . $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          if( $stmt->rowCount() == 1){
+            write_log("EmisorPDO | cambiar_activo() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+            $this->disconect();
+            return true;
+          }else{
+            write_log("EmisorPDO | cambiar_activo() | Se actualizaron mas de un registro");
+            return false;
+          }
+        }catch(PDOException $e){
+          write_log("EmisorPDO | cambiar_activo() | Ocurrió un error al activar/desactivar la Moneda.\nError: ". $e->getMessage());
+          write_log("SQL: ". $sql);
+          $this->disconect();
+        }
+      }
+
+    }
+?>

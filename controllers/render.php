@@ -3,13 +3,13 @@
   require 'models/cliente.php';
   require 'models/pac.php';
   require 'models/producto.php';
-  require 'models/serie.php';
-  require 'models/emisor.php';
   require 'models/comprobante.php';
   require 'models/csd.php';
   require 'models/mailgun.php';
   require 'models/contacto.php';
   require 'models/administrador/grupos.php';
+  require 'models/administrador/emisor.php';
+  require 'models/administrador/serie.php';
 
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';
@@ -18,6 +18,7 @@
   require 'models/catsat/moneda.php';
   require 'models/catsat/unidades.php';
   require 'models/catsat/impuestos.php';
+  require 'models/catsat/regimenes.php';
 
   class Login {
     function __construct($host_name="", $site_name="", $variables=null){
@@ -223,7 +224,6 @@
       }else{
         write_log("ProcessUsuario\nNO se recibieron datos por POST");
       }
-      // Redirecciona a la página de administrar/usuarios
       header("location: " . $hostname . "/administrar/grupos");
     }
   }
@@ -258,7 +258,7 @@
     }
   }
 
-  class ViewEmisores {
+  class ViewEmisores{
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Administrar | Emisores";
       $data['host'] = $host_name;
@@ -269,12 +269,85 @@
       $pac = new PacPDO();
       $data['pacs'] = $pac->get_active_pac();
 
+      $emisor_pdo = new EmisorPDO();
+      $data['emisores'] = $emisor_pdo->get_all();
+
       $this->view = new View();
       $this->view->render('views/modules/administrar/emisores.php', $data, true);
     }
   }
 
-  class ViewProdServ {
+  class ProcessEmisores{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if ($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          if (empty($_POST['id_emisor'])){
+            // INSERT EMISOR
+            $nombre = $_POST['nombre'];
+            $rfc = $_POST['rfc'];
+            $pac = $_POST['pac'];
+            $tpo_persona = $_POST['tipo_persona'];
+
+            $emisor_pdo = new EmisorPDO();
+            if( $emisor_pdo->insert_emisor($nombre, $rfc, $pac, $tpo_persona) ){
+              $sesion->set_notification("OK", "Se ha agregado el nuevo emisor.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al agregar el emisor. Intente de nuevo.");
+            }
+          }else{
+            // UPDATE EMISOR
+            $id_grupo = $_POST['id_grupo'];
+            $grupo = $_POST['grupo_edit'];
+            $descripcion = $_POST['descripcion_edit'];
+
+            $grupo_pdo = new GrupoPDO();
+            if( $grupo_pdo->update_grupo($id_grupo, $grupo, $descripcion) ){
+              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Grupo.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/administrar/emisores");
+    }
+  }
+
+  class SwitchActivoEmisores{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        $emisor_id = $dataurl[1];
+        $emisor_pdo = new EmisorPDO();
+
+        $status_actual = $dataurl[2];
+
+        if($status_actual == 1){
+          $nuevo_status = 0;
+          $msg_status="Se ha desactivado el Emisor.";
+        }else{
+          $nuevo_status = 1;
+          $msg_status="Se ha activado el Emisor.";
+        }
+
+        if( $emisor_pdo->cambiar_activo($emisor_id, $nuevo_status) ){
+          $sesion->set_notification("OK", $msg_status);
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus del Emisor.");
+        }
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
+      header("location: " . $hostname . "/administrar/emisores");
+    }
+  }
+
+  class ViewProdServ{
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Catalogo Productos y Servicios";
       $data['host'] = $host_name;
@@ -895,8 +968,8 @@
       $path_xml = $comprobante_pdo->create_xml($id_comprobante, $emisor, $certificado, $nocertificado);
 
       if( $path_xml != false ){
-        $emisor_pdo = new EmisorPDO($emisor);
-        $datos_emisor = $emisor_pdo->get_emisor();
+        $emisor_pdo = new EmisorPDO();
+        $datos_emisor = $emisor_pdo->get_emisor($emisor);
         $pac_id = $datos_emisor['PAC'];
         // Obtiene la información del PAC
         $pac_pdo = new PacPDO();
