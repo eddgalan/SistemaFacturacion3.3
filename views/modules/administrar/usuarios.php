@@ -24,11 +24,6 @@
                             </button>
                           </div>
                         </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                          <?php
-                            require './views/modules/components/notifications.php';
-                          ?>
-                        </div>
                         <hr>
                         <div class="col-lg-12 col-md-12 col-sm-12">
                           <div class="col-lg-12 col-md-12 col-sm-12">
