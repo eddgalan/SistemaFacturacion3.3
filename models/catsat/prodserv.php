@@ -38,6 +38,17 @@
         return $result;
       }
 
+      public function get_all_actives($emisor){
+        $this->connect();
+        $sql = "SELECT * FROM catsatclavesprodserv WHERE Estatus = 1 AND Emisor='$emisor'";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        write_log("CatSATProdServ | get_all_actives() | Result: ". serialize($result));
+        $this->disconect();
+        return $result;
+      }
+
       public function add_prodserv($prodserv){
         $clave = substr($prodserv, 0, strpos($prodserv, " | "));
         $desc = substr($prodserv, 11, strlen($prodserv));

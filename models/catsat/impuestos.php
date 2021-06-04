@@ -23,20 +23,24 @@
       }
 
       public function get_all($emisor){
+        $this->connect();
         $sql = "SELECT * FROM catsatimpuestos WHERE emisor='$emisor'";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        write_log("CatSATImpuestos \n " . serialize($result));
+        write_log("CatSATImpuestos | get_all() | Result: " . serialize($result));
+        $this->disconect();
         return $result;
       }
 
       public function get_all_actives($emisor){
-        $sql = "SELECT * FROM catsatimpuestos WHERE Emisor='$emisor' AND Estatus=1 ";
+        $this->connect();
+        $sql = "SELECT * FROM catsatimpuestos WHERE Estatus = 1 AND Emisor='$emisor'";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        write_log("CatSATImpuestos \n " . serialize($result));
+        write_log("CatSATImpuestos | get_all_actives() | Result: " . serialize($result));
+        $this->disconect();
         return $result;
       }
 

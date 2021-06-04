@@ -20,6 +20,10 @@
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";
       $routes["administrar/emisores/switch_active/_data_/_data_"]="SwitchActivoEmisores";
+      // Productos y Servicios
+      $routes["administrar/prodserv"]="ViewProdServs";
+      $routes["administrar/prodserv/process"]="ProcessProdServs";
+      $routes["administrar/prodserv/switch_active/_data_/_data_"]="SwitchActivoProdServs";
 
       $routes['CFDIs/facturas']="ViewsFacturas";
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";

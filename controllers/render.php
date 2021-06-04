@@ -10,6 +10,7 @@
   require 'models/administrador/grupos.php';
   require 'models/administrador/emisor.php';
   require 'models/administrador/serie.php';
+  require 'models/administrador/prod_serv.php';
 
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';
@@ -395,6 +396,114 @@
     }
   }
 
+  class ViewProdServs{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Productos y Servicios";
+      $data['host'] = $hostname;
+
+      $sesion = new UserSession();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+      $data['token'] = $sesion->set_token();
+
+      $prod_serv_pdo = new ProdServPDO();
+      $data['prod_servs'] = $prod_serv_pdo->get_all($emisor);
+      // Obtiene las Claves Activas de Productos/Servicios del Emisor
+      $clave_prodserv_pdo = new CatSATProdServ();
+      $data['claves_prodserv'] = $clave_prodserv_pdo->get_all_actives($emisor);
+      // Obtiene las Claves Activas de Unidades del Emisor
+      $catsatunidad_pdo = new CatSATUnidades();
+      $data['unidades'] = $catsatunidad_pdo->get_all_actives($emisor);
+      // Obtiene los Impuestos Activos del Emisor
+      $catsatimpuestos_pdo = new CatSATImpuestos();
+      $data['impuestos'] = $catsatimpuestos_pdo->get_all_actives($emisor);
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/prod_serv.php', $data, true);
+    }
+  }
+
+  class ProcessProdServs{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if ($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        if($sesion->validate_token($token)){
+          if (empty($_POST['id_prodserv'])){
+            // INSERT Grupo
+            $sku = $_POST['sku'];
+            $nombre = $_POST['nombre'];
+            $prodserv = $_POST['clave_prodserv'];
+            $unidad = $_POST['clave_unidad'];
+            $precio = $_POST['precio'];
+            $impuesto = $_POST['impuesto'];
+
+            $prodserv_pdo = new ProdServPDO();
+            // Verifica que no exista otro producto con ese SKU
+            if( $prodserv_pdo->get_prodserv_by_sku($emisor, $sku) ){
+              $sesion->set_notification("ERROR", "Ocurrió un error al registrar el producto o servicio. ".
+              "El SKU que ingresó ('". $sku ."') ya existe.");
+            }else{
+              if( $prodserv_pdo->insert_prodserv($emisor, $sku, $nombre, $prodserv, $unidad, $precio, $impuesto) ){
+                $sesion->set_notification("OK", "Se ha agregado el nuevo producto o servicio.");
+              }else{
+                $sesion->set_notification("ERROR", "Ocurrió un error al agregar el producto o servicio. Intente de nuevo.");
+              }
+            }
+          }else{
+            // UPDATE Grupo
+            $id_grupo = $_POST['id_grupo'];
+            $grupo = $_POST['grupo_edit'];
+            $descripcion = $_POST['descripcion_edit'];
+
+            $grupo_pdo = new GrupoPDO();
+            if( $grupo_pdo->update_grupo($id_grupo, $grupo, $descripcion) ){
+              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Grupo.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/administrar/prodserv");
+    }
+  }
+
+  class SwitchActivoProds{
+    function __construct($host_name="", $site_name="", $datos=null){
+      // Valida la sesión del usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        $user_id = $datos[1];
+        $status_actual = $datos[2];
+
+        if($status_actual == 1){
+          $nuevo_status = 0;
+          $msg_status="Se ha desactivado el usuario.";
+        }else{
+          $nuevo_status = 1;
+          $msg_status="Se ha activado el usuario.";
+        }
+
+        $usuario = new UsuarioPDO($user_id, $nuevo_status);
+        $sesion = new UserSession();
+        if($usuario->cambiar_activo()){
+          $sesion->set_notification("OK", $msg_status);
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
+        }
+        header("location: " . $host_name . "/administrar/usuarios");
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
+    }
+  }
+
   class ViewProdServ{
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Catalogo Productos y Servicios";
@@ -509,7 +618,6 @@
       $sesion = new UserSession();
       if( $sesion->validate_session() ){
         // Obtiene el Emisor
-        $sesion = new UserSession();
         $data_session = $sesion->get_session();
         $emisor = $data_session['Emisor'];
 

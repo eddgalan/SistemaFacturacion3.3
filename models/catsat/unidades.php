@@ -21,11 +21,24 @@
       }
 
       public function get_all($emisor){
+        $this->connect();
         $sql = "SELECT * FROM catsatunidades WHERE emisor='$emisor'";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         write_log("CatSATUnidades | get_all() | Unidades: " . serialize($result));
+        $this->disconect();
+        return $result;
+      }
+
+      public function get_all_actives($emisor){
+        $this->connect();
+        $sql = "SELECT * FROM catsatunidades WHERE Estatus = 1 AND Emisor='$emisor'";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        write_log("CatSATUnidades | get_all_actives() | Result: " . serialize($result));
+        $this->disconect();
         return $result;
       }
 
