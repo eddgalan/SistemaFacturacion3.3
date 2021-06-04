@@ -279,7 +279,7 @@
 
   class ProcessEmisores{
     function __construct($hostname="", $sitename="", $dataurl=null){
-      if ($_POST){
+      if($_POST){
         $token = $_POST['token'];
         $sesion = new UserSession();
 
@@ -299,15 +299,63 @@
             }
           }else{
             // UPDATE EMISOR
-            $id_grupo = $_POST['id_grupo'];
-            $grupo = $_POST['grupo_edit'];
-            $descripcion = $_POST['descripcion_edit'];
+            $id_emisor = $_POST['id_emisor'];
+            $emisor = $_POST['nombre_edit'];
+            $rfc_edit = $_POST['rfc_edit'];
+            $domicilio = $_POST['domicilio_edit'];
+            $codigo_postal = $_POST['codigo_postal_edit'];
+            $tipo_persona = $_POST['tipo_persona_edit'];
+            $str_regimen = $_POST['regimen_edit'];
+            $pac = $_POST['pac_edit'];
+            $modo = $_POST['modo_edit'];
 
-            $grupo_pdo = new GrupoPDO();
-            if( $grupo_pdo->update_grupo($id_grupo, $grupo, $descripcion) ){
-              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+            $array_regimen = explode(" | ", $str_regimen);
+            $regimen = $array_regimen[0];
+            $desc_regimen = $array_regimen[1];
+            // Valida si se ingresó un nuevo Logo
+            if(!empty($_FILES['logo_edit'])){
+              $file = $_FILES['logo_edit'];
+              $type = $file['type'];
+              // Valida el Tipo de Archivo
+              if($type == "image/jpg" || $type == "image/jpeg" || $type == "image/png"){
+                $extension = substr($file['name'], strpos($file['name'], '.'), strlen($file['name']));
+                $pathlogo = "uploads/". $rfc_edit ."/logo" . $extension;
+                // Valida si existe el directorio donde se guardará el Logo
+                if(!is_dir("uploads/". $rfc_edit)){
+                  mkdir("uploads/". $rfc_edit, 0777);
+                }
+                move_uploaded_file($file['tmp_name'], $pathlogo);
+                write_log("ProcessEmisores | __contruct() | Se cargó la imagen de forma exitosa");
+              }else{
+                write_log("ProcessEmisores | __contruct() | El archivo NO es una imágen");
+                $sesion->set_notification("ERROR", "El Logotipo que desea cargar no es una imagen");
+                header("location: " . $hostname . "/administrar/emisores");
+              }
+            }
+
+            $emisor_pdo = new EmisorPDO();
+            $data_emisor = $emisor_pdo->get_emisor($id_emisor);
+            $rfc_emisor = $data_emisor['RFC'];
+
+            if($rfc_emisor != $rfc_edit){
+              // Elimina el logotipo anterior
+              unlink($data_emisor['PathLogo']);
+              // Elimina la carpeta anterior
+              if(rmdir("uploads/". $rfc_emisor)){
+                write_log("ProcessEmisores | __contruct() | Se eliminó la carpeta del Emisor: ". $rfc_emisor);
+              }else{
+                write_log("ProcessEmisores | __contruct() | Ocurrió un error al eliminar la carpeta del Emisor: ". $rfc_emisor);
+              }
+            }
+            if( empty($pathlogo) ){
+              $pathlogo = $data_emisor['PathLogo'];
+            }
+            // Hace el UPDATE
+            if( $emisor_pdo->update_emisor($id_emisor, $emisor, $rfc_edit, $domicilio, $codigo_postal, $tipo_persona,
+            $regimen, $desc_regimen, $pathlogo, $pac, $modo) ){
+              $sesion->set_notification("OK", "Los datos del Emisor se actualizaron correctamente.");
             }else{
-              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Grupo.");
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del Emisor.");
             }
           }
         }

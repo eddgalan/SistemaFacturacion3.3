@@ -190,7 +190,7 @@
             <h4 class="modal-title"> <i class='fas fa-edit'></i> Editar Emisor </h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
-          <form method="POST" action="<?= $data['host'] ?>/administrar/emisor/process">
+          <form method="POST" action="<?= $data['host'] ?>/administrar/emisores/process" enctype="multipart/form-data">
               <div class="modal-body">
                 <div class="row">
                   <!-- Token -->

@@ -14,7 +14,6 @@
       function __construct($id=''){
         $this->id=$id;
         parent::__construct();
-
       }
 
       public function get_all(){
@@ -68,6 +67,28 @@
         }catch(PDOException $e) {
           write_log("EmisorPDO | get_emisor() | Error al ejecutar la consulta. ERROR: " . $e->getMessage());
           write_log("SQL: " . $sql);
+          return false;
+        }
+      }
+
+      public function update_emisor($id_emisor, $emisor, $rfc_edit, $domicilio, $codigo_postal, $tipo_persona,
+      $regimen, $desc_regimen, $path_logo, $pac, $modo){
+        try{
+          $this->connect();
+          $sql = "UPDATE emisores SET Nombre = '$emisor', RFC = '$rfc_edit', Domicilio = '$domicilio', CP = '$codigo_postal',
+          Persona = '$tipo_persona', Regimen = '$regimen', DescRegimen = '$desc_regimen', PathLogo = '$path_logo',
+          PAC = '$pac', Testing = '$modo'
+          WHERE Id = '$id_emisor'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          write_log("EmisorPDO | update_emisor() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("EmisorPDO | update_emisor() | Ocurrió un error al realizar el UPDATE del Emisor\nError: ". $e->getMessage());
+          write_log("SQL: ". $sql);
+          $this->disconect();
           return false;
         }
       }
