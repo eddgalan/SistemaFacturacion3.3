@@ -39,9 +39,9 @@
                                           <th>Estatus</th>
                                           <th>SKU</th>
                                           <th>Nombre</th>
-                                          <th>Clave</th>
                                           <th>Descripción</th>
                                           <th>Unidad</th>
+                                          <th>Precio</th>
                                           <th>Clave Impuesto</th>
                                           <th>Tasa o cuota</th>
                                           <th>Acciones</th>
@@ -62,12 +62,12 @@
                                             }
                                             $html_row = ""."\n\t\t\t\t\t\t\t<tr>\n".
                                             "\t\t\t\t\t\t\t\t<td class='text-center'>".
-                                              "\t\t\t\t\t\t\t\t\t<a href='". $data['host'] ."/administrar/usuarios/switch_active/". $prod_serv['Id'] ."/". $prod_serv['Estatus'] ."'>" . $icon . "</td> \n".
+                                              "\t\t\t\t\t\t\t\t\t<a href='". $data['host'] ."/administrar/prodserv/switch_active/". $prod_serv['Id'] ."/". $prod_serv['Estatus'] ."'>" . $icon . "</td> \n".
                                                           "\t\t\t\t\t\t\t\t<td>". $prod_serv['SKU'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td>". $prod_serv['Nombre'] ."</td>\n".
-                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>". $prod_serv['ClaveProdServ'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td>". $prod_serv['DescClave'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td class='text-center'>". $prod_serv['NombreUnidad'] ."</td>\n".
+                                                          "\t\t\t\t\t\t\t\t<td class='text-center'> $". number_format( $prod_serv['Precio'],2,".","" ) ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td class='text-center'>". $prod_serv['ClaveImpuesto'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td class='text-center'>". $prod_serv['Tasa_Cuota'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td>\n".
@@ -153,7 +153,7 @@
                   <!-- Precio -->
                   <div class="col-lg-6 col-md-6 col-sm-12">
                     <label for="precio"> Precio: </label>
-                    <input type="text" class="form-control" name="precio" placeholder="$ 0.00" required autocomplete="off">
+                    <input type="text" class="form-control" name="precio" placeholder="$ 0.00 | Este precio no incluye Impuestos" required autocomplete="off">
                   </div>
                   <!-- Impuesto -->
                   <div class="col-lg-6 col-md-6 col-sm-12">
@@ -184,31 +184,78 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title"> <i class="fas fa-user-edit"></i> Editar Grupo </h4>
+            <h4 class="modal-title"> <i class='fas fa-edit'></i> Editar Producto o Servicio</h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
-          <form method="POST" action="<?= $data['host'] ?>/administrar/grupos/process">
+          <form method="POST" action="<?= $data['host'] ?>/administrar/prodserv/process">
               <div class="modal-body">
                 <div class="row">
                   <!-- Token -->
                   <div style="display:none;">
                     <input type="hidden" name="token" value="<?= $data['token'] ?>">
-                    <input type="hidden" name="id_grupo">
+                    <input type="hidden" name="id_prodserv">
+                  </div>
+                  <!-- SKU -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="sku_edit"> SKU: </label>
+                    <input type="text" class="form-control" name="sku_edit" placeholder="Código artículo/servicio" required autocomplete="off">
                   </div>
                   <!-- Nombre -->
                   <div class="col-lg-6 col-md-6 col-sm-12">
-                    <label for="grupo"> Nombre del grupo: </label>
-                    <input type="text" class="form-control" name="grupo_edit" placeholder="Ej. Admin, Vendedores, Clientes, etc" required autocomplete="off">
+                    <label for="nombre_edit"> Nombre: </label>
+                    <input type="text" class="form-control" name="nombre_edit" placeholder="Nombre artículo o servicio" required autocomplete="off">
                   </div>
-                  <!-- Descripción -->
+                  <!-- Clave ProdServ -->
                   <div class="col-lg-6 col-md-6 col-sm-12">
-                    <label for="descripcion"> Descripción: </label>
-                    <input type="text" class="form-control" name="descripcion_edit" placeholder="Breve descripción del grupo" required autocomplete="off">
+                    <label for="clave_prodserv_edit">Clave Producto/Servicio: </label>
+                    <select class='form-control' name='clave_prodserv_edit'>
+                      <option value='0' selected disabled>Seleccione una clave</option>
+                      <?php
+                        foreach( $data['claves_prodserv'] as $prod_serv ){
+                          echo "<option value='". $prod_serv['Id'] ."'> "
+                                . $prod_serv['ClaveProdServ'] ." | ". $prod_serv['Descripcion'] .
+                                "</option>";
+                        }
+                      ?>
+                    </select>
+                  </div>
+                  <!-- Clave Unidad -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="clave_unidad_edit"> Unidad: </label>
+                    <select class='form-control' name='clave_unidad_edit'>
+                      <option value='0' selected disabled>Seleccione una clave</option>
+                      <?php
+                        foreach( $data['unidades'] as $unidad ){
+                          echo "<option value='". $unidad['Id'] ."'> "
+                                . $unidad['ClaveUnidad'] ." | ". $unidad['NombreUnidad'] .
+                                "</option>";
+                        }
+                      ?>
+                    </select>
+                  </div>
+                  <!-- Precio -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="precio_edit"> Precio: </label>
+                    <input type="text" class="form-control" name="precio_edit" placeholder="$ 0.00 | Este precio no incluye Impuestos" required autocomplete="off">
+                  </div>
+                  <!-- Impuesto -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="impuesto_edit"> Impuesto: </label>
+                    <select class='form-control' name='impuesto_edit'>
+                      <option value='0' selected disabled>Seleccione Impuesto</option>
+                      <?php
+                        foreach( $data['impuestos'] as $impuesto ){
+                          echo "<option value='". $impuesto['Id'] ."'> "
+                                . $impuesto['ClaveImpuesto'] ." | ". $impuesto['Descripcion'] .
+                                "</option>";
+                        }
+                      ?>
+                    </select>
                   </div>
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Guardar cambios </button>
+                <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Guardar </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
               </div>
           </form>

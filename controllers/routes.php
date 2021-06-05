@@ -23,7 +23,7 @@
       // Productos y Servicios
       $routes["administrar/prodserv"]="ViewProdServs";
       $routes["administrar/prodserv/process"]="ProcessProdServs";
-      $routes["administrar/prodserv/switch_active/_data_/_data_"]="SwitchActivoProdServs";
+      $routes["administrar/prodserv/switch_active/_data_/_data_"]="SwitchActivoProdServ";
 
       $routes['CFDIs/facturas']="ViewsFacturas";
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
@@ -38,7 +38,7 @@
       // Productos y Servicios
       $routes["catalogosSAT/prod_serv"]="ViewProdServ";
       $routes["catalogosSAT/prod_serv/add"]="ProcessProdServ";
-      $routes["catalogosSAT/prod_serv/switch_active/_data_/_data_"]="SwitchActivoProdServ";
+      $routes["catalogosSAT/prod_serv/switch_active/_data_/_data_"]="SwitchActivoProdServSAT";
       // Unidades
       $routes["catalogosSAT/unidades"]="ViewUnidades";
       $routes["catalogosSAT/unidades/add"]="ProcessUnidad";
@@ -65,7 +65,7 @@
       $routes["API/usuarios/get_usuario/_data_"]="UsuarioAPI/get_usuario";
       $routes["API/grupos/get_grupo"]="GrupoAPI/get_grupo";
       $routes["API/emisores/get_emisor"]="EmisorAPI/get_emisor";
-      $routes["API/productos/get_producto/_data_"]="ProductoAPI/get_producto";
+      $routes["API/productos/get_producto"]="ProdServAPI/get_producto";
       $routes["API/series/get_serie_by_nom_serie"]="SerieAPI/get_serie_by_nom_serie";
       $routes["API/series/get_serie"]="SerieAPI/get_serie";
       $routes["API/CFDIs/facturas/process"]="ComprobanteAPI/insert_cfdi";

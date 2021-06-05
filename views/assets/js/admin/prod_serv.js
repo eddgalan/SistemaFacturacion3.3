@@ -24,42 +24,32 @@ function valida_selects(){
   }
 }
 
-/* ..:: CARGA DATOS EMISOR | AJAX ::.. */
+/* ..:: CARGA DATOS PRODUCTO/SERVICIO | AJAX ::.. */
 function carga_datos(id){
   var token = $("input[name='token']").val();
   $.ajax({
     type: "POST",
     dataType: 'json',
-    url: "../API/emisores/get_emisor",
-    data: {"token":token, "id_emisor":id},
+    url: "../API/productos/get_producto",
+    data: {"token":token, "id_producto":id},
     success: function(resp){
       // console.log(resp);
       // Obtiene los datos del servicio
       var id = resp.data.Id;
+      var sku = resp.data.SKU;
       var nombre = resp.data.Nombre;
-      var rfc = resp.data.RFC;
-      var domicilio = resp.data.Domicilio;
-      var cp = resp.data.CP;
-      var persona = resp.data.Persona;
-      var regimen = resp.data.Regimen;
-      var desc_regimen = resp.data.DescRegimen;
-      var path_logo = resp.data.PathLogo;
-      var pac = resp.data.PAC;
-      var testing = resp.data.Testing;
-      // Llena el <select> de Regimen
-      carga_regimenes(persona);
-
+      var prodserv = resp.data.IdProdServ;
+      var unidad = resp.data.IdUnidad;
+      var precio = resp.data.Precio;
+      var impuesto = resp.data.IdImpuesto;
       // Setea los datos en el formulario
-      $("input[name='id_emisor']").val(id);
+      $("input[name='id_prodserv']").val(id);
+      $("input[name='sku_edit']").val(sku);
       $("input[name='nombre_edit']").val(nombre);
-      $("input[name='rfc_edit']").val(rfc);
-      $("input[name='domicilio_edit']").val(domicilio);
-      $("input[name='codigo_postal_edit']").val(cp);
-      $("select[name='tipo_persona_edit']").val(persona);
-      $("select[name='regimen_edit']").val(regimen +" | "+ desc_regimen);
-      $("input[name='pac_edit']").val(pac);
-      $("select[name='modo_edit']").val(testing);
-      $("img[name='img_logo']").attr("src", "../" + path_logo);
+      $("select[name='clave_prodserv_edit']").val(prodserv);
+      $("select[name='clave_unidad_edit']").val(unidad);
+      $("input[name='precio_edit']").val(precio);
+      $("select[name='impuesto_edit']").val(impuesto);
     },
     error : function(xhr, status) {
       console.log(xhr);

@@ -2,7 +2,6 @@
   require 'models/usuario.php';
   require 'models/cliente.php';
   require 'models/pac.php';
-  require 'models/producto.php';
   require 'models/comprobante.php';
   require 'models/csd.php';
   require 'models/mailgun.php';
@@ -432,8 +431,8 @@
         $emisor = $data_session['Emisor'];
 
         if($sesion->validate_token($token)){
-          if (empty($_POST['id_prodserv'])){
-            // INSERT Grupo
+          if( empty($_POST['id_prodserv']) ){
+            // INSERT PRODSERV
             $sku = $_POST['sku'];
             $nombre = $_POST['nombre'];
             $prodserv = $_POST['clave_prodserv'];
@@ -454,16 +453,20 @@
               }
             }
           }else{
-            // UPDATE Grupo
-            $id_grupo = $_POST['id_grupo'];
-            $grupo = $_POST['grupo_edit'];
-            $descripcion = $_POST['descripcion_edit'];
+            // UPDATE PRODSERV
+            $id = $_POST['id_prodserv'];
+            $sku = $_POST['sku_edit'];
+            $nombre = $_POST['nombre_edit'];
+            $prodserv = $_POST['clave_prodserv_edit'];
+            $unidad = $_POST['clave_unidad_edit'];
+            $precio = $_POST['precio_edit'];
+            $impuesto = $_POST['impuesto_edit'];
 
-            $grupo_pdo = new GrupoPDO();
-            if( $grupo_pdo->update_grupo($id_grupo, $grupo, $descripcion) ){
+            $prodserv_pdo = new ProdServPDO();
+            if( $prodserv_pdo->update_prodserv($id, $emisor, $sku, $nombre, $prodserv, $unidad, $precio, $impuesto) ){
               $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
             }else{
-              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Grupo.");
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del Producto/Servicio. Inténtelo nuevamente.");
             }
           }
         }
@@ -474,30 +477,32 @@
     }
   }
 
-  class SwitchActivoProds{
-    function __construct($host_name="", $site_name="", $datos=null){
+  class SwitchActivoProdServ{
+    function __construct($hostname="", $sitename="", $dataurl=null){
       // Valida la sesión del usuario (Debe estar logueado)
       $sesion = new UserSession();
       if( $sesion->validate_session() ){
-        $user_id = $datos[1];
-        $status_actual = $datos[2];
+        $prodserv_id = $dataurl[1];
+        $status_actual = $dataurl[2];
 
         if($status_actual == 1){
           $nuevo_status = 0;
-          $msg_status="Se ha desactivado el usuario.";
+          $msg_status="Se ha desactivado el Producto o Servicio.";
         }else{
           $nuevo_status = 1;
-          $msg_status="Se ha activado el usuario.";
+          $msg_status="Se ha activado el Producto o Servicio.";
         }
 
-        $usuario = new UsuarioPDO($user_id, $nuevo_status);
-        $sesion = new UserSession();
-        if($usuario->cambiar_activo()){
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        $prodserv_pdo = new ProdServPDO();
+        if($prodserv_pdo->cambiar_activo($prodserv_id, $emisor, $nuevo_status)){
           $sesion->set_notification("OK", $msg_status);
         }else{
           $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
         }
-        header("location: " . $host_name . "/administrar/usuarios");
+        header("location: " . $hostname . "/administrar/prodserv");
       }else{
         header("Location: " . $hostname . "/login");
       }
@@ -542,7 +547,7 @@
     }
   }
 
-  class SwitchActivoProdServ{
+  class SwitchActivoProdServSAT{
     function __construct($host_name="", $site_name="", $datos=null){
       // Valida la sesión del usuario (Debe estar logueado)
       $sesion = new UserSession();
@@ -1097,8 +1102,8 @@
       $serie = new SeriePDO();
       $data['series'] = $serie->get_all_actives($emisor);
       // Obtiene los productos
-      $productos = new ProductoPDO();
-      $data['productos'] = $productos->get_all();
+      $productos = new ProdServPDO();
+      $data['productos'] = $productos->get_all($emisor);
 
 
       $this->view = new View();
@@ -1351,8 +1356,8 @@
 
           if($data_comprobante != false){
             // Obtiene el Emisor para poder Obtener el PAC
-            $emisor_pdo = new EmisorPDO($emisor);
-            $datos_emisor = $emisor_pdo->get_emisor();
+            $emisor_pdo = new EmisorPDO();
+            $datos_emisor = $emisor_pdo->get_emisor($emisor);
             $pac_id = $datos_emisor['PAC'];
             // Obtiene la información del PAC
             $pac_pdo = new PacPDO();

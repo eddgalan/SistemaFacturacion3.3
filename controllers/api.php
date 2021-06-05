@@ -185,16 +185,18 @@
     }
   }
 
-  class ProductoAPI extends API{
-    public function get_producto($datos){
+  class ProdServAPI extends API{
+    public function get_producto(){
       if($_POST){
         $token = $_POST['token'];
         $sesion = new UserSession();
+        $data_sesion = $sesion->get_session();
+        $emisor = $data_sesion['Emisor'];
 
         if($sesion->validate_token($token)){
-          $id = $datos[1];
-          $producto = new ProductoPDO($id);
-          $data_producto = $producto->get_producto();
+          $id = $_POST['id_producto'];
+          $prodserv_pdo = new ProdServPDO();
+          $data_producto = $prodserv_pdo->get_prodserv($emisor, $id);
           if($data_producto){
             $this->return_data("Mostrando Productos API", 200, $data_producto);
           }else{

@@ -70,20 +70,21 @@ $(document).ready(function (){
     $.ajax({
       type: "POST",
       dataType: 'json',
-      url: "../../API/productos/get_producto/" + id,
-      data: {"token":token},
+      url: "../../API/productos/get_producto/",
+      data: {"token":token, "id_producto":id},
       success: function(resp){
+        console.log(resp);
         // Obtiene los datos del servicio
-        var id = resp.data.ProductoID;
+        var id = resp.data.Id;
         var sku = resp.data.SKU;
-        var descripcion = resp.data.ProductoNombre;
-        var clave_sat = resp.data.ProductoClaveSAT;
-        var unidad_clave = resp.data.UnidadClave;
-        var unidad_nombre = resp.data.UnidadNombre;
-        var precio = resp.data.ProductoPrecio;
-        var impuesto_desc = resp.data.ImpuestoDesc;
-        var impuesto_clave = resp.data.ImpuestoClave;
-        var impuesto_tasa = resp.data.ImpuestoTasa;
+        var descripcion = resp.data.Nombre;
+        var clave_sat = resp.data.ClaveProdServ;
+        var unidad_clave = resp.data.ClaveUnidad;
+        var unidad_nombre = resp.data.NombreUnidad;
+        var precio = resp.data.Precio;
+        var impuesto_desc = resp.data.DescImpuesto;
+        var impuesto_clave = resp.data.ClaveImpuesto;
+        var impuesto_tasa = resp.data.Tasa_Cuota;
         // Setea los datos en el formulario
         $("input[name='clave_sat']").val(clave_sat);
         $("input[name='unidad']").val(unidad_clave + " | " + unidad_nombre);
@@ -114,7 +115,7 @@ $(document).ready(function (){
       descuento = 0;
     }
     // Valida cantidad y descuento
-    if($.isNumeric(cantidad) && cantidad > 0 && $.isNumeric(descuento) && $.isNumeric(precio)) {
+    if($.isNumeric(cantidad) && cantidad > 0 && $.isNumeric(descuento) && descuento >= 0 && $.isNumeric(precio)) {
       var importe = Math.round(parseFloat(cantidad) * parseFloat(precio), 4);
       // Valida importe >= descuento ¿?
       if(importe >= descuento){

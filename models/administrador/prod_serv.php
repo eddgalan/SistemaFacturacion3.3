@@ -8,10 +8,10 @@
       public function get_all($emisor){
         $this->connect();
         try{
-          $sql = "SELECT productos.Id, productos.Estatus, productos.SKU, productos.Nombre,
-          catsatclavesprodserv.ClaveProdServ as ClaveProdServ, catsatclavesprodserv.Descripcion as DescClave,
-          catsatunidades.ClaveUnidad as ClaveUnidad, catsatunidades.NombreUnidad as NombreUnidad,
-          catsatimpuestos.ClaveImpuesto, catsatimpuestos.Descripcion as DescImpuesto, catsatimpuestos.Tasa_Cuota
+          $sql = "SELECT productos.Id, productos.Estatus, productos.SKU, productos.Nombre, productos.Precio,
+          catsatclavesprodserv.Id as IdProdServ, catsatclavesprodserv.ClaveProdServ as ClaveProdServ, catsatclavesprodserv.Descripcion as DescClave,
+          catsatunidades.Id as IdUnidad, catsatunidades.ClaveUnidad as ClaveUnidad, catsatunidades.NombreUnidad as NombreUnidad,
+          catsatimpuestos.Id as IdImpuesto, catsatimpuestos.ClaveImpuesto, catsatimpuestos.Descripcion as DescImpuesto, catsatimpuestos.Tasa_Cuota
           FROM productos
           INNER JOIN catsatclavesprodserv ON productos.ClaveProdServ = catsatclavesprodserv.Id
           INNER JOIN catsatunidades ON productos.ClaveUnidad = catsatunidades.Id
@@ -51,10 +51,10 @@
       public function get_prodserv_by_sku($emisor, $sku){
         $this->connect();
         try{
-          $sql = "SELECT productos.Id, productos.Estatus, productos.SKU, productos.Nombre,
+          $sql = "SELECT productos.Id, productos.Estatus, productos.SKU, productos.Nombre, producto.Precio,
           catsatclavesprodserv.ClaveProdServ as ClaveProdServ, catsatclavesprodserv.Descripcion as DescClave,
           catsatunidades.ClaveUnidad as ClaveUnidad, catsatunidades.NombreUnidad as NombreUnidad,
-          catsatimpuestos.ClaveImpuesto, catsatimpuestos.Descripcion as DescImpuesto, catsatimpuestos.Tasa_Cuota
+          catsatimpuestos.ClaveImpuesto, catsatimpuestos.Descripcion as DescImpuesto, catsatimpuestos.Tasa_Cuota,
           FROM productos
           INNER JOIN catsatclavesprodserv ON productos.ClaveProdServ = catsatclavesprodserv.Id
           INNER JOIN catsatunidades ON productos.ClaveUnidad = catsatunidades.Id
@@ -78,13 +78,13 @@
         }
       }
 
-      public function get_prodserv($id, $emisor){
+      public function get_prodserv($emisor, $id){
         $this->connect();
         try{
-          $sql = "SELECT productos.Id, productos.Estatus, productos.SKU, productos.Nombre,
-          catsatclavesprodserv.ClaveProdServ as ClaveProdServ, catsatclavesprodserv.Descripcion as DescClave,
-          catsatunidades.ClaveUnidad as ClaveUnidad, catsatunidades.NombreUnidad as NombreUnidad,
-          catsatimpuestos.ClaveImpuesto, catsatimpuestos.Descripcion as DescImpuesto, catsatimpuestos.Tasa_Cuota
+          $sql = "SELECT productos.Id, productos.Estatus, productos.SKU, productos.Nombre, productos.Precio,
+          catsatclavesprodserv.Id as IdProdServ, catsatclavesprodserv.ClaveProdServ as ClaveProdServ, catsatclavesprodserv.Descripcion as DescClave,
+          catsatunidades.Id as IdUnidad, catsatunidades.ClaveUnidad as ClaveUnidad, catsatunidades.NombreUnidad as NombreUnidad,
+          catsatimpuestos.Id as IdImpuesto, catsatimpuestos.ClaveImpuesto, catsatimpuestos.Descripcion as DescImpuesto, catsatimpuestos.Tasa_Cuota
           FROM productos
           INNER JOIN catsatclavesprodserv ON productos.ClaveProdServ = catsatclavesprodserv.Id
           INNER JOIN catsatunidades ON productos.ClaveUnidad = catsatunidades.Id
@@ -108,34 +108,32 @@
         }
       }
 
-      public function update_prodserv($id_emisor, $emisor, $rfc_edit, $domicilio, $codigo_postal, $tipo_persona,
-      $regimen, $desc_regimen, $path_logo, $pac, $modo){
+      public function update_prodserv($id, $emisor, $sku, $nombre, $prodserv, $unidad, $precio, $impuesto){
         try{
           $this->connect();
-          $sql = "UPDATE emisores SET Nombre = '$emisor', RFC = '$rfc_edit', Domicilio = '$domicilio', CP = '$codigo_postal',
-          Persona = '$tipo_persona', Regimen = '$regimen', DescRegimen = '$desc_regimen', PathLogo = '$path_logo',
-          PAC = '$pac', Testing = '$modo'
-          WHERE Id = '$id_emisor'";
+          $sql = "UPDATE productos SET SKU = '$sku', Nombre = '$nombre', ClaveProdServ = '$prodserv',
+          ClaveUnidad = '$unidad', Precio = '$precio', Impuesto = '$impuesto'
+          WHERE Id = '$id' AND Emisor='$emisor'";
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
 
-          write_log("ProdServPDO | update_prod_serv() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          write_log("ProdServPDO | update_prodserv() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
           $this->disconect();
           return true;
         }catch(PDOException $e) {
-          write_log("ProdServPDO | update_prod_serv() | Ocurrió un error al realizar el UPDATE del Emisor\nError: ". $e->getMessage());
+          write_log("ProdServPDO | update_prodserv() | Ocurrió un error al realizar el UPDATE del ProdServ\nError: ". $e->getMessage());
           write_log("SQL: ". $sql);
           $this->disconect();
           return false;
         }
       }
 
-      public function cambiar_activo($id_emisor, $nuevo_status){
+      public function cambiar_activo($id, $emisor, $nuevo_status){
         try{
           $this->connect();
-          $sql = "UPDATE emisores
+          $sql = "UPDATE productos
           SET Estatus='$nuevo_status'
-          WHERE Id = $id_emisor";
+          WHERE Id = $id AND Emisor=$emisor";
           write_log("ProdServPDO | cambiar_activo() | SQL: " . $sql);
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
