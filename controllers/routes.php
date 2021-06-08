@@ -20,11 +20,17 @@
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";
       $routes["administrar/emisores/switch_active/_data_/_data_"]="SwitchActivoEmisores";
+      // Clientes
+      $routes["administrar/clientes"]="ViewClientes";
+      $routes["administrar/clientes/_data_"]="ViewDetalleClientes";
+      $routes["administrar/clientes/process"]="ProcessClientes";
+      $routes["administrar/clientes/switch_active/_data_/_data_"]="SwitchActivoClientes";
       // Productos y Servicios
       $routes["administrar/prodserv"]="ViewProdServs";
       $routes["administrar/prodserv/process"]="ProcessProdServs";
       $routes["administrar/prodserv/switch_active/_data_/_data_"]="SwitchActivoProdServ";
 
+      /* ..:: FACTURAS ::.. */
       $routes['CFDIs/facturas']="ViewsFacturas";
       $routes["CFDIs/facturas/nueva"]="ViewNuevaFactura";
       $routes["CFDIs/facturas/detalles/_data_"]="ViewDetalleFactura";

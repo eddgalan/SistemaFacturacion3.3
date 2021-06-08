@@ -1,6 +1,5 @@
 <?php
   require 'libs/conexion_db.php';
-  require 'models/cliente.php';
   require 'models/pac.php';
   require 'models/comprobante.php';
   require 'models/csd.php';
@@ -10,6 +9,7 @@
   require 'models/administrador/usuario.php';
   require 'models/administrador/grupos.php';
   require 'models/administrador/emisor.php';
+  require 'models/administrador/cliente.php';
   require 'models/administrador/serie.php';
   require 'models/administrador/prod_serv.php';
   /* ..:: Catálogo SAT ::..  */
@@ -396,6 +396,134 @@
         header("Location: " . $hostname . "/login");
       }
       header("location: " . $hostname . "/administrar/emisores");
+    }
+  }
+
+  class ViewClientes{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Clientes";
+      $data['host'] = $hostname;
+
+      $sesion = new UserSession();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+      $data['token'] = $sesion->set_token();
+
+      $cliente_pdo = new ClientePDO();
+      $data['clientes'] = $cliente_pdo->get_clientes($emisor);
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/clientes.php', $data, true);
+    }
+  }
+
+  class ViewDetalleClientes{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Cliente";
+      $data['host'] = $hostname;
+
+      $id_cliente = $dataurl[1];
+
+      $sesion = new UserSession();
+      $data_session = $sesion->get_session();
+      $emisor = $data_session['Emisor'];
+      $data['token'] = $sesion->set_token();
+
+      $cliente_pdo = new ClientePDO();
+      $data['cliente'] = $cliente_pdo->get_cliente($id_cliente, $emisor);
+
+      $contacto_pdo = new ContactoPDO();
+      $data['contactos'] = $contacto_pdo->get_contactos_cliente($data['cliente']['Id']);
+
+      if( $data['cliente'] ){
+        $this->view = new View();
+        $this->view->render('views/modules/administrar/clientes_detalles.php', $data, true);
+      }else{
+        $sesion->set_notification("ERROR", "Ocurrió un error al obtener los datos del cliente o NO tiene los permisos para consultarlo");
+        heacer("location:". $hostname . "/administrar/clientes");
+      }
+    }
+  }
+
+  class ProcessClientes{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if ($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        if($sesion->validate_token($token)){
+          if( empty($_POST['id_cliente']) ){
+            // INSERT CLIENTE
+            $nombre = $_POST['nombre'];
+            $rfc = $_POST['rfc'];
+            $tipo_persona = $_POST['tipo_persona'];
+            $direccion = $_POST['direccion'];
+            $telefono = $_POST['telefono'];
+            $correo = $_POST['correo'];
+
+            $cliente_pdo = new ClientePDO();
+            if( $cliente_pdo->insert_cliente($emisor, $nombre, $rfc, $tipo_persona, $direccion, $telefono, $correo) ){
+              $sesion->set_notification("OK", "Se ha agregado el nuevo cliente. ");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al registrar el producto o servicio.");
+            }
+
+          }else{
+            // UPDATE CLIENTE
+            $id = $_POST['id_prodserv'];
+            $sku = $_POST['sku_edit'];
+            $nombre = $_POST['nombre_edit'];
+            $prodserv = $_POST['clave_prodserv_edit'];
+            $unidad = $_POST['clave_unidad_edit'];
+            $precio = $_POST['precio_edit'];
+            $impuesto = $_POST['impuesto_edit'];
+
+            $prodserv_pdo = new ProdServPDO();
+            if( $prodserv_pdo->update_prodserv($id, $emisor, $sku, $nombre, $prodserv, $unidad, $precio, $impuesto) ){
+              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del Producto/Servicio. Inténtelo nuevamente.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/administrar/clientes");
+    }
+  }
+
+  class SwitchActivoClientes{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      // Valida la sesión del usuario (Debe estar logueado)
+      $sesion = new UserSession();
+      if( $sesion->validate_session() ){
+        $cliente_id = $dataurl[1];
+        $status_actual = $dataurl[2];
+
+        if($status_actual == 1){
+          $nuevo_status = 0;
+          $msg_status="Se ha desactivado el cliente";
+        }else{
+          $nuevo_status = 1;
+          $msg_status="Se ha activado el cliente";
+        }
+
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        $cliente_pdo = new ClientePDO();
+        if($cliente_pdo->cambiar_activo($cliente_id, $emisor, $nuevo_status)){
+          $sesion->set_notification("OK", $msg_status);
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al realizar el cambio de Estatus");
+        }
+        header("location: " . $hostname . "/administrar/clientes");
+      }else{
+        header("Location: " . $hostname . "/login");
+      }
     }
   }
 

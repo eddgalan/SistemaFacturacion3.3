@@ -22,7 +22,7 @@
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         write_log("ContactoPDO | get_contactos_cliente() | SQL: " . $sql);
-        write_log("ContactoPDO | get_contactos_cliente() | Contactos cliente\n" . serialize($result[0]));
+        write_log("ContactoPDO | get_contactos_cliente() | Contactos cliente\n" . serialize($result));
         return $result;
       }
     }
