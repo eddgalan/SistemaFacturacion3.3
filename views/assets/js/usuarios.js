@@ -83,11 +83,11 @@ function carga_grupos_usuario(user_id){
     url: "../API/grupos/get_grupos_usuario",
     data: {"token":token, "id_usuario":user_id},
     success: function(resp){
-      console.log(resp.data);
+      // console.log(resp.data);
       $("ul[name='group_list']").empty();
       var items_list = "";
       for(let grupo of resp.data){
-        items_list += "<li class='list-group-item d-flex justify-content-between align-items-center'>"+ grupo.Nombre +
+        items_list += "<li class='list-group-item d-flex justify-content-between align-items-center' style='padding: 3px 10px; background-color: #DFDFDF;'>"+ grupo.Nombre +
                         "<button type='button' class='btn' onclick='remove_grupo("+ grupo.Id +", "+ grupo.IdUsuario +")'><i class='fas fa-times color_red'></i></button>"+
                       "</li>";
       }

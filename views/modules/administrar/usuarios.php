@@ -197,7 +197,7 @@
                         <small class="color_green display_none" name="msg_ok"><strong>Se agregó el usuario al grupo indicado</strong></small>
                         <small class="color_red display_none" name="msg_error"><strong>Ocurrió un error al agregar el usuario al grupo indicado</strong></small>
                         <small class="color_red display_none" name="msg_exist"><strong>El usuario ya se encuentra dentro del grupo indicado</strong></small>
-                        <small class="color_green display_none" name="msg_remove"><strong>Se eliminó el usuario del grupo</strong></small>
+                        <small class="color_green display_none" name="msg_remove"><strong>Se eliminó al usuario del grupo</strong></small>
                       </div>
                       <!-- Listado de grupos -->
                       <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:10px;">
