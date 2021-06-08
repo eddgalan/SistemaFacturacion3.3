@@ -1,16 +1,18 @@
 <?php
-  require 'models/usuario.php';
+  require 'libs/conexion_db.php';
   require 'models/cliente.php';
   require 'models/pac.php';
   require 'models/comprobante.php';
   require 'models/csd.php';
   require 'models/mailgun.php';
   require 'models/contacto.php';
+  /* ..:: Administrador ::..  */
+  require 'models/administrador/usuario.php';
   require 'models/administrador/grupos.php';
   require 'models/administrador/emisor.php';
   require 'models/administrador/serie.php';
   require 'models/administrador/prod_serv.php';
-
+  /* ..:: Catálogo SAT ::..  */
   require 'models/catsat/prodserv.php';
   require 'models/catsat/metodos_pago.php';
   require 'models/catsat/formas_pago.php';
@@ -76,6 +78,9 @@
       $usuario = new UsuarioPDO();
       $data['usuarios'] = $usuario->get_users();
 
+      $grupo_pdo = new GrupoPDO();
+      $data['grupos'] = $grupo_pdo->get_all();
+
       $this->view = new View();
       $this->view->render('views/modules/administrar/usuarios.php', $data, true);
     }
@@ -120,8 +125,7 @@
         write_log($token);
         if($sesion->validate_token($token)){
           if (empty($_POST['id_usuario'])){
-            // Si NO se recibe id_usuario es una Alta de Usuario
-            // Obtiene los datos del Formulario (Variables POST)
+            // INSERT Usuario
             $username = $_POST['username'];
             $contra = $_POST['password'];
             $contra = password_hash($contra, PASSWORD_DEFAULT, ['cost' => 15]);
@@ -137,8 +141,7 @@
               $sesion->set_notification("ERROR", "Ocurrió un error al crear el usuario. Intente de nuevo.");
             }
           }else{
-            // Si se recibe id_usuario es un UPDATE de Usuario
-            // Obtiene los datos del Formulario (Variables POST)
+            // UPDATE Usuario
             if(isset($_POST['user_activo'])){
               $activo = 1;
             }else{
@@ -166,7 +169,8 @@
           }
         }
       }else{
-        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+        write_log("PreocessUsuario | __construct() | NO se recibieron datos por POST");
+        $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del usuario. No fue posible procesar su solicitud.");
       }
       // Redirecciona a la página de administrar/usuarios
       header("location: " . $host_name . "/administrar/usuarios");

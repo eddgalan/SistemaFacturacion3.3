@@ -63,8 +63,8 @@
                                                           "\t\t\t\t\t\t\t\t<td>". $usuario['Username'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td>". $usuario['Email'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td>\n".
-                                                            "\t\t\t\t\t\t\t\t\t<div class='btn-group' role='group' aria-label='Button group with nested dropdown' style='width:100%;'>\n".
-                                                              "\t\t\t\t\t\t\t\t\t\t<button id='btnGroupDrop1' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>\n".
+                                                            "\t\t\t\t\t\t\t\t\t<div class='btn-group' role='group' aria-label='Button group with nested dropdown'  style='width:100%;'>\n".
+                                                              "\t\t\t\t\t\t\t\t\t\t<button id='btnGroupDrop1' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' style='background-color: #4e73df !important;'>\n".
                                                                 "\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-ellipsis-h icon_btn_options'></i>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t</button>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
@@ -108,17 +108,17 @@
                   <!-- Username -->
                   <div class="col-lg-4 col-md-4 col-sm-12">
                     <label for="username"> Nombre de usuario: </label>
-                    <input type="text" class="form-control" name="username" placeholder="Username" required>
+                    <input type="text" class="form-control" name="username" placeholder="Username" required autocomplete="off">
                   </div>
                   <!-- Password -->
                   <div class="col-lg-4 col-md-4 col-sm-12">
                     <label for="password"> Contraseña: </label>
-                    <input type="text" class="form-control" name="password" placeholder="* * * * * * * *" required>
+                    <input type="password" class="form-control" name="password" placeholder="* * * * * * * *" required autocomplete="off">
                   </div>
                   <!-- Email -->
                   <div class="col-lg-4 col-md-4 col-sm-12">
                     <label for="email"> Email: </label>
-                    <input type="text" class="form-control" name="email" placeholder="alguien@correo.com" required>
+                    <input type="text" class="form-control" name="email" placeholder="alguien@correo.com" required autocomplete="off">
                   </div>
                 </div>
               </div>
@@ -157,17 +157,56 @@
                   <!-- Username -->
                   <div class="col-lg-4 col-md-6 col-sm-12">
                     <label for="username_edit"> Nombre de usuario: </label>
-                    <input type="text" class="form-control" name="username_edit" placeholder="Username" required>
+                    <input type="text" class="form-control" name="username_edit" placeholder="Username" required autocomplete="off">
                   </div>
                   <!-- Password -->
                   <div class="col-lg-4 col-md-6 col-sm-12">
                     <label for="password_edit"> Actualizar contraseña: </label>
-                    <input type="text" class="form-control" name="password_edit" placeholder="* * * * * * * *">
+                    <input type="password" class="form-control" name="password_edit" placeholder="* * * * * * * *" autocomplete="off">
                   </div>
                   <!-- Email -->
                   <div class="col-lg-4 col-md-6 col-sm-12">
                     <label for="email_edit"> Email: </label>
-                    <input type="text" class="form-control" name="email_edit" placeholder="alguien@correo.com" required>
+                    <input type="text" class="form-control" name="email_edit" placeholder="alguien@correo.com" required autocomplete="off">
+                  </div>
+                  <!-- Grupos -->
+                  <div class='col-lg-12 col-md-12 col-sm-12'>
+                    <div class='row'>
+                      <div class="col-md-12">
+                        <label for="grupos">Grupos: </label>
+                      </div>
+                      <!-- Select Grupo -->
+                      <div class="col-lg-6 col-md-6 col-sm-12">
+                        <select class="form-control" name="grupos">
+                          <option value="0" selected disabled> Seleccione un grupo </option>
+                          <?php
+                            foreach( $data['grupos'] as $grupo ){
+                              echo "<option value='". $grupo['Id'] ."'>". $grupo['Nombre'] ."</option>\n";
+                            }
+                          ?>
+                        </select>
+                      </div>
+                      <!-- Botón Agregar -->
+                      <div class="col-lg-6 col-md-6 col-sm-12" style="margin-left: -15px;">
+                        <button type="button" class="btn btn-success" name="add_group" disabled>
+                          <i class="fas fa-plus"></i> Agregar
+                        </button>
+                      </div>
+                      <!-- MSG Resultado del AJAX -->
+                      <div class='col-lg-12 col-md-12 col-sm-12 text-center'>
+                        <small class="color_green display_none" name="msg_ok"><strong>Se agregó el usuario al grupo indicado</strong></small>
+                        <small class="color_red display_none" name="msg_error"><strong>Ocurrió un error al agregar el usuario al grupo indicado</strong></small>
+                        <small class="color_red display_none" name="msg_exist"><strong>El usuario ya se encuentra dentro del grupo indicado</strong></small>
+                        <small class="color_green display_none" name="msg_remove"><strong>Se eliminó el usuario del grupo</strong></small>
+                      </div>
+                      <!-- Listado de grupos -->
+                      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:10px;">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <ul class="list-group" name="group_list">
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

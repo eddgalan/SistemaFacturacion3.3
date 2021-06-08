@@ -58,6 +58,80 @@
         $this->return_data("No fue posible procesar su solicitud", 400);
       }
     }
+
+    public function add_grupo(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $id_grupo = $_POST['id_grupo'];
+          $id_usuario = $_POST['id_usuario'];
+
+          $usuario_pdo = new UsuarioPDO();
+          if( $usuario_pdo->user_in_group($id_grupo, $id_usuario) ){
+            $this->return_data("GrupoAPI | add_grupo() | El usuario ya se encuentra en el grupo", 200);
+          }else{
+            if( $usuario_pdo->add_group($id_grupo, $id_usuario) ){
+              $this->return_data("GrupoAPI | add_grupo() | Se agreó el usuario al grupo indicado", 201);
+            }else{
+              $this->return_data("GrupoAPI | add_grupo() | Ocurrió un error al agregar el usuario", 500);
+            }
+          }
+        }else{
+          write_log("GrupoAPI | get_grupo() | Token no válido");
+          $this->return_data("No fue posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("GrupoAPI | get_grupo() | NO se recibieron datos POST");
+        $this->return_data("No fue posible procesar su solicitud", 400);
+      }
+    }
+
+    public function remove_grupo(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $id = $_POST['id'];
+
+          $usuario_pdo = new UsuarioPDO();
+          if( $usuario_pdo->remove_grupo($id) ){
+            $this->return_data("GrupoAPI | remove_grupo() | OK", 200);
+          }else{
+            $this->return_data("GrupoAPI | remove_grupo() | Error", 500);
+          }
+        }else{
+          write_log("GrupoAPI | remove_grupo() | Token no válido");
+          $this->return_data("No fue posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("GrupoAPI | remove_grupo() | NO se recibieron datos POST");
+        $this->return_data("No fue posible procesar su solicitud", 400);
+      }
+    }
+
+    public function get_grupos_usuario(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $id_usuario = $_POST['id_usuario'];
+
+          $usuario_pdo = new UsuarioPDO();
+          $grupos_usuario = $usuario_pdo->get_grupos_usuario($id_usuario);
+          $this->return_data("GrupoAPI | get_grupos_usuario() | Grupos del usuario", 200, $grupos_usuario);
+        }else{
+          write_log("GrupoAPI | get_grupos_usuario() | Token no válido");
+          $this->return_data("No fue posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("GrupoAPI | get_grupos_usuario() | NO se recibieron datos POST");
+        $this->return_data("No fue posible procesar su solicitud", 400);
+      }
+    }
   }
 
   class EmisorAPI extends API{

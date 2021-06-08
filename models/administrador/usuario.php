@@ -157,6 +157,68 @@
         return false;
       }
     }
+
+    public function user_in_group($id_grupo, $id_usuario){
+      $this->connect();
+      $sql = "SELECT * FROM grupos_usuario WHERE IdGrupo='$id_grupo' AND IdUsuario='$id_usuario'";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $this->disconect();
+      if(count($result) > 0){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    public function add_group($id_grupo, $id_usuario){
+      $this->connect();
+      try{
+        $sql = "INSERT INTO grupos_usuario (IdGrupo, IdUsuario) VALUES ('$id_grupo', '$id_usuario')";
+        $this->conn->exec($sql);
+        write_log("UsuarioPDO | add_group() | Se realizó el INSERT del Usuario al Grupo con éxito");
+        write_log("UsuarioPDO | add_group() | SQL: ". $sql);
+        $this->disconect();
+        return true;
+      }catch(PDOException $e){
+        write_log("UsuarioPDO | add_group() | Ocurrió un error al realizar el INSERT del Usuario al Grupo.\nError: ". $e->getMessage());
+        write_log("UsuarioPDO | add_group() | SQL: ". $sql);
+        $this->disconect();
+        return false;
+      }
+    }
+
+    public function remove_grupo($id){
+      $this->connect();
+      $sql = "DELETE FROM grupos_usuario WHERE Id=$id";
+      write_log("UsuarioPDO | remove_grupo() | SQL: ". $sql);
+      if ($this->conn->query($sql) === TRUE) {
+        write_log("UsuarioPDO | remove_grupo() | Se eliminó el usuario del grupo");
+        return true;
+      } else {
+        write_log("UsuarioPDO | remove_grupo() | Ocurrió un error al eliminar el usuario del grupo");
+        return false;
+      }
+    }
+
+    public function get_grupos_usuario($id_usuario){
+      $this->connect();
+      $sql = "SELECT grupos_usuario.Id, grupos_usuario.IdGrupo, grupos.Nombre, grupos_usuario.IdUsuario, usuario.Username
+      FROM grupos_usuario
+      INNER JOIN grupos ON grupos_usuario.IdGrupo = grupos.Id
+      INNER JOIN usuario ON grupos_usuario.IdUsuario = usuario.Id
+      WHERE IdUsuario='$id_usuario'";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $this->disconect();
+      if(count($result) > 0){
+        return $result;
+      }else{
+        return false;
+      }
+    }
   }
 
 ?>
