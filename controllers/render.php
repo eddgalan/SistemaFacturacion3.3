@@ -440,14 +440,14 @@
         $this->view->render('views/modules/administrar/clientes_detalles.php', $data, true);
       }else{
         $sesion->set_notification("ERROR", "Ocurrió un error al obtener los datos del cliente o NO tiene los permisos para consultarlo");
-        heacer("location:". $hostname . "/administrar/clientes");
+        header("location:". $hostname . "/administrar/clientes/". $id_cliente);
       }
     }
   }
 
   class ProcessClientes{
     function __construct($hostname="", $sitename="", $dataurl=null){
-      if ($_POST){
+      if($_POST){
         $token = $_POST['token'];
         $sesion = new UserSession();
         $data_session = $sesion->get_session();
@@ -469,29 +469,30 @@
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al registrar el producto o servicio.");
             }
-
+            $redirect = $hostname ."/administrar/clientes";
           }else{
             // UPDATE CLIENTE
-            $id = $_POST['id_prodserv'];
-            $sku = $_POST['sku_edit'];
+            $id = $_POST['id_cliente'];
             $nombre = $_POST['nombre_edit'];
-            $prodserv = $_POST['clave_prodserv_edit'];
-            $unidad = $_POST['clave_unidad_edit'];
-            $precio = $_POST['precio_edit'];
-            $impuesto = $_POST['impuesto_edit'];
+            $rfc = $_POST['rfc_edit'];
+            $tipo_persona = $_POST['tipo_persona_edit'];
+            $direccion = $_POST['direccion_edit'];
+            $telefono = $_POST['telefono_edit'];
+            $correo = $_POST['correo_edit'];
 
-            $prodserv_pdo = new ProdServPDO();
-            if( $prodserv_pdo->update_prodserv($id, $emisor, $sku, $nombre, $prodserv, $unidad, $precio, $impuesto) ){
-              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+            $cliente_pdo = new ClientePDO();
+            if( $cliente_pdo->update_cliente($id, $emisor, $nombre, $rfc, $tipo_persona, $direccion, $telefono, $correo) ){
+              $sesion->set_notification("OK", "Se actualizaron los datos de su cliente.");
             }else{
-              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del Producto/Servicio. Inténtelo nuevamente.");
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos de su cliente. Inténtelo nuevamente.");
             }
+            $redirect = $hostname ."/administrar/clientes/detalles/". $id;
           }
         }
       }else{
         write_log("ProcessUsuario\nNO se recibieron datos por POST");
       }
-      header("location: " . $hostname . "/administrar/clientes");
+      header("location: " . $redirect);
     }
   }
 
@@ -1217,7 +1218,7 @@
 
       // Obtiene los clientes del usuario (Emisor)
       $cliente = new ClientePDO();
-      $data['clientes'] = $cliente->get_clientes();
+      $data['clientes'] = $cliente->get_clientes($emisor);
       // Obtiene los metodos de pago
       $metodo = new CatSATMetodos();
       $data['metodos_pago'] = $metodo->get_all();

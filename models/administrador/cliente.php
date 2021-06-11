@@ -2,7 +2,6 @@
     Class ClientePDO extends Connection_PDO{
       function __construct() {
         parent::__construct();
-        $this->connect();
       }
 
       public function insert_cliente($emisor, $nombre, $rfc, $tipo_persona, $direccion, $telefono, $correo){
@@ -22,7 +21,28 @@
         }
       }
 
+      public function update_cliente($id, $emisor, $nombre, $rfc, $tipo_persona, $direccion, $telefono, $correo){
+        $this->connect();
+        try{
+          $sql = "UPDATE clientes SET Nombre ='$nombre', RFC='$rfc', TipoPersona='$tipo_persona',
+          Direccion='$direccion', Telefono='$telefono', Correo='$correo'
+          WHERE Id='$id' AND Emisor='$emisor'";
+          write_log("ClientePDO | update_cliente() | SQL: " .$sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          write_log("ClientePDO | update_cliente() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("ClientePDO | update_cliente() |  Ocurrió un error al realizar el UPDATE del Cliente\nError: ". $e->getMessage());
+          write_log("ClientePDO | update_cliente() |  SQL: ". $sql);
+          $this->disconect();
+          return false;
+        }
+      }
+
       public function get_clientes($emisor){
+        $this->connect();
         $sql = "SELECT * FROM clientes WHERE emisor='$emisor'";
         write_log("ClientePDO | get_clientes() | SQL: ". $sql);
         $stmt = $this->conn->prepare($sql);
@@ -33,6 +53,7 @@
       }
 
       public function get_cliente($id, $emisor){
+        $this->connect();
         $sql = "SELECT * FROM clientes WHERE Id='$id' AND Emisor='$emisor'";
         write_log("ClientePDO | get_cliente() | SQL: " . $sql);
         $stmt = $this->conn->prepare($sql);

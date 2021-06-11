@@ -30,30 +30,35 @@
                             <?php require './views/modules/components/notifications.php'; ?>
                           </div>
                           <div class="row">
-                            <div class='col-lg-12 col-md-12 col-sm-12'>
-                              <h5><?= $data['cliente']['Nombre'] ?></h5><br>
+                            <div class='col-lg-12 col-md-12 col-sm-12' style="padding-left: 0px;">
+                              <h5><?= $data['cliente']['Nombre'] ?></h5>
                             </div>
                             <!-- Información del cliente -->
-                            <div class='col-lg-5 col-md-4 col-sm-12'>
+                            <div class='col-lg-5 col-md-4 col-sm-12' style="border: solid 1px #DFDFDF; border-radius:10px; padding-top:10px; padding-bottom:10px;">
                               <div class='col-lg-12 col-md-12 col-sm-12' style="padding:0px;">
                                 <h5> <i class="far fa-file-alt"></i> Información</h5>
                               </div>
-                              <form>
+                              <form action="<?= $data['host'] ?>/administrar/clientes/process" method="POST">
                                 <div class='row'>
+                                  <!-- Forbidden Fields -->
+                                  <div class='col-lg-12 col-md-12 col-sm-12 display_none'>
+                                    <input type="forbidden" name='token' value="<?= $data['token']?>">
+                                    <input type="forbidden" name='id_cliente' value="<?= $data['cliente']['Id']?>">
+                                  </div>
                                   <!-- Nombre o razón social -->
                                   <div class='col-lg-12 col-md-12 col-sm-12'>
                                     <label for="nombre">Nombre o razón social: </label>
-                                    <input type="text" class='form-control' name='nombre' value="<?= $data['cliente']['Nombre']?>">
+                                    <input type="text" class='form-control' name='nombre_edit' value="<?= $data['cliente']['Nombre']?>">
                                   </div>
                                   <!-- RFC -->
                                   <div class='col-lg-6 col-md-12 col-sm-12'>
                                     <label for="rfc">RFC: </label>
-                                    <input type="text" class='form-control' name='rfc' value="<?= $data['cliente']['RFC']?>">
+                                    <input type="text" class='form-control' name='rfc_edit' value="<?= $data['cliente']['RFC']?>">
                                   </div>
                                   <!-- Tipo de Persona -->
                                   <div class='col-lg-6 col-md-12 col-sm-12'>
                                     <label for="tipo_persona">Tipo de persona: </label><br>
-                                    <select class='form-control' name='tipo_persona'>
+                                    <select class='form-control' name='tipo_persona_edit'>
                                       <option value='0' disabled>Seleccione Tipo</option>
                                       <?php
                                         if( $data['cliente']['TipoPersona']=='M' ){
@@ -69,17 +74,17 @@
                                   <!-- Dirección -->
                                   <div class='col-lg-12 col-md-12 col-sm-12'>
                                     <label for="direccion">Dirección: </label>
-                                    <input type="text" class='form-control' name='direccion' value="<?= $data['cliente']['Direccion']?>">
+                                    <input type="text" class='form-control' name='direccion_edit' value="<?= $data['cliente']['Direccion']?>">
                                   </div>
                                   <!-- Telefono -->
                                   <div class='col-lg-6 col-md-12 col-sm-12'>
                                     <label for="telefono">Teléfono: </label>
-                                    <input type="text" class='form-control' name='telefono' value="<?= $data['cliente']['Telefono']?>">
+                                    <input type="text" class='form-control' name='telefono_edit' value="<?= $data['cliente']['Telefono']?>">
                                   </div>
                                   <!-- Correo -->
                                   <div class='col-lg-6 col-md-12 col-sm-12'>
                                     <label for="correo">Correo: </label>
-                                    <input type="email" class='form-control' name='correo' value="<?= $data['cliente']['Correo']?>">
+                                    <input type="email" class='form-control' name='correo_edit' value="<?= $data['cliente']['Correo']?>">
                                   </div>
                                   <!-- Submit -->
                                   <div class='col-lg-12 col-md-12 col-sm-12 text-right'><br>
@@ -89,7 +94,7 @@
                               </form>
                             </div>
                             <!-- Contactos  -->
-                            <div class='col-lg-7 col-md-4 col-sm-12'>
+                            <div class='col-lg-7 col-md-4 col-sm-12' style="border: solid 1px #DFDFDF; border-radius:10px; padding-top:10px; padding-bottom:10px;">
                               <div class='row'>
                                 <div class="col-lg-8 col-md-8 col-sm-12">
                                   <h5><i class="fas fa-address-book"></i> Contactos</h5>

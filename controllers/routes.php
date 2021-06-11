@@ -22,7 +22,7 @@
       $routes["administrar/emisores/switch_active/_data_/_data_"]="SwitchActivoEmisores";
       // Clientes
       $routes["administrar/clientes"]="ViewClientes";
-      $routes["administrar/clientes/_data_"]="ViewDetalleClientes";
+      $routes["administrar/clientes/detalles/_data_"]="ViewDetalleClientes";
       $routes["administrar/clientes/process"]="ProcessClientes";
       $routes["administrar/clientes/switch_active/_data_/_data_"]="SwitchActivoClientes";
       // Productos y Servicios

@@ -75,7 +75,7 @@
                                                                 "\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-ellipsis-h icon_btn_options'></i>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t</button>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
-                                                                "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='". $data['host'] ."/administrar/clientes/". $cliente['Id'] ."'> <i class='far fa-id-card'></i> Ver detalles </a>\n".
+                                                                "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='". $data['host'] ."/administrar/clientes/detalles/". $cliente['Id'] ."'> <i class='far fa-id-card'></i> Ver detalles </a>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t</div>\n".
                                                             "\t\t\t\t\t\t\t\t\t</div>\n".
                                                           "\t\t\t\t\t\t\t\t</td>\n".
