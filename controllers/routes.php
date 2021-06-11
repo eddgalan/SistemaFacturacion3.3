@@ -25,6 +25,10 @@
       $routes["administrar/clientes/detalles/_data_"]="ViewDetalleClientes";
       $routes["administrar/clientes/process"]="ProcessClientes";
       $routes["administrar/clientes/switch_active/_data_/_data_"]="SwitchActivoClientes";
+      // Contactos
+      $routes["administrar/contactos/process"]="ProcessContactos";
+      $routes["administrar/contactos/delete"]="DeleteContactos";
+
       // Productos y Servicios
       $routes["administrar/prodserv"]="ViewProdServs";
       $routes["administrar/prodserv/process"]="ProcessProdServs";

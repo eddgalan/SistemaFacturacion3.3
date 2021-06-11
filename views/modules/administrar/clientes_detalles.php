@@ -38,6 +38,7 @@
                               <div class='col-lg-12 col-md-12 col-sm-12' style="padding:0px;">
                                 <h5> <i class="far fa-file-alt"></i> Información</h5>
                               </div>
+                              <hr>
                               <form action="<?= $data['host'] ?>/administrar/clientes/process" method="POST">
                                 <div class='row'>
                                   <!-- Forbidden Fields -->
@@ -87,8 +88,9 @@
                                     <input type="email" class='form-control' name='correo_edit' value="<?= $data['cliente']['Correo']?>">
                                   </div>
                                   <!-- Submit -->
-                                  <div class='col-lg-12 col-md-12 col-sm-12 text-right'><br>
-                                    <button type="submit" class='btn btn-success'> <i class="fas fa-check"></i> Actualizar </button>
+                                  <div class='col-lg-12 col-md-12 col-sm-12 text-right'>
+                                    <hr>
+                                    <button type="submit" class='btn btn-outline-success'> <i class="fas fa-check"></i> Actualizar </button>
                                   </div>
                                 </div>
                               </form>
@@ -100,7 +102,7 @@
                                   <h5><i class="fas fa-address-book"></i> Contactos</h5>
                                 </div>
                                 <div class="col-lg-4 col-md-4 col-sm-12 text-right">
-                                  <button type="button" class="btn btn-success waves-effect btn_full" data-toggle="modal" data-target="#modal_nuevo_usuario">
+                                  <button type="button" class="btn btn-success waves-effect btn_full" data-toggle="modal" data-target="#modal_nuevo_contacto">
                                     <i class="fas fa-plus"></i> Nuevo
                                   </button>
                                 </div>
@@ -123,8 +125,65 @@
                                     <?php
                                     $activo = "active";
                                     foreach( $data['contactos'] as $contacto ){
-                                      echo "<div class='tab-pane container ". $activo ."' id='tab-pane". $contacto['Id'] ."'>\n
-                                      ". $contacto['Alias'] ."
+                                      echo
+                                      "<div class='tab-pane container ". $activo ."' id='tab-pane". $contacto['Id'] ."'>\n
+                                        <form method='POST' action='". $data['host'] ."/administrar/contactos/process'>
+                                          <div class='row'>
+                                            <!-- Forbidden -->
+                                            <div class='display_none'>
+                                              <input type='text' name='token' value='". $data['token'] ."'>
+                                              <input type='text' name='contacto_id' value='". $contacto['Id'] ."'>
+                                              <input type='text' name='cliente_id' value='". $data['cliente']['Id'] ."'>
+                                            </div>
+                                            <!-- Alias -->
+                                            <div class='col-lg-6 col-md-6 col-sm-12'>
+                                              <lable for='alias_edit'>Alias: </label>
+                                              <input type='text' class='form-control' name='alias_edit' value='". $contacto['Alias'] ."' placeholder='Nombre o sobrenombre del contacto'>
+                                            </div>
+                                            <!-- Nombre -->
+                                            <div class='col-lg-6 col-md-6 col-sm-12'>
+                                              <lable for='nombre_edit'>Nombre(s): </label>
+                                              <input type='text' class='form-control' name='nombre_edit' value='". $contacto['Nombre'] ."' placeholder='nombre(s) del contacto' autocomplete='off' required>
+                                            </div>
+                                            <!-- Apellido Paterno -->
+                                            <div class='col-lg-6 col-md-6 col-sm-12'>
+                                              <lable for='apellido_pat'>Apellido Paterno: </label>
+                                              <input type='text' class='form-control' name='apellido_pat' value='". $contacto['ApellidoPaterno'] ."' autocomplete='off' required>
+                                            </div>
+                                            <!-- Apellido Materno -->
+                                            <div class='col-lg-6 col-md-6 col-sm-12'>
+                                              <lable for='apellido_mat'>Apellido Materno: </label>
+                                              <input type='text' class='form-control' name='apellido_mat' value='". $contacto['ApellidoMaterno'] ."' autocomplete='off' required>
+                                            </div>
+                                            <!-- Puesto -->
+                                            <div class='col-lg-6 col-md-6 col-sm-12'>
+                                              <lable for='puesto'> Puesto: </label>
+                                              <input type='text' class='form-control' name='puesto' value='". $contacto['Puesto'] ."' placeholder='Puesto o cargo del contacto' autocomplete='off' required>
+                                            </div>
+                                            <!-- Email -->
+                                            <div class='col-lg-6 col-md-6 col-sm-12'>
+                                              <lable for='email'> Email: </label>
+                                              <input type='email' class='form-control' name='email' value='". $contacto['Email'] ."' placeholder='alguien@correo.com' autocomplete='off' required>
+                                            </div>
+                                            <!-- Teléfono 1 -->
+                                            <div class='col-lg-6 col-md-6 col-sm-12'>
+                                              <lable for='tel_1'> Teléfono 1: </label>
+                                              <input type='text' class='form-control' name='tel_1' value='". $contacto['Num1'] ."' placeholder='10 o 12 dígitos' autocomplete='off' required>
+                                            </div>
+                                            <!-- Teléfono 2 -->
+                                            <div class='col-lg-6 col-md-6 col-sm-12'>
+                                              <lable for='tel_2'> Teléfono 2: </label>
+                                              <input type='text' class='form-control' name='tel_2' value='". $contacto['Num2'] ."' placeholder='(Opcional)' autocomplete='off'>
+                                            </div>
+                                            <!-- Actions -->
+                                            <div class='col-lg-12 col-md-12 col-sm-12 text-right'>
+                                              <hr>
+                                              <a class='btn btn-outline-primary' href='mailto:". $contacto['Email'] ."'> <i class='fas fa-envelope-open-text'></i> Enviar Email </a>
+                                              <button type='submit' class='btn btn-outline-success'> <i class='fas fa-check'></i> Guardar </button>
+                                              <button type='button' class='btn btn-danger' data-toggle='modal' data-target='#modal_confirm_del' onclick='set_contacto_id(". $contacto['Id'] .")'> <i class='far fa-trash-alt'></i> Eliminar </button>
+                                            </div>
+                                          </div>
+                                        </form>
                                       </div>";
                                       $activo ="";
                                     }
@@ -142,60 +201,98 @@
         </div>
     </div>
     <!-- ..:: MODALES ::.. -->
-    <!-- ..:: Modal Nuevo Cliente ::.. -->
-    <div class="modal fade" id="modal_add">
+    <!-- ..:: Modal Nuevo Contacto ::.. -->
+    <div class="modal fade" id="modal_nuevo_contacto">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title"> <i class="fas fa-plus"></i> Nuevo Cliente </h4>
+            <h4 class="modal-title"> <i class="fas fa-plus"></i> Nuevo contacto </h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
-          <form method="POST" action="<?= $data['host'] ?>/administrar/clientes/process">
+          <form method='POST' action="<?= $data['host'] ?> /administrar/contactos/process">
               <div class="modal-body">
                 <div class="row">
-                  <!-- Token -->
-                  <div style="display:none;">
-                    <input type="hidden" name="token" value="<?= $data['token'] ?>">
+                  <!-- Forbidden -->
+                  <div class='display_none'>
+                    <input type='text' name='token' value="<?= $data['token'] ?>">
+                    <input type='text' name='cliente_id' value="<?= $data['cliente']['Id'] ?>">
                   </div>
-                  <!-- nombre -->
-                  <div class="col-lg-6 col-md-6 col-sm-12">
-                    <label for="nombre"> Nombre: </label>
-                    <input type="text" class="form-control" name="nombre" placeholder="Nombre o razón social" required autocomplete="off">
+                  <!-- Alias -->
+                  <div class='col-lg-6 col-md-6 col-sm-12'>
+                    <lable for='alias'>Alias: </label>
+                    <input type='text' class='form-control' name='alias' placeholder="Ej. Contador Juan Pérez" autocomplete="off" required>
                   </div>
-                  <!-- RFC -->
-                  <div class="col-lg-6 col-md-6 col-sm-12">
-                    <label for="rfc"> RFC: </label>
-                    <input type="text" class="form-control" name="rfc" placeholder="RFC" required autocomplete="off">
+                  <!-- Nombre -->
+                  <div class='col-lg-6 col-md-6 col-sm-12'>
+                    <lable for='nombre'>Nombre(s): </label>
+                    <input type='text' class='form-control' name='nombre' placeholder="Nombre(s) de su contacto" autocomplete="off" required>
                   </div>
-                  <!-- Tipo de Persona -->
-                  <div class="col-lg-6 col-md-6 col-sm-12">
-                    <label for="tipo_persona">Tipo Persona: </label>
-                    <select class='form-control' name='tipo_persona'>
-                      <option value='0' selected disabled>Seleccione un Tipo de Persona</option>
-                      <option value='M'>Moral</option>
-                      <option value='F'>Física</option>
-                    </select>
+                  <!-- Apellido Paterno -->
+                  <div class='col-lg-6 col-md-6 col-sm-12'>
+                    <lable for='apellido_pat'>Apellido Paterno: </label>
+                    <input type='text' class='form-control' name='apellido_pat' placeholder="Apellido Paterno" autocomplete="off" required>
                   </div>
-                  <!-- Dirección -->
-                  <div class="col-lg-6 col-md-6 col-sm-12">
-                    <label for="direccion"> Dirección: </label>
-                    <input type="text" class="form-control" name="direccion" placeholder="Calle, No. Int, No. Ext, Ciudad, Estado" required autocomplete="off">
+                  <!-- Apellido Materno -->
+                  <div class='col-lg-6 col-md-6 col-sm-12'>
+                    <lable for='apellido_mat'>Apellido Materno: </label>
+                    <input type='text' class='form-control' name='apellido_mat' placeholder="Apellido Materno" autocomplete="off" required>
                   </div>
-                  <!-- Telefono -->
-                  <div class="col-lg-6 col-md-6 col-sm-12">
-                    <label for="telefono"> Telefono: </label>
-                    <input type="text" class="form-control" name="telefono" placeholder="55 00 00 00 00" required autocomplete="off">
+                  <!-- Puesto -->
+                  <div class='col-lg-6 col-md-6 col-sm-12'>
+                    <lable for='puesto'> Puesto: </label>
+                    <input type='text' class='form-control' name='puesto' placeholder="Puesto o cargo" autocomplete="off" required>
                   </div>
-                  <!-- Correo -->
-                  <div class="col-lg-6 col-md-6 col-sm-12">
-                    <label for="correo"> Correo: </label>
-                    <input type="email" class="form-control" name="correo" placeholder="cliente@correo.com" required autocomplete="off">
+                  <!-- Email -->
+                  <div class='col-lg-6 col-md-6 col-sm-12'>
+                    <lable for='email'> Email: </label>
+                    <input type='email' class='form-control' name='email' placeholder="micontacto@dominio.com" autocomplete="off" required>
+                  </div>
+                  <!-- Teléfono 1 -->
+                  <div class='col-lg-6 col-md-6 col-sm-12'>
+                    <lable for='tel_1'> Teléfono 1: </label>
+                    <input type='text' class='form-control' name='tel_1' placeholder="Número a 10 o 12 dígitos" autocomplete="off" required>
+                  </div>
+                  <!-- Teléfono 2 -->
+                  <div class='col-lg-6 col-md-6 col-sm-12'>
+                    <lable for='tel_2'> Teléfono 2: </label>
+                    <input type='text' class='form-control' name='tel_2' placeholder="(Opcional)" autocomplete="off">
                   </div>
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="submit" name='send'class="btn btn-success" disabled> <i class="fas fa-check"></i> Agregar </button>
+                <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Crear contacto </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Confirmación Eliminar Contacto -->
+    <div class="modal fade" id="modal_confirm_del">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title"> <i class="fas fa-exclamation-triangle"></i> Eliminar contacto </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <form method="POST" action="<?= $data['host'] ?>/administrar/contactos/delete">
+              <div class="modal-body">
+                <div class="row">
+                  <!-- Token -->
+                  <div class='display_none'>
+                    <input type="hidden" name="token" value="<?= $data['token'] ?>">
+                    <input type='hidden' name='cliente_id' value="<?= $data['cliente']['Id'] ?>">
+                    <input type='hidden' name='contacto_id'>
+                  </div>
+                  <!-- Msg Confirmación -->
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <spam>Está a punto de eliminar un contacto. ¿Seguro que desea eliminarlo?</spam>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Si, eliminar </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> No, cerrar ventana </button>
               </div>
           </form>
         </div>

@@ -8,3 +8,8 @@ $(document).ready(function (){
     }
   });
 });
+
+
+function set_contacto_id(id_contacto){
+  $("input[name='contacto_id']").val(id_contacto);
+}

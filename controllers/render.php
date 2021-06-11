@@ -528,6 +528,91 @@
     }
   }
 
+  class ProcessContactos{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $emisor = $data_session['Emisor'];
+
+        if($sesion->validate_token($token)){
+          if( empty($_POST['contacto_id']) ){
+            // INSERT CONTACTO
+            $id_cliente = $_POST['cliente_id'];
+            $alias = $_POST['alias'];
+            $nombre = $_POST['nombre'];
+            $apellido_pat = $_POST['apellido_pat'];
+            $apellido_mat = $_POST['apellido_mat'];
+            $puesto = $_POST['puesto'];
+            $email = $_POST['email'];
+            $tel_1 = $_POST['tel_1'];
+            $tel_2 = $_POST['tel_2'];
+
+            $contacto_pdo = new ContactoPDO();
+            if( $contacto_pdo->insert_contacto($id_cliente, $alias, $nombre, $apellido_pat, $apellido_mat, $puesto, $email, $tel_1, $tel_2) ){
+              $sesion->set_notification("OK", "Se ha agregado el nuevo contacto. ");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al registrar el nuevo contacto. Intente realizarlo nuevamente.");
+            }
+            $redirect = $hostname ."/administrar/clientes/detalles/". $id_cliente;
+          }else{
+            // UPDATE CONTACTO
+            $id_contacto = $_POST['contacto_id'];
+            $id_cliente = $_POST['cliente_id'];
+            $alias = $_POST['alias_edit'];
+            $nombre = $_POST['nombre_edit'];
+            $apellido_pat = $_POST['apellido_pat'];
+            $apellido_mat = $_POST['apellido_mat'];
+            $puesto = $_POST['puesto'];
+            $email = $_POST['email'];
+            $tel1 = $_POST['tel_1'];
+            $tel2 = $_POST['tel_2'];
+
+            $contacto_pdo = new ContactoPDO();
+            if( $contacto_pdo->update_contacto($id_contacto, $id_cliente, $alias, $nombre, $apellido_pat, $apellido_mat, $puesto, $email, $tel1, $tel2) ){
+              $sesion->set_notification("OK", "Se actualizaron los datos de su contacto.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos de su contacto. Inténtelo nuevamente.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessContactos | __contruct() | NO se recibieron datos por POST");
+      }
+      header("location: " . $hostname ."/administrar/clientes/detalles/". $id_cliente);
+    }
+  }
+  class DeleteContactos{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+        $cliente_id = $_POST['cliente_id'];
+
+        if($sesion->validate_token($token)){
+          if( empty($_POST['contacto_id']) ){
+            $sesion->set_notification("ERROR", "No fue posible realizar la operación solicitada.");
+            write_log("DeleteContactos | __construct() | No se recibió el 'contacto_id'");
+          }else{
+            // DELETE CONTACTO
+            $id_contacto = $_POST['contacto_id'];
+            $contacto_pdo = new ContactoPDO();
+            if( $contacto_pdo->delete_contacto($id_contacto, $cliente_id) ){
+              $sesion->set_notification("OK", "Se ha eliminado el contacto.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al eliminar el contacto. Intentelo nuevamente.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessContactos | __contruct() | NO se recibieron datos por POST");
+      }
+      header("location: " . $hostname ."/administrar/clientes/detalles/". $cliente_id);
+    }
+  }
+
   class ViewProdServs{
     function __construct($hostname="", $sitename="", $dataurl=null){
       $data['title'] = "Facturación 3.3 | Administrar | Productos y Servicios";
