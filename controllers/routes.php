@@ -16,6 +16,9 @@
       // Grupos
       $routes["administrar/grupos"]="ViewGrupos";
       $routes["administrar/grupos/process"]="ProcessGrupos";
+      // Perfiles
+      $routes["administrar/perfiles"]="ViewPerfiles";
+      $routes["administrar/perfiles/process"]="ProcessPerfiles";
       // Emisores
       $routes["administrar/emisores"]="ViewEmisores";
       $routes["administrar/emisores/process"]="ProcessEmisores";

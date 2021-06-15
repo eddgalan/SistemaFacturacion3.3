@@ -8,6 +8,7 @@
   /* ..:: Administrador ::..  */
   require 'models/administrador/usuario.php';
   require 'models/administrador/grupos.php';
+  require 'models/administrador/perfiles.php';
   require 'models/administrador/emisor.php';
   require 'models/administrador/cliente.php';
   require 'models/administrador/serie.php';
@@ -194,6 +195,61 @@
   }
 
   class ProcessGrupos{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if ($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          if (empty($_POST['id_grupo'])){
+            // INSERT Grupo
+            $grupo = $_POST['grupo'];
+            $descripcion = $_POST['descripcion'];
+
+            $grupo_pdo = new GrupoPDO();
+            if( $grupo_pdo->insert_grupo($grupo, $descripcion) ){
+              $sesion->set_notification("OK", "Se ha creado un nuevo grupo");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al crear el Grupo. Intente de nuevo.");
+            }
+          }else{
+            // UPDATE Grupo
+            $id_grupo = $_POST['id_grupo'];
+            $grupo = $_POST['grupo_edit'];
+            $descripcion = $_POST['descripcion_edit'];
+
+            $grupo_pdo = new GrupoPDO();
+            if( $grupo_pdo->update_grupo($id_grupo, $grupo, $descripcion) ){
+              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Grupo.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/administrar/grupos");
+    }
+  }
+
+  class ViewPerfiles{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Perfiles";
+      $data['host'] = $hostname;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+
+      $perfil_pdo = new PerfilPDO();
+      $data['perfiles'] = $perfil_pdo->get_all();
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/perfiles.php', $data, true);
+    }
+  }
+
+  class ProcessPerfiles{
     function __construct($hostname="", $sitename="", $dataurl=null){
       if ($_POST){
         $token = $_POST['token'];

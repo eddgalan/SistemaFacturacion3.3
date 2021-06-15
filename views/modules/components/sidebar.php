@@ -10,6 +10,7 @@
                   <div class="panel">
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/usuarios"> <i class="fas fa-user"></i> Usuarios</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/grupos"> <i class="fas fa-users"></i> Grupos</a>
+                    <a class="nav-link" href="<?= $data['host'] ?>/administrar/perfiles"> <i class="fas fa-user-tie"></i> Perfiles</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/emisores"> <i class="fas fa-building"></i> Emisores</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/clientes"> <i class="far fa-address-book"></i> Clientes</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/administrar/prodserv"> <i class="fas fa-box"></i> Productos/Servicios</a>
