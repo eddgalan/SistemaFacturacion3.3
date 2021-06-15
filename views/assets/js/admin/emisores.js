@@ -20,6 +20,7 @@ function carga_regimenes(tpo_persona){
         options += "<option value='"+ regimen.regimen_clave +" | "+ regimen.regimen_concepto +"'>"
               + regimen.regimen_clave +" | "+ regimen.regimen_concepto + "</option>";
       }
+      $("select[name='regimen_edit']").empty();
       $("select[name='regimen_edit']").append(options);
     },
     error : function(xhr, status) {
