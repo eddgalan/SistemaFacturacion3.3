@@ -23,7 +23,7 @@
   require 'models/catsat/impuestos.php';
   require 'models/catsat/regimenes.php';
 
-  class Login {
+  class Login{
     function __construct($host_name="", $site_name="", $variables=null){
       if($_POST){
         if(isset($_POST['username']) && isset($_POST['password'])) {
@@ -31,11 +31,9 @@
           $usr_pass = $_POST['password'];
 
           $usuario = new UsuarioPDO();
-
           if($usuario->validate_user($usr_name, $usr_pass)){
-            // write_log("USUARIO Y CONTASEÑA CORRECTA");
             $session = new UserSession();
-            $session->set_session($usuario->get_userdata($usr_name));
+            $session->set_session($usuario->get_all_userdata_by_username($usr_name));
             header("location: ./dashboard");
           }else{
             header("location: ./login");
@@ -244,6 +242,12 @@
       $perfil_pdo = new PerfilPDO();
       $data['perfiles'] = $perfil_pdo->get_all();
 
+      $usuario_pdo = new UsuarioPDO();
+      $data['usuarios'] = $usuario_pdo->get_users();
+
+      $emisor_pdo = new EmisorPDO();
+      $data['emisores'] = $emisor_pdo = $emisor_pdo->get_all();
+
       $this->view = new View();
       $this->view->render('views/modules/administrar/perfiles.php', $data, true);
     }
@@ -251,40 +255,58 @@
 
   class ProcessPerfiles{
     function __construct($hostname="", $sitename="", $dataurl=null){
-      if ($_POST){
+      if($_POST){
         $token = $_POST['token'];
         $sesion = new UserSession();
 
         if($sesion->validate_token($token)){
-          if (empty($_POST['id_grupo'])){
-            // INSERT Grupo
-            $grupo = $_POST['grupo'];
-            $descripcion = $_POST['descripcion'];
+          if (empty($_POST['perfil_id'])){
+            // INSERT PERFIL
+            $usuario = $_POST['user'];
+            $nombre = $_POST['nombre'];
+            $apellido_pat = $_POST['apellido_pat'];
+            $apellido_mat = $_POST['apellido_mat'];
+            $emisor = $_POST['emisor'];
+            $puesto = $_POST['puesto'];
 
-            $grupo_pdo = new GrupoPDO();
-            if( $grupo_pdo->insert_grupo($grupo, $descripcion) ){
-              $sesion->set_notification("OK", "Se ha creado un nuevo grupo");
+            $perfil_pdo = new PerfilPDO();
+            if( $perfil_pdo->get_perfil_by_user($usuario) ){
+              $sesion->set_notification("ERROR", "Ya existe un perfil con ese usuario.");
             }else{
-              $sesion->set_notification("ERROR", "Ocurrió un error al crear el Grupo. Intente de nuevo.");
+              if( $perfil_pdo->insert_perfil($usuario, $nombre, $apellido_pat, $apellido_mat, $emisor, $puesto) ){
+                $sesion->set_notification("OK", "Se ha creado un nuevo perfil");
+              }else{
+                $sesion->set_notification("ERROR", "Ocurrió un error al crear el perfil. Intente de nuevo.");
+              }
             }
           }else{
-            // UPDATE Grupo
-            $id_grupo = $_POST['id_grupo'];
-            $grupo = $_POST['grupo_edit'];
-            $descripcion = $_POST['descripcion_edit'];
+            // UPDATE PERFIL
+            $id_perfil = $_POST['perfil_id'];
+            $usuario = $_POST['user_edit'];
+            $nombre = $_POST['nombre_edit'];
+            $apellido_pat = $_POST['apellido_pat_edit'];
+            $apellido_mat = $_POST['apellido_mat_edit'];
+            $emisor = $_POST['emisor_edit'];
+            $puesto = $_POST['puesto_edit'];
 
-            $grupo_pdo = new GrupoPDO();
-            if( $grupo_pdo->update_grupo($id_grupo, $grupo, $descripcion) ){
+            $perfil_pdo = new PerfilPDO();
+            if( $perfil_pdo->update_perfil($id_perfil, $usuario, $nombre, $apellido_pat, $apellido_mat, $emisor, $puesto) ){
+              $data_sesion = $sesion->get_session();
+              if( $id_perfil == $data_sesion['PerfilId'] ){
+                $usuario_pdo = new UsuarioPDO();
+                $sesion->set_session($usuario_pdo->get_all_userdata($usuario));
+                write_log("ProcessPerfiles | __construct() | Se actualizó el perfil de la sesión actual");
+              }
               $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
             }else{
-              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Grupo.");
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el perfil.");
             }
           }
         }
       }else{
         write_log("ProcessUsuario\nNO se recibieron datos por POST");
       }
-      header("location: " . $hostname . "/administrar/grupos");
+      header("location: " . $hostname . "/administrar/perfiles");
     }
   }
 

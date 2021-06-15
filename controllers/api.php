@@ -20,8 +20,8 @@
 
         if($sesion->validate_token($token)){
           $id = $datos[1];
-          $usuario = new UsuarioPDO($id);
-          $data_usuario = $usuario->get_userdata();
+          $usuario = new UsuarioPDO();
+          $data_usuario = $usuario->get_userdata($id);
           $this -> return_data("Mostrando Usuarios API", 200, $data_usuario);
         }else{
           write_log("Token NO válido | UsuarioAPI");
@@ -129,6 +129,32 @@
         }
       }else{
         write_log("GrupoAPI | get_grupos_usuario() | NO se recibieron datos POST");
+        $this->return_data("No fue posible procesar su solicitud", 400);
+      }
+    }
+  }
+
+  class PerfilAPI extends API{
+    public function get_perfil(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if( $sesion->validate_token($token) ){
+          $id_perfil = $_POST['id_perfil'];
+          $perfil_pdo = new PerfilPDO();
+          $data_perfil = $perfil_pdo->get_perfil($id_perfil);
+          if( $data_perfil != false ){
+            $this-> return_data("PerfilAPI | get_perfil() | Información del Perfil", 200, $data_perfil);
+          }else{
+            $this-> return_data("PerfilAPI | get_perfil() | NO fue posible obtener la información solicitada", 400);
+          }
+        }else{
+          write_log("PerfilAPI | get_perfil() | Token no válido");
+          $this->return_data("No fue posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("PerfilAPI | get_perfil() | NO se recibieron datos POST");
         $this->return_data("No fue posible procesar su solicitud", 400);
       }
     }

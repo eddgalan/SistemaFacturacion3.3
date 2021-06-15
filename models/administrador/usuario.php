@@ -105,7 +105,7 @@
       }
     }
 
-    public function get_userdata_by_id($id=''){
+    public function get_userdata($id){
       if(empty($this->id)){
         $this->connect();
         $stmt = $this->conn->prepare("SELECT * FROM usuario WHERE Id='$id'");
@@ -119,20 +119,41 @@
       }
     }
 
-    public function get_userdata($username=''){
+    public function get_all_userdata($id){
       $this->connect();
-
-      if(empty($this->id)){
-        $sql = "SELECT * FROM usuario WHERE Username='$username'";
-      }else{
-        $sql = "SELECT * FROM usuario WHERE Id='$this->id'";
-      }
-
+      $sql = "SELECT usuario.Id, usuario.Estatus, usuario.Username, usuario.Password, usuario.Email,
+      usuario.ChangePass, usuario.Created, usuario.LastSession,
+      perfiles.Id as PerfilId, perfiles.Nombre, perfiles.ApellidoPaterno, perfiles.ApellidoMaterno, perfiles.Emisor as EmisorId,
+      perfiles.Puesto
+      FROM perfiles
+      INNER JOIN usuario ON perfiles.UsuarioId = usuario.Id
+      WHERE usuario.Id='$id'";
+      write_log("UsuarioPDO | get_all_userdata_by_username() | SQL: ". $sql);
       $stmt = $this->conn->prepare($sql);
       $stmt->execute();
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      write_log("UsuarioPDO | get_all_userdata_by_username() | Result: ". serialize($result));
       $this->disconect();
+      if(count($result) != 0){
+        return $result[0];
+      }
+    }
 
+    public function get_all_userdata_by_username($username){
+      $this->connect();
+      $sql = "SELECT usuario.Id, usuario.Estatus, usuario.Username, usuario.Password, usuario.Email,
+      usuario.ChangePass, usuario.Created, usuario.LastSession,
+      perfiles.Id as PerfilId, perfiles.Nombre, perfiles.ApellidoPaterno, perfiles.ApellidoMaterno, perfiles.Emisor as EmisorId,
+      perfiles.Puesto
+      FROM perfiles
+      INNER JOIN usuario ON perfiles.UsuarioId = usuario.Id
+      WHERE usuario.Username='$username'";
+      write_log("UsuarioPDO | get_all_userdata_by_username() | SQL: ". $sql);
+      $stmt = $this->conn->prepare($sql);
+      $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      write_log("UsuarioPDO | get_all_userdata_by_username() | Result: ". serialize($result));
+      $this->disconect();
       if(count($result) != 0){
         return $result[0];
       }

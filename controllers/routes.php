@@ -80,6 +80,7 @@
       $routes["API/grupos/get_grupos_usuario"]="GrupoAPI/get_grupos_usuario";
       $routes["API/grupos/add_grupo"]="GrupoAPI/add_grupo";
       $routes["API/grupos/remove_grupo"]="GrupoAPI/remove_grupo";
+      $routes["API/perfiles/get_perfil"]="PerfilAPI/get_perfil";
       $routes["API/emisores/get_emisor"]="EmisorAPI/get_emisor";
       $routes["API/productos/get_producto"]="ProdServAPI/get_producto";
       $routes["API/series/get_serie_by_nom_serie"]="SerieAPI/get_serie_by_nom_serie";

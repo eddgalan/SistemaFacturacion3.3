@@ -19,7 +19,7 @@
                             <h4 class="card-title">Perfiles</h4>
                           </div>
                           <div class="col-lg-4 col-md-4 col-sm-12 text-right">
-                            <button type="button" class="btn btn-success waves-effect btn_full" data-toggle="modal" data-target="#modal_nuevo_usuario">
+                            <button type="button" class="btn btn-success waves-effect btn_full" data-toggle="modal" data-target="#modal_nuevo_perfil">
                               <i class="fas fa-user-plus"></i> Crear Perfil
                             </button>
                           </div>
@@ -41,6 +41,7 @@
                                           <th>Nombre</th>
                                           <th>Apellido Paterno</th>
                                           <th>Apellido Materno</th>
+                                          <th>Correo</th>
                                           <th>Emisor</th>
                                           <th>Acciones</th>
                                         </tr>
@@ -50,18 +51,19 @@
                                           foreach ($data['perfiles'] as $perfil) {
                                             $html_row = ""."\n\t\t\t\t\t\t\t<tr>\n".
                                                           "\t\t\t\t\t\t\t\t<td class='text-center'>". $perfil['Id'] ."</td>\n".
-                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>". $perfil['UsuarioId'] . " - ".  $perfil['Username'] ."</td>\n".
+                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>". $perfil['Username'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td class='text-center'>". $perfil['Nombre'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td class='text-center'>". $perfil['ApellidoPaterno'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td class='text-center'>". $perfil['ApellidoMaterno'] ."</td>\n".
-                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>". $perfil['IdEmisor'] . " - ". $perfil['NombreEmisor'] ."</td>\n".
+                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>". $perfil['Email'] ."</td>\n".
+                                                          "\t\t\t\t\t\t\t\t<td class='text-center'>". $perfil['NombreEmisor'] ."</td>\n".
                                                           "\t\t\t\t\t\t\t\t<td>\n".
                                                             "\t\t\t\t\t\t\t\t\t<div class='btn-group' role='group' aria-label='Button group with nested dropdown'  style='width:100%;'>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t<button id='btnGroupDrop1' type='button' class='btn btn-info btn_options text-center' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' style='background-color: #4e73df !important;'>\n".
                                                                 "\t\t\t\t\t\t\t\t\t\t\t<i class='fas fa-ellipsis-h icon_btn_options'></i>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t</button>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
-                                                                "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_usuario' onclick='carga_datos_usuario(". $perfil['Id'] .")'> <i class='fas fa-user-edit'></i> Editar Perfil</a>\n".
+                                                                "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_perfil' onclick='carga_datos_perfil(". $perfil['Id'] .")'> <i class='fas fa-user-edit'></i> Editar Perfil</a>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t</div>\n".
                                                             "\t\t\t\t\t\t\t\t\t</div>\n".
                                                           "\t\t\t\t\t\t\t\t</td>\n".
@@ -82,136 +84,152 @@
         </div>
     </div>
     <!-- ..:: MODALES ::.. -->
-    <!-- ..:: Modal Crear Nuevo usuario ::.. -->
-    <div class="modal fade" id="modal_nuevo_usuario">
+    <!-- ..:: Modal Nuevo Perfil ::.. -->
+    <div class="modal fade" id="modal_nuevo_perfil">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title"> <i class="fas fa-plus"></i> Crear usuario </h4>
+            <h4 class="modal-title"> <i class="fas fa-plus"></i> Crear Perfil </h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
-          <form method="POST" action="<?= $data['host'] ?>/administrar/usuarios/process">
+          <form method="POST" action="<?= $data['host'] ?>/administrar/perfiles/process">
               <div class="modal-body">
                 <div class="row">
                   <!-- Token -->
                   <div style="display:none;">
                     <input type="hidden" name="token" value="<?= $data['token'] ?>">
                   </div>
-                  <!-- Username -->
-                  <div class="col-lg-4 col-md-4 col-sm-12">
-                    <label for="username"> Nombre de usuario: </label>
-                    <input type="text" class="form-control" name="username" placeholder="Username" required autocomplete="off">
+                  <!-- Usuario -->
+                  <div class="col-lg64 col-md-6 col-sm-12">
+                    <label for="user"> Usuario: </label><br>
+                    <select class="from-control selectpicker" name="user" data-live-search="true">
+                      <option value="0" disabled selected>Buscar usuario...</option>
+                      <?php
+                        foreach ($data['usuarios'] as $usuario) {
+                          $html_option = "<option value='". $usuario['Id'] ."'>". $usuario['Id'] ." | ". $usuario['Username'] ." | ". $usuario['Email'] ."</option>\n";
+                          echo $html_option;
+                        }
+                      ?>
+                    </select>
                   </div>
-                  <!-- Password -->
-                  <div class="col-lg-4 col-md-4 col-sm-12">
-                    <label for="password"> Contraseña: </label>
-                    <input type="password" class="form-control" name="password" placeholder="* * * * * * * *" required autocomplete="off">
+                  <!-- Nombre -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="nombre"> Nombre: </label>
+                    <input type="text" class="form-control" name="nombre" required autocomplete="off">
                   </div>
-                  <!-- Email -->
-                  <div class="col-lg-4 col-md-4 col-sm-12">
-                    <label for="email"> Email: </label>
-                    <input type="text" class="form-control" name="email" placeholder="alguien@correo.com" required autocomplete="off">
+                  <!-- Apellido Paterno -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="apellido_pat"> Apellido Paterno: </label>
+                    <input type="text" class="form-control" name="apellido_pat" required autocomplete="off">
+                  </div>
+                  <!-- Apellido Materno -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="apellido_mat"> Apellido Materno: </label>
+                    <input type="text" class="form-control" name="apellido_mat" required autocomplete="off">
+                  </div>
+                  <!-- Emisor -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="emisor"> Emisor: </label>
+                    <select class="from-control selectpicker" name="emisor" data-live-search="true">
+                      <option value="0" disabled selected> Seleccionar emisor... </option>
+                      <?php
+                        foreach ($data['emisores'] as $emisor) {
+                          $html_option = "<option value='". $emisor['Id'] ."'>". $emisor['Id'] ." | ". $emisor['Nombre'] ." | ". $emisor['RFC'] ."</option>\n";
+                          echo $html_option;
+                        }
+                      ?>
+                    </select>
+                  </div>
+                  <!-- Puesto -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="puesto"> Puesto: </label>
+                    <input type="text" class="form-control" name="puesto" placeholder="Puesto o cargo" required autocomplete="off">
                   </div>
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Crear usuario </button>
+                <button type="submit" name='create' class="btn btn-success" disabled> <i class="fas fa-check"></i> Crear Perfil </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
               </div>
           </form>
         </div>
       </div>
     </div>
-    <!-- ..:: Modal Editar Usuario ::.. -->
-    <div class="modal fade" id="modal_editar_usuario">
+    <!-- ..:: Modal Editar Perfil ::.. -->
+    <div class="modal fade" id="modal_editar_perfil">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title"> <i class="fas fa-user-edit"></i> Editar Usuario </h4>
+            <h4 class="modal-title"> <i class="fas fa-user-edit"></i> Editar Perfil </h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
-          <form method="POST" action="<?= $data['host'] ?>/administrar/usuarios/process">
+          <form method="POST" action="<?= $data['host'] ?>/administrar/perfiles/process">
               <div class="modal-body">
                 <div class="row">
                   <!-- Token -->
                   <div style="display:none;">
                     <input type="hidden" name="token" value="<?= $data['token'] ?>">
-                    <input type="hidden" name="id_usuario" value="<?= $data['token'] ?>">
+                    <input type="hidden" name="perfil_id">
                   </div>
-                  <!-- Estatus -->
-                  <div class="col-md-12">
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" name="user_activo"> Activo
-                      </label>
-                    </div>
-                  </div><br>
-                  <!-- Username -->
-                  <div class="col-lg-4 col-md-6 col-sm-12">
-                    <label for="username_edit"> Nombre de usuario: </label>
-                    <input type="text" class="form-control" name="username_edit" placeholder="Username" required autocomplete="off">
+                  <!-- Usuario -->
+                  <div class="col-lg64 col-md-6 col-sm-12">
+                    <label for="user_edit"> Usuario: </label><br>
+                    <select class="from-control selectpicker" name="user_edit" data-live-search="true">
+                      <option value="0" disabled selected> Cambiar Usuario...</option>
+                      <?php
+                        foreach ($data['usuarios'] as $usuario) {
+                          $html_option = "<option value='". $usuario['Id'] ."'>". $usuario['Id'] ." | ". $usuario['Username'] ." | ". $usuario['Email'] ."</option>\n";
+                          echo $html_option;
+                        }
+                      ?>
+                    </select>
                   </div>
-                  <!-- Password -->
-                  <div class="col-lg-4 col-md-6 col-sm-12">
-                    <label for="password_edit"> Actualizar contraseña: </label>
-                    <input type="password" class="form-control" name="password_edit" placeholder="* * * * * * * *" autocomplete="off">
+                  <!-- Nombre -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="nombre_edit"> Nombre: </label>
+                    <input type="text" class="form-control" name="nombre_edit" required autocomplete="off">
                   </div>
-                  <!-- Email -->
-                  <div class="col-lg-4 col-md-6 col-sm-12">
-                    <label for="email_edit"> Email: </label>
-                    <input type="text" class="form-control" name="email_edit" placeholder="alguien@correo.com" required autocomplete="off">
+                  <!-- Apellido Paterno -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="apellido_pat_edit"> Apellido Paterno: </label>
+                    <input type="text" class="form-control" name="apellido_pat_edit" required autocomplete="off">
                   </div>
-                  <!-- Grupos -->
-                  <div class='col-lg-12 col-md-12 col-sm-12'>
-                    <div class='row'>
-                      <div class="col-md-12">
-                        <label for="grupos">Grupos: </label>
-                      </div>
-                      <!-- Select Grupo -->
-                      <div class="col-lg-6 col-md-6 col-sm-12">
-                        <select class="form-control" name="grupos">
-                          <option value="0" selected disabled> Seleccione un grupo </option>
-                          <?php
-                            foreach( $data['grupos'] as $grupo ){
-                              echo "<option value='". $grupo['Id'] ."'>". $grupo['Nombre'] ."</option>\n";
-                            }
-                          ?>
-                        </select>
-                      </div>
-                      <!-- Botón Agregar -->
-                      <div class="col-lg-6 col-md-6 col-sm-12" style="margin-left: -15px;">
-                        <button type="button" class="btn btn-success" name="add_group" disabled>
-                          <i class="fas fa-plus"></i> Agregar
-                        </button>
-                      </div>
-                      <!-- MSG Resultado del AJAX -->
-                      <div class='col-lg-12 col-md-12 col-sm-12 text-center'>
-                        <small class="color_green display_none" name="msg_ok"><strong>Se agregó el usuario al grupo indicado</strong></small>
-                        <small class="color_red display_none" name="msg_error"><strong>Ocurrió un error al agregar el usuario al grupo indicado</strong></small>
-                        <small class="color_red display_none" name="msg_exist"><strong>El usuario ya se encuentra dentro del grupo indicado</strong></small>
-                        <small class="color_green display_none" name="msg_remove"><strong>Se eliminó al usuario del grupo</strong></small>
-                      </div>
-                      <!-- Listado de grupos -->
-                      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:10px;">
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                          <ul class="list-group" name="group_list">
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
+                  <!-- Apellido Materno -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="apellido_mat_edit"> Apellido Materno: </label>
+                    <input type="text" class="form-control" name="apellido_mat_edit" required autocomplete="off">
+                  </div>
+                  <!-- Emisor -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="emisor_edit"> Emisor: </label>
+                    <select class="from-control selectpicker" name="emisor_edit" data-live-search="true">
+                      <option value="0" disabled selected> Cambiar Emisor... </option>
+                      <?php
+                        foreach ($data['emisores'] as $emisor) {
+                          $html_option = "<option value='". $emisor['Id'] ."'>". $emisor['Id'] ." | ". $emisor['Nombre'] ." | ". $emisor['RFC'] ."</option>\n";
+                          echo $html_option;
+                        }
+                      ?>
+                    </select>
+                  </div>
+                  <!-- Puesto -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label for="puesto_edit"> Puesto: </label>
+                    <input type="text" class="form-control" name="puesto_edit" placeholder="Puesto o cargo" required autocomplete="off">
                   </div>
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Guardar cambios </button>
+                <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Actualizar Perfil </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
               </div>
           </form>
         </div>
       </div>
     </div>
+
     <?php include './views/modules/components/javascript.php'; ?>
-    <script src="<?= $data['host'] ?>/views/assets/js/usuarios.js"></script>
+    <script src="<?= $data['host'] ?>/views/assets/js/admin/perfiles.js"></script>
 </body>
 
 </html>

@@ -26,23 +26,22 @@
       }
 
       public function set_session($datos_usuario){
-        write_log(serialize($datos_usuario));
-        // $_SESSION['id_user'] = $token;
         $_SESSION['Id'] = $datos_usuario['Id'];
         $_SESSION['Estatus'] = $datos_usuario['Estatus'];
         $_SESSION['Username'] = $datos_usuario['Username'];
+        $_SESSION['Perfil'] = $datos_usuario['PerfilId'];
         $_SESSION['Email'] = $datos_usuario['Email'];
         $_SESSION['Created'] = $datos_usuario['Created'];
         $_SESSION['ChangePass'] = $datos_usuario['ChangePass'];
         $_SESSION['LastSession'] = $datos_usuario['LastSession'];
-        $_SESSION['Emisor'] = 1;
-        write_log("Sesión Colocada");
+        $_SESSION['Emisor'] = $datos_usuario['EmisorId'];
       }
 
       public function get_session(){
         if(isset($_SESSION['Username'])){
           return array("Id"=>$_SESSION['Id'],
           "Username"=>$_SESSION['Username'],
+          "PerfilId"=>$_SESSION['Perfil'],
           "Email"=>$_SESSION['Email'],
           "Created"=>$_SESSION['Created'],
           "LastSession"=>$_SESSION['LastSession'],
