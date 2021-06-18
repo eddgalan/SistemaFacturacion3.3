@@ -58,9 +58,33 @@
   }
 
   class Dashboard {
-    function __construct($host_name="", $site_name="", $variables=null){
+    function __construct($hostname="", $sitename="", $dataurl=null){
       $data['title'] = "Facturación 3.3 | Dashboard";
-      $data['host'] = $host_name;
+      $data['host'] = $hostname;
+
+      $sesion = new UserSession();
+      $data_sesion = $sesion->get_session();
+      $emisor = $data_sesion['Emisor'];
+      // Sección Admin
+      $usuario_pdo = new UsuarioPDO();
+      $data['no_usuarios'] = $usuario_pdo->get_count();
+      $grupo_pdo = new GrupoPDO();
+      $data['no_grupos'] = $grupo_pdo->get_count();
+      $perfil_pdo = new PerfilPDO();
+      $data['no_perfiles'] = $perfil_pdo->get_count();
+      $emisor_pdo = new EmisorPDO();
+      $data['no_emisores'] = $emisor_pdo->get_count();
+      // Sección Emisor
+      $cliente_pdo = new ClientePDO();
+      $data['no_clientes'] = $cliente_pdo->get_count($emisor);
+      $prodserv_pdo = new ProdServPDO();
+      $data['no_prodservs'] = $prodserv_pdo->get_count($emisor);
+      $serie_pdo = new SeriePDO();
+      $data['no_series'] = $serie_pdo->get_count($emisor);
+      // Comprobantes
+      $comprobante_pdo = new ComprobantePDO();
+      $data['no_cfdis'] = $comprobante_pdo->get_count($emisor);
+      
       $this->view = new View();
       $this->view->render('views/modules/dashboard.php', $data, true);
     }

@@ -4,6 +4,20 @@
         parent::__construct();
       }
 
+      public function get_count($emisor){
+        $this->connect();
+        $sql = "SELECT COUNT(Id) AS NoClientes FROM clientes WHERE Emisor='$emisor'";
+        $stmt = $this->conn->prepare($sql);
+        write_log("ClientePDO | get_count() | SQL: ". $sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->disconect();
+        write_log("ClientePDO | get_count() | Result: ". serialize($result));
+        if(count($result) != 0){
+          return $result[0]['NoClientes'];
+        }
+      }
+
       public function insert_cliente($emisor, $nombre, $rfc, $tipo_persona, $direccion, $telefono, $correo){
         $this->connect();
         try{

@@ -62,6 +62,62 @@
         $this->observaciones = $observaciones;
       }
 
+      public function get_count($emisor){
+        $this->connect();
+        $sql = "SELECT Estatus, COUNT(Id) AS NoCFDIs
+        FROM cfdi WHERE Emisor=$emisor
+        GROUP BY Estatus";
+        write_log("ComprobantePDO | get_count() | SQL: ". $sql);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->disconect();
+        write_log("ComprobantePDO | get_count() | Result: ". serialize($result));
+        $cfdis_nuevos = 0;
+        $cfdis_timbrados = 0;
+        $cfdis_verificados = 0;
+        $cfdis_cancel_sintimbrar = 0;
+        $cfdis_cancel_timbrados = 0;
+        // Obtiene los CFDIs Nuevos (Estatus = 0)
+        foreach( $result as $row ){
+          if( $row['Estatus']== 0 ){
+            $cfdis_nuevos = $row['NoCFDIs'];
+          }
+        }
+        // Obtiene los CFDIs Timbrados-NoVerificados (Estatus = 1)
+        foreach( $result as $row ){
+          if( $row['Estatus']== 1 ){
+            $cfdis_timbrados = $row['NoCFDIs'];
+          }
+        }
+        // Obtiene los CFDIs Nuevos (Estatus = 0)
+        foreach( $result as $row ){
+          if( $row['Estatus']== 2 ){
+            $cfdis_verificados = $row['NoCFDIs'];
+          }
+        }
+        // Obtiene los CFDIs Cancelados-SinTimbrar (Estatus = 3)
+        foreach( $result as $row ){
+          if( $row['Estatus']== 3 ){
+            $cfdis_cancel_sintimbrar = $row['NoCFDIs'];
+          }
+        }
+        // Obtiene los CFDIs Cancelados-DespuesDeTimbrar (Estatus = 4)
+        foreach( $result as $row ){
+          if( $row['Estatus']== 4 ){
+            $cfdis_cancel_timbrados = $row['NoCFDIs'];
+          }
+        }
+        return array(
+          "CFDIsTotal" => intval($cfdis_nuevos) + intval($cfdis_timbrados) + intval($cfdis_verificados) +
+          intval($cfdis_cancel_timbrados) + intval($cfdis_cancel_sintimbrar),
+          "CFDIsNuevos" => $cfdis_nuevos,
+          "CFDIsSinVerificar" => $cfdis_timbrados,
+          "CFDIsVerificados" => $cfdis_verificados,
+          "CFDIsCancelados" => intval($cfdis_cancel_timbrados) + intval($cfdis_cancel_sintimbrar)
+        );
+      }
+
       public function insert_comprobante($detalles){
         if( $this->cliente_id != "" ){
           $this->connect();

@@ -21,6 +21,20 @@
         $this->csd = $csd;
       }
 
+      public function get_count($emisor){
+        $this->connect();
+        $sql = "SELECT COUNT(Id) AS NoSerie FROM series WHERE Emisor='$emisor'";
+        $stmt = $this->conn->prepare($sql);
+        write_log("SeriePDO | get_count() | SQL: ". $sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->disconect();
+        write_log("SeriePDO | get_count() | Result: ". serialize($result));
+        if(count($result) != 0){
+          return $result[0]['NoSerie'];
+        }
+      }
+
       public function get_tpocomprobantes_catsat(){
         $file_json = fopen('models/anexo20/c_TipoDeComprobante.json','r');
         $array_tpocomprobantes = json_decode(fread($file_json, filesize('models/anexo20/c_TipoDeComprobante.json')),true);

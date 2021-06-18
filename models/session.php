@@ -28,8 +28,11 @@
       public function set_session($datos_usuario){
         $_SESSION['Id'] = $datos_usuario['Id'];
         $_SESSION['Estatus'] = $datos_usuario['Estatus'];
-        $_SESSION['Username'] = $datos_usuario['Username'];
         $_SESSION['Perfil'] = $datos_usuario['PerfilId'];
+        $_SESSION['Username'] = $datos_usuario['Username'];
+        $_SESSION['Nombre'] = $datos_usuario['Nombre'];
+        $_SESSION['ApellidoPat'] = $datos_usuario['ApellidoPaterno'];
+        $_SESSION['ApellidoMat'] = $datos_usuario['ApellidoMaterno'];
         $_SESSION['Email'] = $datos_usuario['Email'];
         $_SESSION['Created'] = $datos_usuario['Created'];
         $_SESSION['ChangePass'] = $datos_usuario['ChangePass'];
@@ -42,6 +45,10 @@
           return array("Id"=>$_SESSION['Id'],
           "Username"=>$_SESSION['Username'],
           "PerfilId"=>$_SESSION['Perfil'],
+          "Username"=>$_SESSION['Username'],
+          "Nombre"=>$_SESSION['Nombre'],
+          "ApellidoPat"=>$_SESSION['ApellidoPat'],
+          "ApellidoMat"=>$_SESSION['ApellidoMat'],
           "Email"=>$_SESSION['Email'],
           "Created"=>$_SESSION['Created'],
           "LastSession"=>$_SESSION['LastSession'],

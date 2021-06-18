@@ -5,6 +5,20 @@
         parent::__construct();
       }
 
+      public function get_count($emisor){
+        $this->connect();
+        $sql = "SELECT COUNT(Id) AS NoProdServs FROM productos WHERE Emisor='$emisor'";
+        $stmt = $this->conn->prepare($sql);
+        write_log("ProdServPDO | get_count() | SQL: ". $sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->disconect();
+        write_log("ProdServPDO | get_count() | Result: ". serialize($result));
+        if(count($result) != 0){
+          return $result[0]['NoProdServs'];
+        }
+      }
+
       public function get_all($emisor){
         $this->connect();
         try{

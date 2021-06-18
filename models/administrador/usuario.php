@@ -23,6 +23,22 @@
       $this->lastsession= $lastsession;
     }
 
+    public function get_count(){
+      $this->connect();
+      $sql = "SELECT COUNT(Id) AS NoUsuarios FROM usuario";
+      $stmt = $this->conn->prepare($sql);
+      write_log("UsuarioPDO | get_count() | SQL: ". $sql);
+      $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $this->disconect();
+      write_log("UsuarioPDO | get_count() | Result: ". serialize($result));
+      if(count($result) != 0){
+        return $result[0]['NoUsuarios'];
+      }else{
+        write_log("NO se han registrado Usuarios");
+      }
+    }
+
     public function insert_usuario(){
       $this->connect();       // Conecta a la base de datos
       try{

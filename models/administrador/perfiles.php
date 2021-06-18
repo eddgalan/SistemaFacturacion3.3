@@ -6,6 +6,22 @@
       parent::__construct();
     }
 
+    public function get_count(){
+      $this->connect();
+      $sql = "SELECT COUNT(Id) AS NoPerfiles FROM perfiles";
+      $stmt = $this->conn->prepare($sql);
+      write_log("PerfilPDO | get_count() | SQL: ". $sql);
+      $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $this->disconect();
+      write_log("PerfilPDO | get_count() | Result: ". serialize($result));
+      if(count($result) != 0){
+        return $result[0]['NoPerfiles'];
+      }else{
+        write_log("NO se han registrado Usuarios");
+      }
+    }
+
     public function get_all(){
       $this->connect();
       $sql = "SELECT perfiles.Id, perfiles.UsuarioId, usuario.Username as Username, perfiles.Nombre, perfiles.ApellidoPaterno, perfiles.ApellidoMaterno,

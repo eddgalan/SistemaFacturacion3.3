@@ -16,6 +16,22 @@
         parent::__construct();
       }
 
+      public function get_count(){
+        $this->connect();
+        $sql = "SELECT COUNT(Id) AS NoEmisores FROM emisores";
+        $stmt = $this->conn->prepare($sql);
+        write_log("EmisorPDO | get_count() | SQL: ". $sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->disconect();
+        write_log("EmisorPDO | get_count() | Result: ". serialize($result));
+        if(count($result) != 0){
+          return $result[0]['NoEmisores'];
+        }else{
+          write_log("EmisorPDO | get_count() | NO se han registrado Usuarios");
+        }
+      }
+
       public function get_all(){
         $this->connect();
         try{
