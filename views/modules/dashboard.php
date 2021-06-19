@@ -147,7 +147,7 @@
                           <!-- ..:: Comprobantes ::.. -->
                           <div class="col-lg-12 col-md-12 col-sm-12">
                             <h6 class="text-muted card-subtitle mb-2" style="margin-top:10px; margin-bottom:15px !important;">
-                              <strong> Sus CFDIS: </strong> Se han registrado <strong> <?= $data['no_cfdis']['CFDIsTotal'] ?> </strong> CFDIs en total
+                              Se han registrado <strong> <?= $data['no_cfdis']['CFDIsTotal'] ?> </strong> CFDIs en total
                             </h6>
                           </div>
                           <!-- Nuevos -->
@@ -218,19 +218,28 @@
                           <div class="col-lg-12 col-md-12 col-sm-12">
                             <hr>
                           </div>
+                          <!-- Facturación Mensual -->
                           <div class="col-lg-6 col-md-12 col-sm-12">
-                            <!-- Facturación Mensual -->
                             <div class="col-lg-12 col-md-12 col-sm-12">
                               <h6 class="text-muted card-subtitle mb-2" style="margin-top:10px; margin-bottom:15px !important;">
-                                Su facturación en este mes:
+                                Su facturación en este año:
                               </h6>
                             </div>
                             <div class="col-lg-12 col-md-12 col-sm-12">
                               <canvas id="chart_meses" name="chart_meses"></canvas>
                             </div>
                           </div>
-                          <!-- Facturación Anual -->
-
+                          <!-- Mejores Clientes -->
+                          <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                              <h6 class="text-muted card-subtitle mb-2" style="margin-top:10px; margin-bottom:15px !important;">
+                                Sus mejores clientes en este año:
+                              </h6>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                              <canvas id="chart_clientes" name="chart_clientes"></canvas>
+                            </div>
+                          </div>
                       </div>
                     </div>
                 </div>

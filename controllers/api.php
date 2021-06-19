@@ -459,7 +459,7 @@
   }
 
   class ChartJSAPI extends API{
-    public function get_dashboard_data(){
+    public function get_comp_by_month(){
       if($_POST){
         $token = $_POST['token'];
         $sesion = new UserSession();
@@ -476,6 +476,26 @@
       }else{
         write_log("ChartJS | get_dashboard_data | No se recibieron datos POST");
         $this->return_data("ChartJS | get_dashboard_data | No es posible procesar su solicitud", 400);
+      }
+    }
+
+    public function get_top_comp_by_client(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        if($sesion->validate_token($token)){
+          $comprobante_pdo = new ComprobantePDO();
+          $data = array(
+            "CFDIsClientes" => $comprobante_pdo->get_top_5_comprobantes_by_cliente($_SESSION['Emisor'])
+          );
+          $this -> return_data("ChartJSAPI | get_top_comp_by_client() | Operación exitosa", 200, $data);
+        }else{
+          write_log("ChartJS | get_top_comp_by_client | Token no válido");
+          $this->return_data("ChartJSAPI | get_top_comp_by_client() | No fue posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("ChartJS | get_top_comp_by_client | No se recibieron datos POST");
+        $this->return_data("ChartJS | get_top_comp_by_client | No es posible procesar su solicitud", 400);
       }
     }
   }

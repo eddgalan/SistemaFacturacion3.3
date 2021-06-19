@@ -991,7 +991,7 @@
       public function get_comprobantes_by_month($emisor){
         $this->connect();
         try{
-          // Comprobantes Por Mes
+          // Comprobantes en el año actual
           $sql = "SELECT MONTH(Fecha) AS Mes, COUNT(Id) AS NoCFDIs
           FROM cfdi
           WHERE YEAR(Fecha) = YEAR(CURDATE()) AND Emisor=$emisor AND Estatus IN(0,1,2)
@@ -1010,6 +1010,38 @@
           return array($meses, $no_cfdis);
         }catch(PDOException $e){
           write_log("ComprobantePDO | get_data_to_dashboard() | Ocurrió un error.\nError: " .$e->getMessage());
+          write_log("SQL: " .$sql);
+        }
+      }
+
+      public function get_top_5_comprobantes_by_cliente($emisor){
+        $this->connect();
+        try{
+          // Comprobantes en el año actual por cliente
+          $sql = "SELECT clientes.Id AS IdCliente, clientes.Nombre AS NombreCliente, COUNT(cfdi.Id) AS NoCFDIs
+          FROM cfdi
+          INNER JOIN clientes ON cfdi.ClienteId = clientes.Id
+          WHERE YEAR(cfdi.Fecha) = YEAR(CURDATE()) AND cfdi.Emisor=$emisor AND cfdi.Estatus IN(0,1,2)
+          GROUP BY IdCliente
+          LIMIT 5";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          $this->disconect();
+          write_log("ComprobantePDO | get_top_5_comprobantes_by_cliente | SQL: ". $sql);
+          write_log("ComprobantePDO | get_top_5_comprobantes_by_cliente | Result: ". serialize($result));
+          $cliente = []; $no_cfdis=[];
+          foreach ($result as $row){
+            if( strlen($row['NombreCliente']) >= 25 ){
+              array_push($cliente, substr($row['NombreCliente'], 0, 25) ."...");
+            }else{
+              array_push($cliente, substr($row['NombreCliente'], 0, 30));
+            }
+            array_push($no_cfdis, $row['NoCFDIs']);
+          }
+          return array($cliente, $no_cfdis);
+        }catch(PDOException $e){
+          write_log("ComprobantePDO | get_top_5_comprobantes_by_cliente() | Ocurrió un error.\nError: " .$e->getMessage());
           write_log("SQL: " .$sql);
         }
       }

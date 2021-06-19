@@ -89,7 +89,9 @@
       $routes["API/catsat/get_usos_cfdi"]="CatSATAPI/get_usos_cfdi";
       $routes["API/catsat/get_impuesto"]="CatSATAPI/get_impuesto";
       $routes["API/catsat/get_regimenes"]="CatSATAPI/get_regimenes";
-      $routes["API/chartjs/dashboard"]="ChartJSAPI/get_dashboard_data";
+      // ChartJS
+      $routes["API/chartjs/dashboard1"]="ChartJSAPI/get_comp_by_month";
+      $routes["API/chartjs/dashboard2"]="ChartJSAPI/get_top_comp_by_client";
 
 
       //Si no está vacía la variable $_GET['url'] la usamos para navegar
