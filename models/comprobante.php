@@ -956,5 +956,62 @@
           return false;
         }
       }
+
+      public function number_to_monthname($number){
+        $mes = "";
+        switch($number) {
+          case '1':
+            $mes = "Enero"; break;
+          case '2':
+            $mes = "Febrero"; break;
+          case '3':
+            $mes = "Marzo"; break;
+          case '4':
+            $mes = "Abril"; break;
+          case '5':
+            $mes = "Mayo"; break;
+          case '6':
+            $mes = "Junio"; break;
+          case '7':
+            $mes = "Julio"; break;
+          case '8':
+            $mes = "Agosto"; break;
+          case '9':
+            $mes = "Septiembre"; break;
+          case '10':
+            $mes = "Octubre"; break;
+          case '11':
+            $mes = "Noviembre"; break;
+          case '12':
+            $mes = "Diciembre"; break;
+        }
+        return $mes;
+      }
+
+      public function get_comprobantes_by_month($emisor){
+        $this->connect();
+        try{
+          // Comprobantes Por Mes
+          $sql = "SELECT MONTH(Fecha) AS Mes, COUNT(Id) AS NoCFDIs
+          FROM cfdi
+          WHERE YEAR(Fecha) = YEAR(CURDATE()) AND Emisor=$emisor AND Estatus IN(0,1,2)
+          GROUP BY Mes";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          $this->disconect();
+          write_log("ComprobantePDO | get_comprobantes_by_month() | SQL: ". $sql);
+          write_log("ComprobantePDO | get_comprobantes_by_month() | Result\n". serialize($result));
+          $meses = []; $no_cfdis=[];
+          foreach($result as $row){
+            array_push($meses, $this->number_to_monthname($row['Mes']));
+            array_push($no_cfdis, $row['NoCFDIs']);
+          }
+          return array($meses, $no_cfdis);
+        }catch(PDOException $e){
+          write_log("ComprobantePDO | get_data_to_dashboard() | Ocurrió un error.\nError: " .$e->getMessage());
+          write_log("SQL: " .$sql);
+        }
+      }
     }
 ?>

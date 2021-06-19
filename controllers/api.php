@@ -458,4 +458,26 @@
     }
   }
 
+  class ChartJSAPI extends API{
+    public function get_dashboard_data(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        if($sesion->validate_token($token)){
+          $comprobante_pdo = new ComprobantePDO();
+          $data = array(
+            "CFDIsMeses" => $comprobante_pdo->get_comprobantes_by_month($_SESSION['Emisor'])
+          );
+          $this -> return_data("ChartJSAPI | get_dashboard_data() | Operación exitosa", 200, $data);
+        }else{
+          write_log("ChartJS | get_dashboard_data | Token no válido");
+          $this->return_data("ChartJSAPI | get_dashboard_data() | No fue posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("ChartJS | get_dashboard_data | No se recibieron datos POST");
+        $this->return_data("ChartJS | get_dashboard_data | No es posible procesar su solicitud", 400);
+      }
+    }
+  }
+
 ?>

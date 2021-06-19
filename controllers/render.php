@@ -65,6 +65,7 @@
       $sesion = new UserSession();
       $data_sesion = $sesion->get_session();
       $emisor = $data_sesion['Emisor'];
+      $data['token'] = $sesion->set_token();
       // Sección Admin
       $usuario_pdo = new UsuarioPDO();
       $data['no_usuarios'] = $usuario_pdo->get_count();
@@ -84,7 +85,7 @@
       // Comprobantes
       $comprobante_pdo = new ComprobantePDO();
       $data['no_cfdis'] = $comprobante_pdo->get_count($emisor);
-      
+
       $this->view = new View();
       $this->view->render('views/modules/dashboard.php', $data, true);
     }
