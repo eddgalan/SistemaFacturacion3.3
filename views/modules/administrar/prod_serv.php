@@ -3,6 +3,7 @@
 
 <head>
     <?php include './views/modules/components/head.php'; ?>
+    <link rel="stylesheet" type="text/css" href="<?= $data['host'] ?>/views/assets/js/datatable/datatables.min.css"/>
 </head>
 
 <body>
@@ -264,6 +265,7 @@
     </div>
     <?php include './views/modules/components/javascript.php'; ?>
     <script src="<?= $data['host'] ?>/views/assets/js/admin/prod_serv.js"></script>
+    <script type="text/javascript" src="<?= $data['host'] ?>/views/assets/js/datatable/datatables.min.js"></script>
 </body>
 
 </html>

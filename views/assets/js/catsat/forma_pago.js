@@ -1,4 +1,9 @@
 $(document).ready(function (){
+  var table = $('table').DataTable({
+    "language":{
+      "url": "../views/assets/js/datatable/Spanish.json"
+    }
+  });
   $("select[name='formapago']").change(function(){
     var clave = $(this).val();
     if(clave != 0){

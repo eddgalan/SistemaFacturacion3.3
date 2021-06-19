@@ -1,3 +1,11 @@
+$(document).ready(function () {
+  var table = $('table').DataTable({
+    "language":{
+      "url": "../views/assets/js/datatable/Spanish.json"
+    }
+  });
+});
+
 /* ..:: CARGA DATOS GRUPO | AJAX ::.. */
 function carga_datos(id){
   var token = $("input[name='token']").val();

@@ -50,7 +50,7 @@ function carga_datos(id_impuesto){
         }
 
         clave += " | "+ retencion +" | "+ traslado;
-        
+
         // Setea los datos en el formulario
         $("input[name='id_impuesto']").val(id);
         $("select[name='impuesto_edit']").val(clave);

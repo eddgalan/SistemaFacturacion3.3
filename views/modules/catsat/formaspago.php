@@ -3,6 +3,7 @@
 
 <head>
     <?php include './views/modules/components/head.php'; ?>
+    <link rel="stylesheet" type="text/css" href="<?= $data['host'] ?>/views/assets/js/datatable/datatables.min.css"/>
 </head>
 
 <body>
@@ -115,8 +116,8 @@
       </div>
     </div>
     <?php include './views/modules/components/javascript.php'; ?>
+    <script type="text/javascript" src="<?= $data['host'] ?>/views/assets/js/datatable/datatables.min.js"></script>
     <script type="text/javascript" src="../views/assets/js/catsat/forma_pago.js"></script>
-
 </body>
 
 </html>

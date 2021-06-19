@@ -1,4 +1,9 @@
 $(document).ready(function (){
+  var table = $('table').DataTable({
+    "language":{
+      "url": "../views/assets/js/datatable/Spanish.json"
+    }
+  });
   // Select Tipo Persona
   $("select[name='tipo_persona']").change(function(){
     if($(this).val()){

@@ -1,4 +1,10 @@
 $(document).ready(function (){
+  var table = $('table').DataTable({
+    "language":{
+      "url": "../views/assets/js/datatable/Spanish.json"
+    }
+  });
+  
   $("select[name='tipo_persona_edit']").change(function(){
     var tpo_persona = $(this).val();
     carga_regimenes(tpo_persona);
