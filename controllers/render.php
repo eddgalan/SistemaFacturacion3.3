@@ -1724,6 +1724,28 @@
     }
   }
 
+  class ViewReporteMensual{
+    function __construct($hostname='', $sitename='', $dataurl=''){
+      $data['title'] = "Facturación 3.3 | Reportes | Reporte Mensual";
+      $data['host'] = $hostname;
+
+      $sesion = new UserSession();
+      $data_sesion = $sesion->get_session();
+      $emisor = $data_sesion['Emisor'];
+
+      $comprobante_pdo = new ComprobantePDO();
+      $data['meses'] = $comprobante_pdo->get_meses_anios($emisor);
+
+      if( $_POST ){
+        $string_mes = $_POST['mes'];
+        $data['mes'] = explode(" | ", $string_mes);
+      }
+
+      $this->view = new View();
+      $this->view->render('views/modules/reportes/reporte_mensual.php', $data, true);
+    }
+  }
+
   class ErrorURL {
     function __construct(){
       $data['title'] = 'Error 404';

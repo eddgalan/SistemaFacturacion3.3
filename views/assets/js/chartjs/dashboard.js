@@ -22,7 +22,7 @@ $(document).ready(function () {
     data: {"token":token},
     success: function(resp){
       console.log(resp);
-      show_chartjs("chart_clientes", "bar", "Comprobantes", "#F3F727", "#E9EE0F", resp.data.CFDIsClientes[0], resp.data.CFDIsClientes[1]);
+      show_chartjs("chart_clientes", "bar", "Comprobantes", "#F75210", "#F74B10", resp.data.CFDIsClientes[0], resp.data.CFDIsClientes[1]);
     },
     error : function(xhr, status) {
       console.log(xhr);

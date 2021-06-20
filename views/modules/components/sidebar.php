@@ -24,6 +24,10 @@
                     <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/pagos"> <i class="fas fa-file-invoice-dollar"></i> Pago (REP)</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/CFDIs/nomina"> <i class="fas fa-file-invoice-dollar"></i> Nómina</a> -->
                   </div>
+                  <div class="seccion list-group-item list-group-item-action bg-light"><span> <i class="fas fa-money-check-alt"></i> Reportes</span></div>
+                  <div class="panel">
+                    <a class="nav-link" href="<?= $data['host'] ?>/reportes/mensual"> <i class="far fa-calendar-alt"></i> Reporte Mensual</a>
+                  </div>
                   <div class="seccion list-group-item list-group-item-action bg-light"><span> <i class="fas fa-funnel-dollar"></i> Catálogos SAT</span></div>
                   <div class="panel">
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/prod_serv"> <i class="fas fa-apple-alt"></i> Claves ProdServ</a>
@@ -31,10 +35,6 @@
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/formas_pago"> <i class="fas fa-hand-holding-usd"></i> Formas de Pago</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/monedas"> <i class="fas fa-coins"></i> Monedas</a>
                     <a class="nav-link" href="<?= $data['host'] ?>/catalogosSAT/impuestos"> <i class="fas fa-dollar-sign"></i> Impuestos</a>
-                  </div>
-                  <div class="seccion list-group-item list-group-item-action bg-light"><span> <i class="fas fa-money-check-alt"></i> Reportes</span></div>
-                  <div class="panel">
-                    <a class="nav-link" href="<?= $data['host'] ?>/reportes/reportes"> <i class="fas fa-receipt"></i> Reportes</a>
                   </div>
               </div>
           </div>

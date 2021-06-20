@@ -1045,5 +1045,35 @@
           write_log("SQL: " .$sql);
         }
       }
+
+      public function get_meses_anios($emisor){
+        $this->connect();
+        try{
+          $sql = "SELECT YEAR(Fecha) as Anio, MONTH(Fecha) AS Mes
+          FROM cfdi
+          WHERE Emisor=$emisor
+          GROUP BY Anio, Mes";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          $this->disconect();
+          write_log("ComprobantePDO | get_meses_anios() | SQL: ". $sql);
+          write_log("ComprobantePDO | get_meses_anios() | Result\n". serialize($result));
+          $data=[];
+          foreach($result as $row){
+            array_push($data, array(
+              "Anio"=>$row['Anio'],
+              "MesNum"=>$row['Mes'],
+              "MesNom"=>$this->number_to_monthname($row['Mes'])
+            ));
+          }
+          write_log("ComprobantePDO | get_meses_anios | Data: ". serialize($data));
+          return $data;
+        }catch(PDOException $e){
+          write_log("ComprobantePDO | get_meses_anios() | Ocurrió un error.\nError: " .$e->getMessage());
+          write_log("SQL: " .$sql);
+        }
+      }
+
     }
 ?>

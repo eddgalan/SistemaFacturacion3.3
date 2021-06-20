@@ -31,7 +31,6 @@
       // Contactos
       $routes["administrar/contactos/process"]="ProcessContactos";
       $routes["administrar/contactos/delete"]="DeleteContactos";
-
       // Productos y Servicios
       $routes["administrar/prodserv"]="ViewProdServs";
       $routes["administrar/prodserv/process"]="ProcessProdServs";
@@ -72,6 +71,10 @@
       $routes["catalogosSAT/series"]="ViewSeries";
       $routes["catalogosSAT/series/process"]="ProcessSeries";
       $routes["catalogosSAT/series/switch_active/_data_/_data_"]="SwitchActivoSeries";
+
+      /* ..:: REPORTES ::.. */
+      $routes["reportes/mensual"]="ViewReporteMensual";
+      
 
 
       /* ...:: APIs ::... */
