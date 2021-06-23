@@ -988,7 +988,7 @@
         return $mes;
       }
 
-      public function get_comprobantes_by_month($emisor){
+      public function get_num_comprobantes_by_month($emisor){
         $this->connect();
         try{
           // Comprobantes en el año actual
@@ -1000,8 +1000,8 @@
           $stmt->execute();
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
           $this->disconect();
-          write_log("ComprobantePDO | get_comprobantes_by_month() | SQL: ". $sql);
-          write_log("ComprobantePDO | get_comprobantes_by_month() | Result\n". serialize($result));
+          write_log("ComprobantePDO | get_num_comprobantes_by_month() | SQL: ". $sql);
+          write_log("ComprobantePDO | get_num_comprobantes_by_month() | Result\n". serialize($result));
           $meses = []; $no_cfdis=[];
           foreach($result as $row){
             array_push($meses, $this->number_to_monthname($row['Mes']));
@@ -1071,6 +1071,107 @@
           return $data;
         }catch(PDOException $e){
           write_log("ComprobantePDO | get_meses_anios() | Ocurrió un error.\nError: " .$e->getMessage());
+          write_log("SQL: " .$sql);
+        }
+      }
+
+      public function get_comprobantes_by_month($emisor, $mes, $anio){
+        $this->connect();
+        try{
+          $sql = "SELECT cfdi.Id, cfdi.Estatus, cfdi.EstatusSAT,
+          cfdi.Serie, cfdi.Folio, cfdi.Fecha, cfdi.Total, cfdi.UUID,
+          cfdi.Emisor as IdEmisor, emisores.Nombre as NombreEmisor, emisores.RFC as RFCEmisor,
+          cfdi.ClienteId as IdReceptor, clientes.RFC as RFCReceptor, clientes.Nombre as NombreCliente
+          FROM cfdi
+          INNER JOIN emisores ON cfdi.Emisor = emisores.Id
+          INNER JOIN clientes ON cfdi.ClienteId = clientes.Id
+          WHERE cfdi.Emisor=$emisor AND MONTH(cfdi.Fecha) = $mes AND YEAR(cfdi.Fecha) = $anio";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          $this->disconect();
+          write_log("ComprobantePDO | get_comprobantes_by_month() | SQL: ". $sql);
+          write_log("ComprobantePDO | get_comprobantes_by_month() | Result\n". serialize($result));
+          return $result;
+        }catch(PDOException $e){
+          write_log("ComprobantePDO | get_comprobantes_by_month() | Ocurrió un error.\nError: " .$e->getMessage());
+          write_log("SQL: " .$sql);
+        }
+      }
+
+      public function get_totales_by_month($emisor, $mes, $anio){
+        $this->connect();
+        try{
+          // Ingresos Totales
+          $sql = "SELECT SUM(cfdi.Total) AS IngresosTotales
+          FROM cfdi
+          WHERE cfdi.Emisor=$emisor AND MONTH(cfdi.Fecha) = $mes AND YEAR(cfdi.Fecha) = $anio";
+          write_log("ComprobantePDO | get_totales_by_month() | SQL Totales: ". $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("ComprobantePDO | get_totales_by_month() | Result\n". serialize($result));
+          $totales = $result[0]['IngresosTotales'];
+          // Comprobantes Nuevos
+          $sql = "SELECT COUNT(cfdi.Id) AS NumNuevos
+          FROM cfdi
+          WHERE cfdi.Estatus = 0 AND cfdi.Emisor=$emisor AND MONTH(cfdi.Fecha) = $mes AND YEAR(cfdi.Fecha) = $anio";
+          write_log("ComprobantePDO | get_totales_by_month() | SQL Totales: ". $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("ComprobantePDO | get_totales_by_month() | Result\n". serialize($result));
+          $nuevos = $result[0]['NumNuevos'];
+          // Comprobantes Timbrados Vigentes
+          $sql = "SELECT COUNT(cfdi.Id) AS NumTimbradosVigentes
+          FROM cfdi
+          WHERE cfdi.Estatus = 2 AND cfdi.EstatusSAT='Vigente' AND cfdi.Emisor=$emisor AND MONTH(cfdi.Fecha) = $mes AND YEAR(cfdi.Fecha) = $anio";
+          write_log("ComprobantePDO | get_totales_by_month() | SQL NumTimbrados: ". $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("ComprobantePDO | get_totales_by_month() | Result\n". serialize($result));
+          $timbrados_verificados = $result[0]['NumTimbradosVigentes'];
+          // Comprobantes Timbrados Sin Verificar
+          $sql = "SELECT COUNT(cfdi.Id) AS NumTimbradosSinVerificar
+          FROM cfdi
+          WHERE cfdi.Estatus = 1 AND cfdi.EstatusSAT IS NULL AND cfdi.Emisor=$emisor AND MONTH(cfdi.Fecha) = $mes AND YEAR(cfdi.Fecha) = $anio";
+          write_log("ComprobantePDO | get_totales_by_month() | SQL NumTimbrados Sin Verificar: ". $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("ComprobantePDO | get_totales_by_month() | Result\n". serialize($result));
+          $timbrados_sin_verificados = $result[0]['NumTimbradosSinVerificar'];
+          // Comprobantes cancelados
+          $sql = "SELECT COUNT(cfdi.Id) AS NumTimbradosSinVerificar
+          FROM cfdi
+          WHERE (cfdi.Estatus = 3 OR cfdi.Estatus = 4) AND cfdi.Emisor=$emisor AND MONTH(cfdi.Fecha) = $mes AND YEAR(cfdi.Fecha) = $anio";
+          write_log("ComprobantePDO | get_totales_by_month() | SQL Cancelados: ". $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("ComprobantePDO | get_totales_by_month() | Result\n". serialize($result));
+          $cancelados = $result[0]['NumTimbradosSinVerificar'];
+          // Comprobantes cancelados Sin Verificar
+          $sql = "SELECT COUNT(cfdi.Id) AS NumCanceladosSinVerificar
+          FROM cfdi
+          WHERE (cfdi.Estatus = 3 OR cfdi.Estatus = 4) AND cfdi.EstatusSAT != 'Cancelado' AND cfdi.Emisor=$emisor AND MONTH(cfdi.Fecha) = $mes AND YEAR(cfdi.Fecha) = $anio";
+          write_log("ComprobantePDO | get_totales_by_month() | SQL Cancelados Sin Verificar: ". $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("ComprobantePDO | get_totales_by_month() | Result\n". serialize($result));
+          $cancelados_sin_verificar = $result[0]['NumCanceladosSinVerificar'];
+          $this->disconect();
+          return array(
+            "IngresosTotales"=>$totales,
+            "Nuevos"=>$nuevos,
+            "TimbradosVerificados"=>$timbrados_verificados,
+            "TimbradosNoVerificados"=>$timbrados_sin_verificados,
+            "Cancelados"=>$cancelados,
+            "CanceladosNoVerificados"=>$cancelados_sin_verificar);
+        }catch(PDOException $e){
+          write_log("ComprobantePDO | get_totales_by_month() | Ocurrió un error.\nError: " .$e->getMessage());
           write_log("SQL: " .$sql);
         }
       }

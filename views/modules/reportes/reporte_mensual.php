@@ -18,11 +18,6 @@
                         <div class="col-lg-8 col-md-8 col-sm-12">
                           <h4 class="card-title"> Reporte Mensual </h4>
                         </div>
-                        <!-- <div class="col-lg-4 col-md-4 col-sm-12 text-right">
-                          <button type="button" class="btn btn-success waves-effect btn_full" data-toggle="modal" data-target="#modal_nuevo_usuario">
-                            <i class="fas fa-user-plus"></i> Crear Usuario
-                          </button>
-                        </div> -->
                       </div>
                       <hr>
                       <div class="col-lg-12 col-md-12 col-sm-12">
@@ -53,7 +48,9 @@
                             <h4 class='text-center'>
                               Reporte mensual de ". $data['mes'][2] ." de ". $data['mes'][0] ."
                             </h4>
-                            <iframe src=". $data['host'] ." title='Reporte Mensual' style='width:100%;height:750px;'></iframe>
+                            <iframe src='". $data['host'] ."/reportes/mensual/generar?emisor=". $data['emisor'] . "&mes_nom=". $data['mes'][2]."&mes=". $data['mes'][1] ."&anio=". $data['mes'][0] ."'
+                             title='Reporte Mensual' style='width:100%;height:500px;'>
+                            </iframe>
                           </div>";
                         }
                       ?>

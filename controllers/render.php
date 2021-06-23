@@ -1,5 +1,6 @@
 <?php
   require 'libs/conexion_db.php';
+  require 'libs/mpdf/plantillas_mpdf.php';
   require 'models/pac.php';
   require 'models/comprobante.php';
   require 'models/csd.php';
@@ -1739,10 +1740,42 @@
       if( $_POST ){
         $string_mes = $_POST['mes'];
         $data['mes'] = explode(" | ", $string_mes);
+        $data['emisor'] = $emisor;
       }
 
       $this->view = new View();
       $this->view->render('views/modules/reportes/reporte_mensual.php', $data, true);
+    }
+  }
+
+  class ViewReporteMensualGenerar{
+    function __construct($hostname='', $sitename='', $dataurl=''){
+      $data['title'] = "Facturación 3.3 | Reportes | Generar Reporte Mensual";
+      $data['host'] = $hostname;
+
+      if( $_GET ){
+        $emisor_id = $_GET['emisor'];
+        $mes_num = $_GET['mes'];
+        $mes_nom = $_GET['mes_nom'];
+        $anio = $_GET['anio'];
+        // Obtiene los datos del emisor
+        $emisor_pdo = new EmisorPDO();
+        $data_emisor = $emisor_pdo->get_emisor($_GET['emisor']);
+        // Obtiene los comprobantes y los totales
+        $comprobante_pdo = new ComprobantePDO();
+        $comprobantes = $comprobante_pdo->get_comprobantes_by_month($emisor_id, $mes_num, $anio);
+        $totales = $comprobante_pdo->get_totales_by_month($emisor_id, $mes_num, $anio);
+        // Obtiene la plantilla (HTML y CSS)
+        $report = new RenderMPDF("ReporteMensual");
+        $template = $report->render_template($data_emisor, $comprobantes, $mes_nom, $mes_num, $anio, $totales);
+
+        require_once 'vendor/autoload.php';
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML($template['css'],\Mpdf\HTMLParserMode::HEADER_CSS);
+        $mpdf->WriteHTML($template['html']);
+        $mpdf->Output();
+      }
+
     }
   }
 

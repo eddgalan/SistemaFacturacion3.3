@@ -74,7 +74,8 @@
 
       /* ..:: REPORTES ::.. */
       $routes["reportes/mensual"]="ViewReporteMensual";
-      
+      $routes["reportes/mensual/generar"]="ViewReporteMensualGenerar";
+
 
 
       /* ...:: APIs ::... */

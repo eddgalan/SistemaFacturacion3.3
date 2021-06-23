@@ -466,7 +466,7 @@
         if($sesion->validate_token($token)){
           $comprobante_pdo = new ComprobantePDO();
           $data = array(
-            "CFDIsMeses" => $comprobante_pdo->get_comprobantes_by_month($_SESSION['Emisor'])
+            "CFDIsMeses" => $comprobante_pdo->get_num_comprobantes_by_month($_SESSION['Emisor'])
           );
           $this -> return_data("ChartJSAPI | get_dashboard_data() | Operación exitosa", 200, $data);
         }else{

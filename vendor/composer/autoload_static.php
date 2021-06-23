@@ -13,9 +13,14 @@ class ComposerStaticInit26b5ee482ba7ef98af738f37dd0e9754
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        's' => 
+        array (
+            'setasign\\Fpdi\\' => 14,
+        ),
         'W' => 
         array (
             'Webmozart\\Assert\\' => 17,
@@ -29,6 +34,7 @@ class ComposerStaticInit26b5ee482ba7ef98af738f37dd0e9754
         ),
         'P' => 
         array (
+            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
         ),
@@ -38,6 +44,7 @@ class ComposerStaticInit26b5ee482ba7ef98af738f37dd0e9754
         ),
         'M' => 
         array (
+            'Mpdf\\' => 5,
             'Mailgun\\' => 8,
         ),
         'H' => 
@@ -48,6 +55,10 @@ class ComposerStaticInit26b5ee482ba7ef98af738f37dd0e9754
             'Http\\Discovery\\' => 15,
             'Http\\Client\\Common\\' => 19,
             'Http\\Client\\' => 12,
+        ),
+        'D' => 
+        array (
+            'DeepCopy\\' => 9,
         ),
         'C' => 
         array (
@@ -60,6 +71,10 @@ class ComposerStaticInit26b5ee482ba7ef98af738f37dd0e9754
     );
 
     public static $prefixDirsPsr4 = array (
+        'setasign\\Fpdi\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/setasign/fpdi/src',
+        ),
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
@@ -80,6 +95,10 @@ class ComposerStaticInit26b5ee482ba7ef98af738f37dd0e9754
         array (
             0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
@@ -92,6 +111,10 @@ class ComposerStaticInit26b5ee482ba7ef98af738f37dd0e9754
         'Nyholm\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/nyholm/psr7/src',
+        ),
+        'Mpdf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mpdf/mpdf/src',
         ),
         'Mailgun\\' => 
         array (
@@ -121,6 +144,10 @@ class ComposerStaticInit26b5ee482ba7ef98af738f37dd0e9754
         'Http\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/php-http/httplug/src',
+        ),
+        'DeepCopy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
         'Clue\\StreamFilter\\' => 
         array (
