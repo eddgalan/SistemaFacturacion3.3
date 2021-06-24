@@ -257,22 +257,6 @@
     }
   }
 
-  class ViewPerfil{
-    function __construct($hostname="", $sitename="", $dataurl=null){
-      $data['title'] = "Facturación 3.3 | Administrar | Perfiles";
-      $data['host'] = $hostname;
-
-      $sesion = new UserSession();
-      $data['token'] = $sesion->set_token();
-
-      $perfil_pdo = new PerfilPDO();
-      
-
-      $this->view = new View();
-      $this->view->render('views/modules/administrar/perfil.php', $data, true);
-    }
-  }
-
   class ViewPerfiles{
     function __construct($hostname="", $sitename="", $dataurl=null){
       $data['title'] = "Facturación 3.3 | Administrar | Perfiles";
@@ -292,6 +276,95 @@
 
       $this->view = new View();
       $this->view->render('views/modules/administrar/perfiles.php', $data, true);
+    }
+  }
+
+  class ViewPerfil{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Perfiles";
+      $data['host'] = $hostname;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+      $data_sesion = $sesion->get_session();
+
+      $perfil_pdo = new PerfilPDO();
+      $data['perfil'] = $perfil_pdo->get_all_info($data_sesion['PerfilId']);
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/perfil.php', $data, true);
+    }
+  }
+
+  class ProcessPerfil{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if($_POST){
+        $sesion = new UserSession();
+        $token = $_POST['token'];
+
+        if($sesion->validate_token($token)){
+          $perfil_id = $_POST['perfil_id'];
+          $usuario_id = $_POST['usuario_id'];
+          $nombre = $_POST['nombre'];
+          $apellido_pat = $_POST['apellido_pat'];
+          $apellido_mat = $_POST['apellido_mat'];
+          $puesto = $_POST['puesto'];
+          $email = $_POST['email'];
+
+          $data_sesion = $sesion->get_session();
+          $usuario_id = $data_sesion['Id'];
+          $emisor = $data_sesion['Emisor'];
+
+          $perfil_pdo = new PerfilPDO();
+          if( $perfil_pdo->update_perfil($perfil_id, $usuario_id, $nombre, $apellido_pat, $apellido_mat, $emisor, $puesto) ){
+            $usuario_pdo = new UsuarioPDO();
+            if( $usuario_pdo->update_email($usuario_id, $email) ){
+              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el email del usuario");
+            }
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el perfil.");
+          }
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al procesar su solicitud. Inténtelo de nuevo.");
+          write_log("ProcessPerfil | __construct() | Token NO valido");
+        }
+      }else{
+        write_log("ProcessPerfil | __contruct() | NO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/perfil");
+    }
+  }
+
+  class ProcessChangePassPerfil{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if($_POST){
+        $sesion = new UserSession();
+        $token = $_POST['token'];
+
+        if($sesion->validate_token($token)){
+          $usuario_id = $_POST['usuario_id'];
+          $pass = $_POST['new_pass'];
+          $pass_confirm = $_POST['confirm_pass'];
+          if( $pass == $pass_confirm ){
+            $usuario_pdo = new UsuarioPDO();
+            if( $usuario_pdo->update_password($usuario_id, $pass) ){
+              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar la contraseña.");
+            }
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error. No coincide la confirmación de la contraseña.");
+          }
+        }else{
+          $sesion->set_notification("ERROR", "Ocurrió un error al procesar su solicitud. Inténtelo de nuevo.");
+          write_log("ProcessPerfil | __construct() | Token NO valido");
+        }
+      }else{
+        write_log("ProcessPerfil | __contruct() | NO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/perfil");
     }
   }
 
@@ -346,7 +419,7 @@
           }
         }
       }else{
-        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+        write_log("ProcessPerfiles | __contruct() | NO se recibieron datos por POST");
       }
       header("location: " . $hostname . "/administrar/perfiles");
     }
@@ -484,7 +557,7 @@
           }
         }
       }else{
-        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+        write_log("ProcessEmisores | __contruct() | NO se recibieron datos por POST");
       }
       header("location: " . $hostname . "/administrar/emisores");
     }
@@ -610,7 +683,7 @@
           }
         }
       }else{
-        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+        write_log("ProcessClientes | __contruct() | NO se recibieron datos por POST");
       }
       header("location: " . $redirect);
     }
@@ -809,7 +882,7 @@
           }
         }
       }else{
-        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+        write_log("ProcessProdServs | __contruct() | NO se recibieron datos por POST");
       }
       header("location: " . $hostname . "/administrar/prodserv");
     }
@@ -880,7 +953,7 @@
         }
         header("location: " . $host_name . "/catalogosSAT/prod_serv");
       }else{
-        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+        write_log("ProcessProdServ | __contruct() | NO se recibieron datos por POST");
       }
     }
   }

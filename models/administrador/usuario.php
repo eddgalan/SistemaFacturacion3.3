@@ -89,6 +89,43 @@
       }
     }
 
+    public function update_email($id, $email){
+      $this->connect();
+      try{
+        $sql = "UPDATE usuario SET Email='$email' WHERE Id = $id";
+        write_log("UsuarioPDO | update_email() | SQL: ". $sql);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+        $this->disconect();
+        return true;
+      }catch(PDOException $e) {
+        write_log("UsuarioPDO | update_email() | Ocurrió un error al actualizar el Email: ". $e->getMessage());
+        write_log("UsuarioPDO | update_email() | SQL: ". $sql);
+        $this->disconect();
+        return false;
+      }
+    }
+
+    public function update_password($usuario_id, $password){
+      $new_pass = password_hash($password, PASSWORD_DEFAULT, ['cost' => 15]);
+      $this->connect();
+      try{
+        $sql = "UPDATE usuario SET Password='$new_pass' WHERE Id = $usuario_id";
+        write_log("UsuarioPDO | update_password() | SQL: ". $sql);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+        $this->disconect();
+        return true;
+      }catch(PDOException $e) {
+        write_log("UsuarioPDO | update_password() | Ocurrió un error al actualizar la contraseña: ". $e->getMessage());
+        write_log("UsuarioPDO | update_password() | SQL: ". $sql);
+        $this->disconect();
+        return false;
+      }
+    }
+
     public function get_users($username=''){
       $this->connect();
       $stmt = $this->conn->prepare("SELECT * FROM usuario");
@@ -256,6 +293,7 @@
         return false;
       }
     }
+
   }
 
 ?>

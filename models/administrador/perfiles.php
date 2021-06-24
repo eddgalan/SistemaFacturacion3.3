@@ -123,6 +123,34 @@
         return false;
       }
     }
+
+    public function get_all_info($id){
+      $this->connect();
+      try{
+        $sql = "SELECT perfiles.Id, perfiles.UsuarioId, perfiles.Nombre, perfiles.ApellidoPaterno, perfiles.ApellidoMaterno, perfiles.Puesto,
+        usuario.Email, emisores.Nombre AS NombreEmisor, emisores.Pathlogo
+        FROM perfiles
+        INNER JOIN usuario ON perfiles.UsuarioId = usuario.Id
+        INNER JOIN emisores ON perfiles.Emisor = emisores.Id
+        WHERE perfiles.Id = $id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        write_log("PerfilPDO | get_all_info() | SQL: " . $sql);
+        write_log("PerfilPDO | get_all_info() | Result: " . serialize($result));
+        $this->disconect();
+        if( count($result) > 0 ){
+          return $result[0];
+        }else{
+          return false;
+        }
+      }catch(PDOException $e) {
+        write_log("PerfilPDO | get_all_info() | Error al ejecutar la consulta. ERROR: " . $e->getMessage());
+        write_log("SQL: " . $sql);
+        return false;
+      }
+    }
+
   }
 
 ?>
