@@ -17,6 +17,7 @@
       $routes["administrar/grupos"]="ViewGrupos";
       $routes["administrar/grupos/process"]="ProcessGrupos";
       // Perfiles
+      $routes["perfil"]="ViewPerfil";
       $routes["administrar/perfiles"]="ViewPerfiles";
       $routes["administrar/perfiles/process"]="ProcessPerfiles";
       // Emisores

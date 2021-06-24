@@ -173,7 +173,7 @@
                     <input type="hidden" name="perfil_id">
                   </div>
                   <!-- Usuario -->
-                  <div class="col-lg64 col-md-6 col-sm-12">
+                  <div class="col-lg6 col-md-6 col-sm-12">
                     <label for="user_edit"> Usuario: </label><br>
                     <select class="from-control selectpicker" name="user_edit" data-live-search="true">
                       <option value="0" disabled selected> Cambiar Usuario...</option>

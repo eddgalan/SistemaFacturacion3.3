@@ -257,6 +257,22 @@
     }
   }
 
+  class ViewPerfil{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Perfiles";
+      $data['host'] = $hostname;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+
+      $perfil_pdo = new PerfilPDO();
+      
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/perfil.php', $data, true);
+    }
+  }
+
   class ViewPerfiles{
     function __construct($hostname="", $sitename="", $dataurl=null){
       $data['title'] = "Facturación 3.3 | Administrar | Perfiles";
