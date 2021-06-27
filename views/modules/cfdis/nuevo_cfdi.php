@@ -66,13 +66,13 @@
                               <!-- Fecha -->
                               <div class="col-lg-3 col-md-4 col-sm-4">
                                 <label for="fecha"> Fecha: </label>
-                                <input type="date" class="form-control" name="fecha" required>
+                                <input type="date" class="form-control" name="fecha" value="<?= $data['fecha'] ?>" required>
                                 <small class="color_red display_none" name="fecha">Fecha no válida</small>
                               </div>
                               <!-- Hora -->
                               <div class="col-lg-3 col-md-4 col-sm-4">
                                 <label for="hora"> Hora: </label>
-                                <input type="time" class="form-control" name="hora" required>
+                                <input type="time" class="form-control" name="hora" value="<?= $data['hora'] ?>" required>
                                 <small class="color_red display_none" name="hora">Hora no válida</small>
                               </div>
                               <!-- Método de Pago -->

@@ -1515,7 +1515,9 @@
       // Obtiene los productos
       $productos = new ProdServPDO();
       $data['productos'] = $productos->get_all($emisor);
-
+      // Obtiene fecha y hora actual
+      $data['fecha'] = date('Y-m-d');
+      $data['hora'] = date("H:i:s");
 
       $this->view = new View();
       $this->view->render('views/modules/cfdis/nuevo_cfdi.php', $data, true);
