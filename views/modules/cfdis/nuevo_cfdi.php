@@ -175,7 +175,6 @@
 
                                           </tbody>
                                       </table>
-                                      <small class="text-center color_red display_none" name="msg_prodserv">No se ha agregado ningún producto/servicio</small>
                                     </div>
                                   </div>
                                   <!-- Totales -->
@@ -235,6 +234,9 @@
                               </div>
                               <div class="col-lg-12 col-md-12 col-sm-12"><hr>
                                 <div class="row">
+                                  <div class="col-lg-12 col-md-12 col-sm-12 text-right">
+                                    <small class="display_none color_red" name="msg_prodserv"><strong> No se ha agregado ningún producto o servicio. Capture al menos un artículo para poder continuar</strong></small>
+                                  </div>
                                   <div class="col-md-12 text-right">
                                     <button type="button" class="btn btn-success" name="guardar_cfdi"> <i class="far fa-save"></i> Guardar </button>
                                   </div>
@@ -315,12 +317,12 @@
                 <!-- Cantidad -->
                 <div class="col-lg-4">
                   <label for="cantidad"> Cantidad:  </label>
-                  <input type="text" class="form-control" name="cantidad" placeholder="0.00">
+                  <input type="number" class="form-control" name="cantidad" placeholder="0.00">
                 </div>
                 <!-- Descuento -->
                 <div class="col-lg-4">
                   <label for="descuento"> Descuento:  </label>
-                  <input type="text" class="form-control" name="descuento_prod" placeholder="$ 0.00" value="0">
+                  <input type="number" class="form-control" name="descuento_prod" placeholder="$ 0.00" value="0">
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 text-center">
                   <small class="color_red display_none" name="msg_cant_desc">Valor no válido para cantidad o descuento</small>
@@ -341,7 +343,7 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title"> <i class="fas fa-plus"></i> Editar Producto/Servicio </h4>
+            <h4 class="modal-title"> <i class="fas fa-edit"></i> Editar Producto/Servicio </h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
@@ -374,12 +376,12 @@
                 <!-- Cantidad -->
                 <div class="col-lg-4">
                   <label for="cantidad"> Cantidad:  </label>
-                  <input type="text" class="form-control" name="cantidad_edit" placeholder="0.00">
+                  <input type="number" class="form-control" name="cantidad_edit" placeholder="0.00">
                 </div>
                 <!-- Descuento -->
                 <div class="col-lg-4">
                   <label for="descuento"> Descuento:  </label>
-                  <input type="text" class="form-control" name="descuento_prod_edit" placeholder="$ 0.00" value="0">
+                  <input type="number" class="form-control" name="descuento_prod_edit" placeholder="$ 0.00" value="0">
                 </div>
               </div>
             </div>
@@ -387,6 +389,39 @@
           <div class="modal-footer">
             <button type="button" name="save_product"class="btn btn-success"> <i class="fas fa-check"></i> Guardar cambios </button>
             <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ..:: Modal Editar Producto ::.. -->
+    <div class="modal fade" id="modal_eliminar_producto">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title"> <i class="fas fa-exclamation-circle"></i> Remover producto o servicio </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="row">
+                <!-- Id Producto o Servicio -->
+                <div class="display_none">
+                  <input type="hidden" name="id_prod_remove">
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <spam>Está a punto de remover el producto o servicio <strong name="prodserv_name"></strong>,
+                  ¿Seguro que desea removerlo?</spam>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                  <small class="display_none color_green">Se ha removido el producto o servicio seleccionado</small>
+                  <small class="display_none color_red">Ocurrió un error al remover el producto o servicio seleccionado. Intentelo de nuevo</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" name="btn-remove" class="btn btn-success" data-dismiss="modal"> <i class="fas fa-check"></i> Remover </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> No, cerrar ventana </button>
           </div>
         </div>
       </div>

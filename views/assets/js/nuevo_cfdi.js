@@ -29,7 +29,6 @@ $(document).ready(function (){
         console.log(xhr);
       }
     });
-
   });
 
   /* ..:: SELECT  SERIE ::.. */
@@ -73,7 +72,7 @@ $(document).ready(function (){
       url: "../../API/productos/get_producto/",
       data: {"token":token, "id_producto":id},
       success: function(resp){
-        console.log(resp);
+        // console.log(resp);
         // Obtiene los datos del servicio
         var id = resp.data.Id;
         var sku = resp.data.SKU;
@@ -198,7 +197,18 @@ $(document).ready(function (){
     }
     create_table();
   });
-
+  /* ..:: BOTÓN REMOVER PROD/SERV ::.. */
+  $("button[name='btn-remove']").click(function(){
+    var id_prod = $("input[name='id_prod_remove']").val();
+    var respaldo=[];
+    for( let prod of productos ){
+      if( prod.id != id_prod ){
+        respaldo.push(prod);
+      }
+    }
+    productos = respaldo;
+    create_table();
+  });
   /* ..:: BOTÓN GUARDAR CFDI ::.. */
   $("button[name='guardar_cfdi']").click(function(){
     // Obtiene los valores del formulario
@@ -241,7 +251,7 @@ $(document).ready(function (){
         "observaciones":observaciones,
         "prodservs":productos
       }
-    console.log(json_cfdi);
+    // console.log(json_cfdi);
     // Hace el INSERT del CFDI Nuevo
     var token = $("input[name='token']").val();
     $.ajax({
@@ -343,7 +353,7 @@ function create_table(){
               "<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_producto' onclick='carga_datos_producto("+ producto.id +")'>"+
                 "<i class='fas fa-edit color_blue'></i> Editar"+
               "</a>"+
-              "<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_eliminar_producto' onclick='carga_datos_producto("+ producto.sku +")'>"+
+              "<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_eliminar_producto' onclick='carga_datos_producto_remove("+ producto.id +")'>"+
                 "<i class='fas fa-times color_red'></i> Remover"+
               "</a>"+
             "</div>"+
@@ -357,6 +367,19 @@ function create_table(){
     ieps += producto.ieps;
     desc += parseFloat(producto.descuento);
     total = subtotal - desc + iva + ieps;
+    /* ..:: Coloca los totales ::.. */
+    $("input[name='subtotal']").val(subtotal);
+    $("input[name='iva']").val(iva);
+    $("input[name='ieps']").val(ieps);
+    $("input[name='descuento']").val(desc);
+    $("input[name='total']").val(total);
+  }
+  if( productos.length == 0 ){
+    subtotal = 0;
+    iva = 0;
+    ieps = 0;
+    desc = 0;
+    total = 0;
     /* ..:: Coloca los totales ::.. */
     $("input[name='subtotal']").val(subtotal);
     $("input[name='iva']").val(iva);
@@ -381,7 +404,7 @@ function clear_inputs(){
   $("input[name='tasa_impuesto']").val("");
 
   $("input[name='cantidad']").val("");
-  $("input[name='descuento_prod']").val("");
+  $("input[name='descuento_prod']").val("0");
 
   $("button[name='add_product']").attr("disabled","disabled");
 }
@@ -397,6 +420,17 @@ function carga_datos_producto(id_producto){
       $("input[name='impuesto_edit']").val(producto.impuesto_nombre);
       $("input[name='cantidad_edit']").val(producto.cantidad);
       $("input[name='descuento_prod_edit']").val(producto.descuento);
+      break;
+    }
+  }
+}
+
+function carga_datos_producto_remove(id_producto){
+  for (let producto of productos){
+    if(producto.id == id_producto){
+      // Coloca los datos en el formulario
+      $("input[name='id_prod_remove']").val(producto.id);
+      $("strong[name='prodserv_name']").html(producto.sku +" | "+ producto.descripcion);
       break;
     }
   }

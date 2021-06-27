@@ -383,7 +383,7 @@
                     <input type="hidden" name="token" value="<?= $data['token'] ?>">
                     <input type='hidden' name='cfdi' value='<?= $data['comprobante']['IdCFDI'] ?>'>
                   </div>
-                  <!-- Email -->
+                  <!-- MSG Cancelar -->
                   <div class="col-lg-12 col-md-12 col-sm-12">
                     <spam>Está a punto de cancelar su comprobante. <br>¿Seguro que desea cancelarlo?</spam>
                   </div>
