@@ -16,6 +16,7 @@
       // Grupos
       $routes["administrar/grupos"]="ViewGrupos";
       $routes["administrar/grupos/process"]="ProcessGrupos";
+      $routes["administrar/grupos/permisos/process"]="ProcessPermisos";
       // Perfiles
       $routes["perfil"]="ViewPerfil";
       $routes["perfil/process"]="ProcessPerfil";
@@ -87,6 +88,7 @@
       $routes["API/grupos/get_grupos_usuario"]="GrupoAPI/get_grupos_usuario";
       $routes["API/grupos/add_grupo"]="GrupoAPI/add_grupo";
       $routes["API/grupos/remove_grupo"]="GrupoAPI/remove_grupo";
+      $routes["API/grupos/get_permisos"]="GrupoAPI/get_permisos";
       $routes["API/perfiles/get_perfil"]="PerfilAPI/get_perfil";
       $routes["API/emisores/get_emisor"]="EmisorAPI/get_emisor";
       $routes["API/productos/get_producto"]="ProdServAPI/get_producto";

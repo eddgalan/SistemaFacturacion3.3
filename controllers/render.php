@@ -65,30 +65,34 @@
 
       $sesion = new UserSession();
       $data_sesion = $sesion->get_session();
-      $emisor = $data_sesion['Emisor'];
-      $data['token'] = $sesion->set_token();
-      // Sección Admin
-      $usuario_pdo = new UsuarioPDO();
-      $data['no_usuarios'] = $usuario_pdo->get_count();
-      $grupo_pdo = new GrupoPDO();
-      $data['no_grupos'] = $grupo_pdo->get_count();
-      $perfil_pdo = new PerfilPDO();
-      $data['no_perfiles'] = $perfil_pdo->get_count();
-      $emisor_pdo = new EmisorPDO();
-      $data['no_emisores'] = $emisor_pdo->get_count();
-      // Sección Emisor
-      $cliente_pdo = new ClientePDO();
-      $data['no_clientes'] = $cliente_pdo->get_count($emisor);
-      $prodserv_pdo = new ProdServPDO();
-      $data['no_prodservs'] = $prodserv_pdo->get_count($emisor);
-      $serie_pdo = new SeriePDO();
-      $data['no_series'] = $serie_pdo->get_count($emisor);
-      // Comprobantes
-      $comprobante_pdo = new ComprobantePDO();
-      $data['no_cfdis'] = $comprobante_pdo->get_count($emisor);
+      if( $data_sesion){
+        $emisor = $data_sesion['Emisor'];
+        $data['token'] = $sesion->set_token();
+        // Sección Admin
+        $usuario_pdo = new UsuarioPDO();
+        $data['no_usuarios'] = $usuario_pdo->get_count();
+        $grupo_pdo = new GrupoPDO();
+        $data['no_grupos'] = $grupo_pdo->get_count();
+        $perfil_pdo = new PerfilPDO();
+        $data['no_perfiles'] = $perfil_pdo->get_count();
+        $emisor_pdo = new EmisorPDO();
+        $data['no_emisores'] = $emisor_pdo->get_count();
+        // Sección Emisor
+        $cliente_pdo = new ClientePDO();
+        $data['no_clientes'] = $cliente_pdo->get_count($emisor);
+        $prodserv_pdo = new ProdServPDO();
+        $data['no_prodservs'] = $prodserv_pdo->get_count($emisor);
+        $serie_pdo = new SeriePDO();
+        $data['no_series'] = $serie_pdo->get_count($emisor);
+        // Comprobantes
+        $comprobante_pdo = new ComprobantePDO();
+        $data['no_cfdis'] = $comprobante_pdo->get_count($emisor);
 
-      $this->view = new View();
-      $this->view->render('views/modules/dashboard.php', $data, true);
+        $this->view = new View();
+        $this->view->render('views/modules/dashboard.php', $data, true);
+      }else{
+        header("Location: ".  $hostname ."/login");
+      }
     }
   }
 
@@ -248,6 +252,117 @@
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el Grupo.");
             }
+          }
+        }
+      }else{
+        write_log("ProcessUsuario\nNO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/administrar/grupos");
+    }
+  }
+
+  class ProcessPermisos{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          /* ..:: Obtiene los datos ::.. */
+          $id = $_POST['id_permiso'];
+          // Usuario
+          if(isset($_POST['admin_usuario'])){
+            $admin_usuario = 1;
+          }else{
+            $admin_usuario = 0;
+          }
+          // Grupos
+          if(isset($_POST['admin_grupos'])){
+            $admin_grupos = 1;
+          }else{
+            $admin_grupos = 0;
+          }
+          // Perfiles
+          if(isset($_POST['admin_perfiles'])){
+            $admin_perfiles = 1;
+          }else{
+            $admin_perfiles = 0;
+          }
+          // Emisores
+          if(isset($_POST['admin_emisores'])){
+            $admin_emisores = 1;
+          }else{
+            $admin_emisores = 0;
+          }
+          // Clientes
+          if(isset($_POST['admin_clientes'])){
+            $admin_clientes = 1;
+          }else{
+            $admin_clientes = 0;
+          }
+          // Productos y Servicios
+          if(isset($_POST['admin_prodserv'])){
+            $admin_prodserv = 1;
+          }else{
+            $admin_prodserv = 0;
+          }
+          // Series
+          if(isset($_POST['admin_series'])){
+            $admin_series = 1;
+          }else{
+            $admin_series = 0;
+          }
+          /* ..:: Comprobantes ::.. */
+          // Facturas
+          if(isset($_POST['comprobantes_facturas'])){
+            $comprobantes_facturas = 1;
+          }else{
+            $comprobantes_facturas = 0;
+          }
+          /* ..:: Reportes ::.. */
+          // Mensual
+          if(isset($_POST['report_reportmensual'])){
+            $report_reportemensual = 1;
+          }else{
+            $report_reportemensual = 0;
+          }
+          /* ..:: Catálogos SAT ::.. */
+          // Claves prodserv
+          if(isset($_POST['catsat_prodserv'])){
+            $catsat_prodserv = 1;
+          }else{
+            $catsat_prodserv = 0;
+          }
+          // Unidades
+          if(isset($_POST['catsat_unidades'])){
+            $catsat_unidades = 1;
+          }else{
+            $catsat_unidades = 0;
+          }
+          // Formas de Pago
+          if(isset($_POST['catsat_formaspago'])){
+            $catsat_formaspago = 1;
+          }else{
+            $catsat_formaspago = 0;
+          }
+          // Claves prodserv
+          if(isset($_POST['catsat_monedas'])){
+            $catsat_monedas = 1;
+          }else{
+            $catsat_monedas = 0;
+          }
+          // Claves prodserv
+          if(isset($_POST['catsat_impuestos'])){
+            $catsat_impuestos = 1;
+          }else{
+            $catsat_impuestos = 0;
+          }
+
+          $grupo_pdo = new GrupoPDO();
+          if( $grupo_pdo->update_permisos($id, $admin_usuario, $admin_grupos, $admin_perfiles, $admin_emisores, $admin_clientes, $admin_prodserv, $admin_series, $comprobantes_facturas, $report_reportemensual, $catsat_prodserv, $catsat_unidades, $catsat_formaspago, $catsat_monedas, $catsat_impuestos) ){
+            $sesion->set_notification("OK", "Se actualizaron los permisos del grupo indicado");
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los permisos del grupo.");
           }
         }
       }else{

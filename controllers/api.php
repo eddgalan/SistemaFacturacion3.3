@@ -132,6 +132,32 @@
         $this->return_data("No fue posible procesar su solicitud", 400);
       }
     }
+
+    public function get_permisos(){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if( $sesion->validate_token($token) ){
+          $id_grupo = $_POST['id_grupo'];
+
+          $grupo_pdo = new GrupoPDO();
+          $permisos = $grupo_pdo->get_permisos($id_grupo);
+          if( $permisos ){
+            $this->return_data("GrupoAPI | get_permisos() | Permisos del Grupo", 200, $permisos);
+          }else{
+            $this->return_data("GrupoAPI | get_permisos() | NO fue posible obtener los permisos del grupo con Id: ". $id_grupo, 400);
+          }
+        }else{
+          write_log("GrupoAPI | get_permisos() | Token NO valido");
+          $this->return_data("No fue posible procesar su solicitud", 400);
+        }
+
+      }else{
+        write_log("GrupoAPI | get_permisos() | NO se recibieron datos POST");
+        $this->return_data("No fue posible procesar su solicitud", 400);
+      }
+    }
   }
 
   class PerfilAPI extends API{
