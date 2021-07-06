@@ -67,16 +67,24 @@
       $data_sesion = $sesion->get_session();
       if( $data_sesion){
         $emisor = $data_sesion['Emisor'];
+        $usuario_id = $data_sesion['Id'];
         $data['token'] = $sesion->set_token();
-        // Sección Admin
         $usuario_pdo = new UsuarioPDO();
-        $data['no_usuarios'] = $usuario_pdo->get_count();
-        $grupo_pdo = new GrupoPDO();
-        $data['no_grupos'] = $grupo_pdo->get_count();
-        $perfil_pdo = new PerfilPDO();
-        $data['no_perfiles'] = $perfil_pdo->get_count();
-        $emisor_pdo = new EmisorPDO();
-        $data['no_emisores'] = $emisor_pdo->get_count();
+
+        $permisos = $usuario_pdo->get_permisos($usuario_id);
+        if( $permisos['DashboardAdmin'] != 0 ){
+          $data['show_dashboard_admin'] = true;
+          // Sección Admin
+          $data['no_usuarios'] = $usuario_pdo->get_count();
+          $grupo_pdo = new GrupoPDO();
+          $data['no_grupos'] = $grupo_pdo->get_count();
+          $perfil_pdo = new PerfilPDO();
+          $data['no_perfiles'] = $perfil_pdo->get_count();
+          $emisor_pdo = new EmisorPDO();
+          $data['no_emisores'] = $emisor_pdo->get_count();
+        }else{
+          $data['show_dashboard_admin'] = false;
+        }
         // Sección Emisor
         $cliente_pdo = new ClientePDO();
         $data['no_clientes'] = $cliente_pdo->get_count($emisor);

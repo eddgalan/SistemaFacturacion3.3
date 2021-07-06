@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <!-- ..:: Custom Content ::.. -->
                         <h4 class="card-title">Dashboard</h4>
-                        <h6 class="text-muted card-subtitle mb-2" style="margin-bottom:20px !important;">Bienvenido <strong> <?= $_SESSION['Nombre'] ?> <?= $_SESSION['ApellidoPat'] ?> <?= $_SESSION['ApellidoMat'] ?> </strong> a su sistema de facturación; </h6>
+                        <h6 class="text-muted card-subtitle mb-2" style="margin-bottom:20px !important;">Bienvenido <strong> <?= $_SESSION['Nombre'] ?> <?= $_SESSION['ApellidoPat'] ?> </strong> a su sistema de facturación; </h6>
                         <hr>
                         <!-- ...:: Dashboard Content ::.. -->
                         <div class="row">
@@ -23,74 +23,12 @@
                           <div class="display_none">
                             <input type"hidden" name="token" value="<?= $data['token'] ?>">
                           </div>
-                          <!-- Panel Admin -->
-                          <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom:15px;">
-                              <div class="card shadow border-left-primary py-2">
-                                  <div class="card-body">
-                                      <div class="row align-items-center no-gutters">
-                                          <div class="col mr-2">
-                                              <div class="text-uppercase text-primary font-weight-bold text-xs mb-1">
-                                                <span><a href="<?= $data['host'] ?>/administrar/usuarios"> Usuarios </a> </span>
-                                              </div>
-                                              <div class="text-dark font-weight-bold h5 mb-0"><span> <?= $data['no_usuarios'] ?> </span></div>
-                                          </div>
-                                          <div class="col-auto"><i class="fas fa-user fa-2x text-gray-300"></i></div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom:15px;">
-                              <div class="card shadow border-left-success py-2">
-                                  <div class="card-body">
-                                      <div class="row align-items-center no-gutters">
-                                          <div class="col mr-2">
-                                              <div class="text-uppercase text-success font-weight-bold text-xs mb-1">
-                                                <span> <a href="<?= $data['host'] ?>/administrar/grupos" style="color: #28a745!important"> Grupos </a> </span>
-                                              </div>
-                                              <div class="text-dark font-weight-bold h5 mb-0"><span> <?= $data['no_grupos'] ?> </span></div>
-                                          </div>
-                                          <div class="col-auto"><i class="fas fa-users fa-2x text-gray-300"></i></div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom:15px;">
-                              <div class="card shadow border-left-info py-2">
-                                  <div class="card-body">
-                                      <div class="row align-items-center no-gutters">
-                                          <div class="col mr-2">
-                                              <div class="text-uppercase text-info font-weight-bold text-xs mb-1">
-                                                <span> <a href="<?= $data['host'] ?>/administrar/perfiles" style="color:#17a2b8!important"> Perfiles </a> </span>
-                                              </div>
-                                              <div class="row no-gutters align-items-center">
-                                                  <div class="col-auto">
-                                                      <div class="text-dark font-weight-bold h5 mb-0"><span> <?= $data['no_perfiles'] ?> </span></div>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                          <div class="col-auto"><i class="fas fa-user-tie fa-2x text-gray-300"></i></div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom:15px;">
-                              <div class="card shadow border-left-warning py-2">
-                                  <div class="card-body">
-                                      <div class="row align-items-center no-gutters">
-                                          <div class="col mr-2">
-                                              <div class="text-uppercase text-warning font-weight-bold text-xs mb-1">
-                                                <span> <a href="<?= $data['host'] ?>/administrar/emisores" style="color: #ffc107!important;"> Emisores </a> </span>
-                                              </div>
-                                              <div class="text-dark font-weight-bold h5 mb-0"><span><?= $data['no_emisores'] ?></span></div>
-                                          </div>
-                                          <div class="col-auto"><i class="fas fa-building fa-2x text-gray-300"></i></div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class='col-lg-12 col-md-12 col-sm-12'>
-                            <hr>
-                          </div>
+                          <!-- ..:: Panel Admin ::.. -->
+                          <?php
+                            if( $data['show_dashboard_admin'] ){
+                              require "./views/modules/components/dashboard_admin.php";
+                            }
+                          ?>
                           <!-- ..:: Panel Emisor ::.. -->
                           <!-- Clientes -->
                           <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom:15px;">
@@ -157,7 +95,7 @@
                                       <div class="row align-items-center no-gutters">
                                           <div class="col mr-2">
                                               <div class="text-uppercase text-warning font-weight-bold text-xs mb-1">
-                                                <span> <a href="<?= $data['host'] ?>/administrar/clientes" style="color:#ffc107 !important"> Nuevos </a> </span>
+                                                <span> <a href="<?= $data['host'] ?>/CFDIs/facturas" style="color:#ffc107 !important"> Nuevos </a> </span>
                                               </div>
                                               <div class="text-dark font-weight-bold h5 mb-0"><span><?= $data['no_cfdis']['CFDIsNuevos'] ?></span></div>
                                           </div>
@@ -173,7 +111,7 @@
                                       <div class="row align-items-center no-gutters">
                                           <div class="col mr-2">
                                               <div class="text-uppercase text-warning font-weight-bold text-xs mb-1">
-                                                <span> <a href="<?= $data['host'] ?>/administrar/clientes" style="color:#17a2b8 !important"> No verificados </a> </span>
+                                                <span> <a href="<?= $data['host'] ?>/CFDIs/facturas" style="color:#17a2b8 !important"> No verificados </a> </span>
                                               </div>
                                               <div class="text-dark font-weight-bold h5 mb-0"><span><?= $data['no_cfdis']['CFDIsSinVerificar'] ?></span></div>
                                           </div>
@@ -189,7 +127,7 @@
                                       <div class="row align-items-center no-gutters">
                                           <div class="col mr-2">
                                               <div class="text-uppercase text-warning font-weight-bold text-xs mb-1">
-                                                <span> <a href="<?= $data['host'] ?>/administrar/clientes" style="color:#28a745 !important"> Verificados </a> </span>
+                                                <span> <a href="<?= $data['host'] ?>/CFDIs/facturas" style="color:#28a745 !important"> Verificados </a> </span>
                                               </div>
                                               <div class="text-dark font-weight-bold h5 mb-0"><span><?= $data['no_cfdis']['CFDIsVerificados'] ?></span></div>
                                           </div>
@@ -205,7 +143,7 @@
                                       <div class="row align-items-center no-gutters">
                                           <div class="col mr-2">
                                               <div class="text-uppercase text-warning font-weight-bold text-xs mb-1">
-                                                <span> <a href="<?= $data['host'] ?>/administrar/clientes" style="color:red !important"> Cancelados </a> </span>
+                                                <span> <a href="<?= $data['host'] ?>/CFDIs/facturas" style="color:red !important"> Cancelados </a> </span>
                                               </div>
                                               <div class="text-dark font-weight-bold h5 mb-0"><span><?= $data['no_cfdis']['CFDIsCancelados'] ?></span></div>
                                           </div>
