@@ -8,8 +8,8 @@
 
     function __construct() {
       $this->servername = "localhost";
-      $this->username = "priceshopdb";
-      $this->password = "iWGnc44tHSaov5T6";
+      $this->username = "lenovo";
+      $this->password = "Lenovo123456!";
       $this->sqldatabase = "facturacion";
     }
 
