@@ -294,6 +294,28 @@
       }
     }
 
+    public function get_permisos($id_usuario){
+      $this->connect();
+      $sql = "SELECT SUM(Admin_usuario) AS Admin_usuario, SUM(Admin_grupos) AS Admin_grupos, SUM(Admin_perfiles) AS Admin_perfiles,
+      SUM(Admin_emisores) AS Admin_emisores, SUM(Admin_clientes) AS Admin_clientes, SUM(Admin_prodserv) AS Admin_prodserv,
+      SUM(Admin_series) AS Admin_series, SUM(Comprobantes_facturas) AS Comprobantes_facturas,
+      SUM(Reportes_reportemensual) AS Reportes_reportemensual,
+      SUM(CatSAT_claves_prodserv) AS CatSAT_claves_prodserv, SUM(CatSAT_unidades) AS CatSAT_unidades, SUM(CatSAT_formaspago) AS CatSAT_formaspago,
+      SUM(CatSAT_monedas) AS CatSAT_monedas, SUM(CatSAT_impuestos) AS CatSAT_impuestos
+      FROM permisos WHERE GrupoId IN(SELECT IdGrupo FROM grupos_usuario WHERE IdUsuario = $id_usuario)";
+      write_log("UsuarioPDO | get_permisos() | SQL: ". $sql);
+      $stmt = $this->conn->prepare($sql);
+      $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $this->disconect();
+      write_log("UsuarioPDO | get_permisos() | Result: ". serialize($result));
+      if(count($result) > 0){
+        return $result[0];
+      }else{
+        return false;
+      }
+    }
+
   }
 
 ?>
