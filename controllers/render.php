@@ -244,7 +244,11 @@
 
             $grupo_pdo = new GrupoPDO();
             if( $grupo_pdo->insert_grupo($grupo, $descripcion) ){
-              $sesion->set_notification("OK", "Se ha creado un nuevo grupo");
+              if( $grupo_pdo->crear_permisos() ){
+                $sesion->set_notification("OK", "Se ha creado un nuevo grupo");
+              }else{
+                $sesion->set_notification("ERROR", "Ocurrió un error al crear los permisos del grupo.");
+              }
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al crear el Grupo. Intente de nuevo.");
             }

@@ -54,6 +54,31 @@
       }
     }
 
+    public function crear_permisos(){
+      $this->connect();
+      try{
+        // Obtiene el Id del Grupo Creado
+        $sql = "SELECT Id FROM grupos ORDER BY Id DESC LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        write_log("GrupoPDO | crear_permisos() | SQL: " . $sql);
+        write_log("GrupoPDO | crear_permisos() | Result: " . serialize($result));
+        $id_grupo = $result[0]['Id'];
+        // INSERT Permisos
+        $sql = "INSERT INTO permisos (GrupoId)
+        VALUES ('$id_grupo')";
+        $this->conn->exec($sql);
+        write_log("GrupoPDO | crear_permisos() | Se realizó el INSERT con Éxito.");
+        $this->disconect();
+        return true;
+      }catch(PDOException $e) {
+        write_log("GrupoPDO | crear_permisos() | Ocurrió un error al realizar el INSERT de los permisos del Grupo\nError: ". $e->getMessage());
+        $this->disconect();
+        return false;
+      }
+    }
+
     public function get_grupo($grupo_id){
       $this->connect();
       try{
