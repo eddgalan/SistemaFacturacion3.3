@@ -181,11 +181,11 @@
       FROM perfiles
       INNER JOIN usuario ON perfiles.UsuarioId = usuario.Id
       WHERE usuario.Id='$id'";
-      write_log("UsuarioPDO | get_all_userdata_by_username() | SQL: ". $sql);
+      write_log("UsuarioPDO | get_all_userdata() | SQL: ". $sql);
       $stmt = $this->conn->prepare($sql);
       $stmt->execute();
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      write_log("UsuarioPDO | get_all_userdata_by_username() | Result: ". serialize($result));
+      write_log("UsuarioPDO | get_all_userdata() | Result: ". serialize($result));
       $this->disconect();
       if(count($result) != 0){
         return $result[0];

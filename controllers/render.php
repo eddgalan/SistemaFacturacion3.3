@@ -168,11 +168,9 @@
             $contra = password_hash($contra, PASSWORD_DEFAULT, ['cost' => 15]);
             $email = $_POST['email'];
             // Crea una instancia de UsuarioPDO con los datos del formulario
-            $usuario = new UsuarioPDO('0', 1, $username, $contra, $email);
-            $usuario_creado = $usuario->insert_usuario();  // Crea el usuario con los datos que mandamos
+            $usuario_pdo = new UsuarioPDO('0', 1, $username, $contra, $email);
             // Verifica si se creó el usuario y hace el msg
-            $sesion = new UserSession();
-            if($usuario_creado){
+            if( $usuario_pdo->insert_usuario() ){
               $sesion->set_notification("OK", "Se ha creado un nuevo usuario");
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al crear el usuario. Intente de nuevo.");
@@ -194,11 +192,15 @@
               $contra = password_hash($_POST['password_edit'], PASSWORD_DEFAULT, ['cost' => 15]);
             }
             // Crea una instancia de UsuarioPDO con los datos del formulario
-            $usuario = new UsuarioPDO($id_usuario, $activo, $username, $contra, $email);
-            $usuario_actualizado = $usuario->actualizar_usuario();        // Actualiza el usuario con los datos que mandamos
+            $usuario_pdo = new UsuarioPDO($id_usuario, $activo, $username, $contra, $email);
             // Verifica si se actualizó el usuario y genera el msg/notificación
-            $sesion = new UserSession();
-            if($usuario_actualizado){
+            if( $usuario_pdo->actualizar_usuario() ){
+              // Verifica si los datos que de actualizaron pertenecen al usuario que está logueado
+              $data_sesion = $sesion->get_session();
+              if( $data_sesion['Id'] == $id_usuario ){
+                // Actualiza los datos de la sesión con los datos que se actualizaron del usuario
+                $sesion->set_session($usuario_pdo->get_all_userdata($id_usuario));
+              }
               $sesion->set_notification("OK", "Los datos del usuario se actualizaron.");
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del usuario.");
