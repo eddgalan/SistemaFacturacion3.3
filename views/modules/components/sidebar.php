@@ -68,7 +68,7 @@
                       }
                       // Series
                       if( $permisos['Admin_series'] != 0 ){
-                        $panel .= "<a class='nav-link' href='". $data['host'] ."/catalogosSAT/series'> <i class='fas fa-font'></i> Series</a>\n\t\t\t\t\t";
+                        $panel .= "<a class='nav-link' href='". $data['host'] ."/administrar/series'> <i class='fas fa-font'></i> Series</a>\n\t\t\t\t\t";
                       }
                       $panel .= "</div>\n";
                       echo $panel;

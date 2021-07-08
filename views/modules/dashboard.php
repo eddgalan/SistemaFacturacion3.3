@@ -69,7 +69,7 @@
                                       <div class="row align-items-center no-gutters">
                                           <div class="col mr-2">
                                               <div class="text-uppercase text-warning font-weight-bold text-xs mb-1">
-                                                <span> <a href="<?= $data['host'] ?>/catalogosSAT/series" style="color:red !important"> Series </a> </span>
+                                                <span> <a href="<?= $data['host'] ?>/administrar/series" style="color:red !important"> Series </a> </span>
                                               </div>
                                               <div class="text-dark font-weight-bold h5 mb-0"><span><?= $data['no_series'] ?></span></div>
                                           </div>

@@ -39,6 +39,10 @@
       $routes["administrar/prodserv"]="ViewProdServs";
       $routes["administrar/prodserv/process"]="ProcessProdServs";
       $routes["administrar/prodserv/switch_active/_data_/_data_"]="SwitchActivoProdServ";
+      // Series
+      $routes["administrar/series"]="ViewSeries";
+      $routes["administrar/series/process"]="ProcessSeries";
+      $routes["administrar/series/switch_active/_data_/_data_"]="SwitchActivoSeries";
 
       /* ..:: FACTURAS ::.. */
       $routes['CFDIs/facturas']="ViewsFacturas";
@@ -71,10 +75,6 @@
       $routes["catalogosSAT/impuestos"]="ViewImpuestos";
       $routes["catalogosSAT/impuestos/process"]="ProcessImpuestos";
       $routes["catalogosSAT/impuestos/switch_active/_data_/_data_"]="SwitchActivoImpuestos";
-      // Series
-      $routes["catalogosSAT/series"]="ViewSeries";
-      $routes["catalogosSAT/series/process"]="ProcessSeries";
-      $routes["catalogosSAT/series/switch_active/_data_/_data_"]="SwitchActivoSeries";
 
       /* ..:: REPORTES ::.. */
       $routes["reportes/mensual"]="ViewReporteMensual";

@@ -3,6 +3,7 @@
 
 <head>
     <?php include './views/modules/components/head.php'; ?>
+    <link rel="stylesheet" type="text/css" href="<?= $data['host'] ?>/views/assets/js/datatable/datatables.min.css"/>
 </head>
 
 <body>
@@ -33,7 +34,7 @@
                             <!-- ..:: Tabla Monedas ::.. -->
                             <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:5px;">
                                 <div class="table-sm table-responsive">
-                                  <table class="table table-bordered table-hover">
+                                  <table class="table table-bordered table-hover" data-order='[[1, "asc" ]]'>
                                       <thead style="font-size:15px;">
                                         <tr class="text-center">
                                           <th>Activo</th>
@@ -60,7 +61,7 @@
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'>". $moneda['ClaveMoneda'] ."</td>\n".
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'>". $moneda['Nombre'] ."</td>\n".
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'>". $moneda['NoDecimales'] ."</td>\n".
-                                                        "\t\t\t\t\t\t\t\t<tr>\n";
+                                                        "\t\t\t\t\t\t\t\t</tr>\n";
                                             echo $html_row;
                                           }
                                         ?>
@@ -119,8 +120,8 @@
       </div>
     </div>
     <?php include './views/modules/components/javascript.php'; ?>
+    <script type="text/javascript" src="<?= $data['host'] ?>/views/assets/js/datatable/datatables.min.js"></script>
     <script type="text/javascript" src="../views/assets/js/catsat/monedas.js"></script>
-
 </body>
 
 </html>

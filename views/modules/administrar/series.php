@@ -4,6 +4,7 @@
 <head>
     <?php include './views/modules/components/head.php'; ?>
     <link rel="stylesheet" type="text/css" href="../views/assets/js/dropzone2.0.12/dropzone.css" />
+    <link rel="stylesheet" type="text/css" href="<?= $data['host'] ?>/views/assets/js/datatable/datatables.min.css"/>
 </head>
 
 <body>
@@ -45,7 +46,7 @@
                             <!-- ..:: Tabla Series ::.. -->
                             <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:5px;">
                                 <div class="table-sm table-responsive">
-                                  <table class="table table-bordered table-hover">
+                                  <table class="table table-bordered table-hover" data-order='[[1, "asc" ]]'>
                                       <thead style="font-size:15px;">
                                         <tr class="text-center">
                                           <th>Activo</th>
@@ -70,7 +71,7 @@
                                               $label_accion = " Activar";
                                             }
                                             $html_row = ""."\n\t\t\t\t\t\t\t<tr>\n".
-                                                        "\t\t\t\t\t\t\t\t<td class='text-center'><a href='". $data['host'] ."/catalogosSAT/series/switch_active/". $serie['Id'] ."/". $serie['Estatus'] ."'>" . $icon . " </a></td> \n".
+                                                        "\t\t\t\t\t\t\t\t<td class='text-center'><a href='". $data['host'] ."/administrar/series/switch_active/". $serie['Id'] ."/". $serie['Estatus'] ."'>" . $icon . " </a></td> \n".
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'>". $serie['Serie'] ."</td>\n".
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'>". $serie['Descripcion'] ."</td>\n".
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'>". $serie['TipoComprobante'] ." | ". $serie['DescripcionTipoComp'] ."</td>\n".
@@ -82,11 +83,11 @@
                                                             "\t\t\t\t\t\t\t\t\t\t</button>\n".
                                                             "\t\t\t\t\t\t\t\t\t\t<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>\n".
                                                               "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='#' data-toggle='modal' data-target='#modal_editar_serie' onclick='carga_datos(". $serie['Id'] .")'> <i class='fas fa-edit'></i> Editar Serie</a>\n".
-                                                              "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='". $data['host'] ."/catalogosSAT/series/switch_active/". $serie['Id'] ."/". $serie['Estatus'] ."' >". $icon_option . $label_accion ."</a>\n".
+                                                              "\t\t\t\t\t\t\t\t\t\t\t<a class='dropdown-item' href='". $data['host'] ."/administrar/series/switch_active/". $serie['Id'] ."/". $serie['Estatus'] ."' >". $icon_option . $label_accion ."</a>\n".
                                                             "\t\t\t\t\t\t\t\t\t\t</div>\n".
                                                           "\t\t\t\t\t\t\t\t\t</div>\n".
                                                         "\t\t\t\t\t\t\t\t</td>\n".
-                                                        "\t\t\t\t\t\t\t\t<tr>\n";
+                                                        "\t\t\t\t\t\t\t\t</tr>\n";
                                             echo $html_row;
                                           }
                                         ?>
@@ -106,7 +107,7 @@
     <!-- ..:: Modal Agregar Serie ::.. -->
     <div class="modal fade" id="modal_agregar_serie">
       <div class="modal-dialog modal-lg">
-        <form action="<?= $data['host'] ?>/catalogosSAT/series/process" method="POST">
+        <form action="<?= $data['host'] ?>/administrar/series/process" method="POST">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title"> <i class="fas fa-plus"></i> Agregar Serie </h4>
@@ -162,7 +163,7 @@
     <!-- ..:: Modal Editar Serie ::.. -->
     <div class="modal fade" id="modal_editar_serie">
       <div class="modal-dialog modal-lg">
-        <form action="<?= $data['host'] ?>/catalogosSAT/series/process" method="POST">
+        <form action="<?= $data['host'] ?>/administrar/series/process" method="POST">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title"> <i class="fas fa-edit"></i> Editar Serie </h4>
@@ -217,7 +218,7 @@
     </div>
     <?php include './views/modules/components/javascript.php'; ?>
     <script type="text/javascript" src="../views/assets/js/admin/series.js"></script>
-
+    <script type="text/javascript" src="<?= $data['host'] ?>/views/assets/js/datatable/datatables.min.js"></script>
 </body>
 
 </html>

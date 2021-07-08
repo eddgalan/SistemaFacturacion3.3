@@ -1,4 +1,9 @@
 $(document).ready(function (){
+  var table = $('table').DataTable({
+    "language":{
+      "url": "../views/assets/js/datatable/Spanish.json"
+    }
+  });
   $("select[name='tipo_comprobante']").change(function(){
     var tpo_comprobante = $(this).val();
     if(tpo_comprobante != 0){

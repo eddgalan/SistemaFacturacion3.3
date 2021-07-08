@@ -34,7 +34,7 @@
                             <!-- ..:: Tabla Claves ProdServ ::.. -->
                             <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:5px;">
                                 <div class="table-sm table-responsive">
-                                  <table class="table table-bordered table-hover">
+                                  <table class="table table-bordered table-hover" data-order='[[1, "asc" ]]'>
                                       <thead style="font-size:16px;">
                                         <tr class="text-center">
                                           <th>Activo</th>
@@ -59,7 +59,7 @@
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'><a href='". $data['host'] ."/catalogosSAT/formas_pago/switch_active/". $unidad['Id'] ."/". $unidad['Estatus'] ."'>" . $icon . " </a></td> \n".
                                                         "\t\t\t\t\t\t\t\t<td class='text-center'>". $unidad['ClaveFormaPago'] ."</td>\n".
                                                         "\t\t\t\t\t\t\t\t<td>". $unidad['Descripcion'] ."</td>\n".
-                                                        "\t\t\t\t\t\t\t\t<tr>\n";
+                                                        "\t\t\t\t\t\t\t\t</tr>\n";
                                             echo $html_row;
                                           }
                                         ?>

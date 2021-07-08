@@ -1506,7 +1506,7 @@
               $sesion->set_notification("ERROR", "Ocurrió un error al agregar la Serie. Intente de nuevo");
             }
           }
-          header("location: " . $hostname . "/catalogosSAT/series");
+          header("location: " . $hostname . "/administrar/series");
         }else{
           // UPDATE
           $id_serie = $_POST['id_serie'];
@@ -1520,7 +1520,7 @@
           }else{
             $sesion->set_notification("ERROR", "Ocurrió un error al actualizar la Serie. Intentelo nuevamente.");
           }
-          header("location: ". $hostname ."/catalogosSAT/series");
+          header("location: ". $hostname ."/administrar/series");
         }
       }else{
         write_log("ProcessSeries | construct() | NO se recibieron datos por POST");
@@ -1564,7 +1564,7 @@
       }else{
         header("Location: " . $hostname . "/login");
       }
-      header("location: " . $hostname . "/catalogosSAT/series");
+      header("location: " . $hostname . "/administrar/series");
     }
   }
 
