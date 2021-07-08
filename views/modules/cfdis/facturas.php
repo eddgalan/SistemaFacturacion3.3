@@ -34,7 +34,7 @@
                             <!-- ..:: Tabla CFDIs Facturas ::.. -->
                             <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:5px;">
                                 <div class="table-sm table-responsive">
-                                  <table class="table table-bordered table-hover">
+                                  <table class="table table-bordered table-hover" data-order='[[ 4, "desc" ]]'>
                                       <thead style="font-size:16px;">
                                         <tr class="text-center">
                                           <th>Estatus</th>
@@ -143,7 +143,7 @@
                                               "\t\t\t\t\t\t\t\t<td class='text-center'>". $comprobante['Serie'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td class='text-center'>". $comprobante['Folio'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td>". $comprobante['NombreCliente'] . "</td>  \n".
-                                              "\t\t\t\t\t\t\t\t<td class='text-center'>". date_format(date_create(substr($comprobante['Creado'], 0, 10)), "d/m/Y")  . "</td>  \n".
+                                              "\t\t\t\t\t\t\t\t<td class='text-center'>". date_format(date_create(substr($comprobante['Creado'], 0, 10)), "Y/m/d")  . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td>". $comprobante['UUID'] . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t<td class='text-center'> $ ". number_format( $comprobante['Total'],2,".","" ) . "</td>  \n".
                                               "\t\t\t\t\t\t\t\t <td class='text-center'> \n".
