@@ -113,12 +113,6 @@
                                 <label for="uso_cfdi"> Uso CFDI: </label>
                                 <select class="form-control" name="uso_cfdi">
                                   <option value="0">---</option>
-                                  <?php
-                                    foreach ($data['usos_cfdi'] as $usocfdi) {
-                                      $html_option = "<option value='". $usocfdi['ClaveUso']. "'>". $usocfdi['ClaveUso'] ." | ". $usocfdi['Concepto'] ."</option>\n";
-                                      echo $html_option;
-                                    }
-                                  ?>
                                 </select>
                                 <small class="color_red display_none" name="uso_cfdi">Seleccione un uso de CFDI</small>
                               </div>

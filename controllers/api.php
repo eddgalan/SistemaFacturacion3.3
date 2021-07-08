@@ -422,7 +422,9 @@
             $condiciones_pago = $_POST['data']['condiciones_pago'];
             $metodo_pago = $_POST['data']['metodo_pago'];
             $forma_pago = $_POST['data']['forma_pago'];
-            $uso_cfdi = $_POST['data']['uso_cfdi'];
+            $array_uso_cfdi = explode(" | ", $_POST['data']['uso_cfdi']);
+            $uso_cfdi = $array_uso_cfdi[0];
+            $desc_uso_cfdi = $array_uso_cfdi[1];
             $subtotal = $_POST['data']['subtotal'];
             $iva = $_POST['data']['iva'];
             $ieps = $_POST['data']['ieps'];
@@ -444,7 +446,7 @@
                 $regimen = $data_emisor['Regimen'];
                 // Crea la instancia ComprobantePDO
                 $comprobante = new ComprobantePDO($emisor, $cliente_id, $serie, $folio, $fecha, $hora, $moneda, $tipo_cambio, $tipo_comprobante,
-                $condiciones_pago, $nocertificado, $metodo_pago, $forma_pago, $uso_cfdi, $lugar_exp, $regimen, $subtotal, $iva, $ieps,
+                $condiciones_pago, $nocertificado, $metodo_pago, $forma_pago, $uso_cfdi, $desc_uso_cfdi, $lugar_exp, $regimen, $subtotal, $iva, $ieps,
                 $descuento, $total, $productos_servicios, $observaciones);
 
                 if($comprobante->insert_comprobante($productos_servicios)){

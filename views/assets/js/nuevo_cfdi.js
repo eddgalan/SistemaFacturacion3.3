@@ -6,7 +6,7 @@ $(document).ready(function (){
     $("select[name='uso_cfdi']").val("0");
     var token = $("input[name='token']").val();
     var id_cliente = $(this).val();
-
+    // Carga los Usos del CFDI en Función del Tipo de Cliente seleccionado
     $.ajax({
       type: "POST",
       dataType: 'json',
@@ -19,7 +19,7 @@ $(document).ready(function (){
         var usos_cfdi = resp.data;
         var html_option="<option value='0'>---</option>";
         for(let uso_cfdi of usos_cfdi){
-          html_option+= "<option value='"+ uso_cfdi['uso_clave'] + "'>"+
+          html_option+= "<option value='"+ uso_cfdi['uso_clave'] + " | "+ uso_cfdi['uso_concepto'] +"'>"+
             uso_cfdi['uso_clave'] + " | " + uso_cfdi['uso_concepto'] +
           "</option>";
         }

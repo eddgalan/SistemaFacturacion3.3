@@ -34,7 +34,7 @@
       private $observaciones;
 
       function __construct($emisor='', $cliente_id='', $serie='', $folio='', $fecha='', $hora='', $moneda='', $tipo_cambio='',
-      $tipo_comprobante='', $condiciones_pago='', $nocertificado='', $metodo_pago='', $forma_pago='', $uso_cfdi='', $lugar_exp='',
+      $tipo_comprobante='', $condiciones_pago='', $nocertificado='', $metodo_pago='', $forma_pago='', $uso_cfdi='', $desc_uso_cfdi='', $lugar_exp='',
       $regimen='', $subtotal='', $iva='', $ieps='', $descuento='', $total='', $prodservs='', $observaciones=''){
         parent::__construct();
         $this->emisor = $emisor;
@@ -51,6 +51,7 @@
         $this->metodo_pago = $metodo_pago;
         $this->forma_pago = $forma_pago;
         $this->uso_cfdi = $uso_cfdi;
+        $this->desc_uso_cfdi = $desc_uso_cfdi;
         $this->lugar_expedicion = $lugar_exp;
         $this->regimen = $regimen;
         $this->subtotal = $subtotal;
@@ -125,11 +126,11 @@
             $this->conn->beginTransaction();
             // SQL INSERT Comprobante
             $sql_insert_comprobante = "INSERT INTO cfdi (Emisor, ClienteId, Serie, Folio, Fecha, Hora, Moneda, TipoCambio,
-            TipoComprobante, CondicionesPago, NoCertificado, MetodoPago, FormaPago, UsoCFDI, LugarExpedicion, Regimen, Subtotal, IVA, IEPS, Descuento,
+            TipoComprobante, CondicionesPago, NoCertificado, MetodoPago, FormaPago, UsoCFDI, DescUsoCFDI, LugarExpedicion, Regimen, Subtotal, IVA, IEPS, Descuento,
             Total, Observaciones)
             VALUES ('$this->emisor', '$this->cliente_id', '$this->serie', '$this->folio',' $this->fecha', '$this->hora',
               '$this->moneda', '$this->tipo_cambio', '$this->tipo_comprobante', '$this->condiciones_pago', '$this->nocertificado',
-              '$this->metodo_pago', '$this->forma_pago', '$this->uso_cfdi', '$this->lugar_expedicion', '$this->regimen', '$this->subtotal', '$this->iva',
+              '$this->metodo_pago', '$this->forma_pago', '$this->uso_cfdi', '$this->desc_uso_cfdi', '$this->lugar_expedicion', '$this->regimen', '$this->subtotal', '$this->iva',
               '$this->ieps', '$this->descuento', '$this->total', '$this->observaciones')";
             write_log("SQL INSERT CFDI: " . $sql_insert_comprobante);
             $this->conn->exec($sql_insert_comprobante);
@@ -235,7 +236,7 @@
           series.DescripcionTipoComp as DescTipo,
           cfdi.CondicionesPago, cfdi.NoCertificado, cfdi.MetodoPago as ClaveMetodoPago,
           catsatmetodos.Descripcion as DescripcionMetodoPago, cfdi.FormaPago as ClaveFormaPago,
-          catsatformaspago.Descripcion as DescripcionFormaPago, cfdi.UsoCFDI as ClaveUsoCFDI,
+          catsatformaspago.Descripcion as DescripcionFormaPago, cfdi.UsoCFDI as ClaveUsoCFDI, cfdi.DescUsoCFDI,
           cfdi.LugarExpedicion, cfdi.Regimen, emisores.DescRegimen, cfdi.Subtotal, cfdi.IVA, cfdi.IEPS, cfdi.RetIva, cfdi.TotalRetenido, cfdi.TotalTraslado,
           cfdi.Descuento, cfdi.Total, cfdi.UUID, cfdi.FechaCertificado, cfdi.HoraCertificado, cfdi.EstatusSAT,
           cfdi.PathXML, cfdi.PathPDF, cfdi.Creado, cfdi.Observaciones

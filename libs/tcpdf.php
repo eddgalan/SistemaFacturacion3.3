@@ -78,7 +78,7 @@
     		$this->SetFont('helvetica', 'B', 10 );
 
         if( $comprobante['TipoComprobante'] != "N" ){
-          $this->imprime_encanezado_cliente_cfdi( 0,1,"Uso del CFDI: ". $comprobante['ClaveUsoCFDI'] ." | ". $comprobante['ConceptoUsoCFDI'],$moneda0,$tc0 );
+          $this->imprime_encanezado_cliente_cfdi( 0,1,"Uso del CFDI: ". $comprobante['ClaveUsoCFDI'] ." | ". $comprobante['DescUsoCFDI'],$moneda0,$tc0 );
       		$txt_condiciones = "";
       		if( $comprobante['CondicionesPago'] != "" && $comprobante['TipoComprobante'] != "P" ) $txt_condiciones = "Condiciones: ". $comprobante['CondicionesPago'];
       		$this->imprime_encanezado_cliente_cfdi( 0,0,$txt_condiciones,$moneda,$tc );
