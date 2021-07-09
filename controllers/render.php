@@ -1468,9 +1468,6 @@
       $data_session = $sesion->get_session();
       $emisor = $data_session['Emisor'];
 
-      $csd_pdo = new CSD_PDO();
-      $data['csd'] = $csd_pdo->get_csd($emisor);
-
       $serie_pdo = new SeriePDO();
       $data['series'] = $serie_pdo->get_all($emisor);
       $data['tipo_comprobantes'] = $serie_pdo->get_tpocomprobantes_catsat();
@@ -1495,12 +1492,11 @@
           $descripcion = $_POST['descripcion'];
           $tipo_comprobante = $_POST['tipo_comprobante'];
           $consecutivo = $_POST['consecutivo'];
-          $csd = $_POST['id_csd'];
 
           if( $serie_pdo->get_serie_by_serie_emisor($emisor, $serie) != false ){
             $sesion->set_notification("ERROR", "No fue posible agregar la serie. La serie que desea agregar ya existe.");
           }else{
-            if( $serie_pdo->insert_serie($emisor, $serie, $descripcion, $tipo_comprobante, $consecutivo, $csd) ){
+            if( $serie_pdo->insert_serie($emisor, $serie, $descripcion, $tipo_comprobante, $consecutivo) ){
               $sesion->set_notification("OK", "Se agregó correctamente la Nueva Serie.");
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al agregar la Serie. Intente de nuevo");

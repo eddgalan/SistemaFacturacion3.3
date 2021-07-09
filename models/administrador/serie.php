@@ -111,15 +111,15 @@
         }
       }
 
-      public function insert_serie($emisor, $serie, $descripcion, $strtpo_comprobante, $consecutivo, $csd){
+      public function insert_serie($emisor, $serie, $descripcion, $strtpo_comprobante, $consecutivo){
         $array_tpocomprobante = explode(" | ", $strtpo_comprobante);
         $tipo_comprobante = $array_tpocomprobante[0];
         $desc_tpo_comp = $array_tpocomprobante[1];
 
         try{
           $this->connect();
-          $sql = "INSERT INTO series (Emisor, Serie, Descripcion, TipoComprobante, DescripcionTipoComp, Consecutivo, CSD)
-          VALUES ('$emisor', '$serie', '$descripcion', '$tipo_comprobante', '$desc_tpo_comp', '$consecutivo', '$csd')";
+          $sql = "INSERT INTO series (Emisor, Serie, Descripcion, TipoComprobante, DescripcionTipoComp, Consecutivo)
+          VALUES ('$emisor', '$serie', '$descripcion', '$tipo_comprobante', '$desc_tpo_comp', '$consecutivo')";
           $this->conn->exec($sql);
           write_log("SeriePDO | insert_serie() | SQL: ". $sql);
           write_log("SeriePDO | insert_serie() | Se realizó el INSERT de la Serie con Éxito");

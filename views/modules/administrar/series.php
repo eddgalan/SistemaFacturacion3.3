@@ -21,13 +21,9 @@
                             <h4 class="card-title"> Series </h4>
                           </div>
                           <div class="col-lg-4 col-md-4 col-sm-12 text-right">
-                            <?php
-                              if( count($data['csd']) != false ){
-                                echo "<button type='button' class='btn btn-success waves-effect btn_full' data-toggle='modal' data-target='#modal_agregar_serie'>
-                                  <i class='fas fa-plus-circle fa-sm'></i> Agregar Serie
-                                </button>";
-                              }
-                            ?>
+                            <button type='button' class='btn btn-success waves-effect btn_full' data-toggle='modal' data-target='#modal_agregar_serie'>
+                              <i class='fas fa-plus-circle fa-sm'></i> Agregar Serie
+                            </button>
                           </div>
                         </div>
                         <hr>
@@ -36,13 +32,6 @@
                             <?php require './views/modules/components/notifications.php'; ?>
                           </div>
                           <div class="row">
-                            <?php
-                              if( count($data['csd']) == false ){
-                                require './views/modules/components/series_csd.php';
-                              }else{
-
-                              }
-                            ?>
                             <!-- ..:: Tabla Series ::.. -->
                             <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:5px;">
                                 <div class="table-sm table-responsive">
@@ -119,7 +108,6 @@
                   <!-- Token -->
                   <div style="display:none;">
                     <input type="hidden" name="token" value="<?= $data['token']?>">
-                    <input type="hidden" name="id_csd" value="<?= $data['csd']['Id']?>">
                   </div>
                   <!-- Serie -->
                   <div class="col-lg-3 col-md-4 col-sm-8">
