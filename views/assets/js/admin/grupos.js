@@ -48,6 +48,12 @@ function carga_permisos(id_grupo){
         $("span[name='nom_grupo']").html("'"+ datos.Nombre +"'");
         $("input[name='id_permiso']").val(datos.Id);
         /* ..:: Administrar ::.. */
+        // Mi Empresa
+        if( datos.Admin_miempresa == 1 ){
+          $("input[name='admin_miempresa']").prop("checked", true);
+        }else{
+          $("input[name='admin_miempresa']").prop("checked", false);
+        }
         // Usuario
         if( datos.Admin_usuario == 1 ){
           $("input[name='admin_usuario']").prop("checked", true);

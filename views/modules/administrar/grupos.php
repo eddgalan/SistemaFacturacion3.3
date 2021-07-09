@@ -188,7 +188,15 @@
                     <div class="tab-content">
                       <div class="tab-pane container active" id="tab-administrar">
                         <div class="row">
-                          <!-- ..:: Usuario ::.. -->
+                          <!-- ..:: Mi Empresa ::.. -->
+                          <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-check">
+                              <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" name="admin_miempresa"> Mi empresa
+                              </label>
+                            </div>
+                          </div>
+                          <!-- ..:: Usuarios ::.. -->
                           <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="form-check">
                               <label class="form-check-label">

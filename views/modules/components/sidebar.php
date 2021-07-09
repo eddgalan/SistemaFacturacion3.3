@@ -42,6 +42,10 @@
                     if( $panel_admin ){
                       echo "<div class='seccion list-group-item list-group-item-action bg-light'><span> <i class='fas fa-user-cog'></i> Administrar</span></div>\n\t\t\t\t\t";
                       $panel = "<div class='panel'>\n\t\t\t\t\t\t";
+                      // Mi Empresa
+                      if( $permisos['Admin_miempresa'] != 0 ){
+                        $panel .= "<a class='nav-link' href='". $data['host'] ."/administrar/miempresa'> <i class='fas fa-building'></i> Mi Empresa</a>\n\t\t\t\t\t\t";
+                      }
                       // Usuarios
                       if( $permisos['Admin_usuario'] != 0 ){
                         $panel .= "<a class='nav-link' href='". $data['host'] ."/administrar/usuarios'> <i class='fas fa-user'></i> Usuarios</a>\n\t\t\t\t\t\t";
