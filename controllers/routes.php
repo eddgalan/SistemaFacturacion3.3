@@ -9,6 +9,9 @@
       $routes["logout"]="Logout";
       $routes["dashboard"]="Dashboard";
       /* ..:: ADMINISTRAR ::.. */
+      // Mi Empresa
+      $routes["administrar/miempresa"]="ViewMiEmpresa";
+      $routes["administrar/miempresa/process"]="ProcessMiEmpresa";
       // Usuarios
       $routes["administrar/usuarios"]="ViewUsuarios";
       $routes["administrar/usuarios/process"]="ProcessUsuario";

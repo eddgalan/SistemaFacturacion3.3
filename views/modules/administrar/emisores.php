@@ -272,8 +272,8 @@
       </div>
     </div>
     <?php include './views/modules/components/javascript.php'; ?>
-    <script src="<?= $data['host'] ?>/views/assets/js/admin/emisores.js"></script>
     <script type="text/javascript" src="<?= $data['host'] ?>/views/assets/js/datatable/datatables.min.js"></script>
+    <script src="<?= $data['host'] ?>/views/assets/js/admin/emisores.js"></script>
 </body>
 
 </html>

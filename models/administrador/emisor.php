@@ -109,6 +109,27 @@
         }
       }
 
+      public function update_miempresa($id_emisor, $nombre, $direccion, $codigo_postal, $tipo_persona, $regimen, $desc_regimen){
+        try{
+          $this->connect();
+          $sql = "UPDATE emisores SET Nombre = '$nombre', Domicilio = '$direccion', CP = '$codigo_postal',
+          Persona = '$tipo_persona', Regimen = '$regimen', DescRegimen = '$desc_regimen'
+          WHERE Id = '$id_emisor'";
+          write_log("EmisorPDO | update_miempresa() | SQL: ". $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          write_log("EmisorPDO | update_miempresa() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("EmisorPDO | update_miempresa() | Ocurrió un error al realizar el UPDATE del Emisor\nError: ". $e->getMessage());
+          write_log("SQL: ". $sql);
+          $this->disconect();
+          return false;
+        }
+      }
+
       public function cambiar_activo($id_emisor, $nuevo_status){
         try{
           $this->connect();

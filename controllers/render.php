@@ -104,6 +104,63 @@
     }
   }
 
+  class ViewMiEmpresa{
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Administrar | Usuarios";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+      $data_sesion = $sesion->get_session();
+
+      $emisor_pdo = new EmisorPDO();
+      $data['emisor'] = $emisor_pdo->get_emisor($data_sesion['Emisor']);
+
+      $regimen_pdo = new CatSATRegimenesPDO();
+      $data['regimenes'] = $regimen_pdo->get_regimenes_persona($data['emisor']['Persona']);
+
+      $csd_pdo = new CSD_PDO();
+      $data['csd'] = $csd_pdo->get_csd($data_sesion['Emisor']);
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/miempresa.php', $data, true);
+    }
+  }
+
+  class ProcessMiEmpresa{
+    function __construct($host_name="", $site_name="", $variables=null){
+      if ($_POST){
+        // Valida el Token de la sesión
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          // Obtene los datos
+          $id_emisor = $_POST['id_emisor'];
+          $nombre = $_POST['nombre'];
+          $direccion = $_POST['direccion'];
+          $codigo_postal = $_POST['codigo_postal'];
+          $tipo_persona = $_POST['persona'];
+          $array_regimen = explode(" | ", $_POST['regimen']);
+          $regimen = $array_regimen[0];
+          $desc_regimen = $array_regimen[1];
+
+          $emisor_pdo = new EmisorPDO();
+          if( $emisor_pdo->update_miempresa($id_emisor, $nombre, $direccion, $codigo_postal, $tipo_persona, $regimen, $desc_regimen) ){
+            $sesion->set_notification("OK", "Se actualizaron los datos correctamente.");
+          }else{
+            $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del usuario.");
+          }
+        }
+      }else{
+        write_log("ProcessMiEmpresa | __construct() | NO se recibieron datos por POST");
+        $sesion->set_notification("ERROR", "No fue posible procesar su solicitud.");
+      }
+      // Redirecciona a la página de administrar/usuarios
+      header("location: " . $host_name . "/administrar/miempresa");
+    }
+  }
+
   class ViewUsuarios {
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Administrar | Usuarios";
