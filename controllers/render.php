@@ -188,17 +188,17 @@
                 mkdir("uploads/". $rfc, 0777);
               }
               move_uploaded_file($file['tmp_name'], $pathlogo);
-              write_log("ProcessEmisores | __contruct() | Se cargó la imagen de forma exitosa");
+              write_log("ProcessChangeLogo | __contruct() | Se cargó la imagen de forma exitosa");
               // Actualiza el campo PathLogo del Emisor
               if( $emisor_pdo->update_logo($id_emisor, $pathlogo) ){
                 $sesion->set_notification("OK", "Se cambió el logo de forma correcta.");
-                write_log("ProcessEmisores | __contruct() | Se cargó la imagen de forma exitosa");
+                write_log("ProcessChangeLogo | __contruct() | Se cargó la imagen de forma exitosa");
               }else{
                 $sesion->set_notification("ERROR", "Ocurrió un error al cargar el logo. Inténtelo de nuevo.");
-                write_log("ProcessEmisores | __contruct() | Se cargó la imagen de forma exitosa");
+                write_log("ProcessChangeLogo | __contruct() | Se cargó la imagen de forma exitosa");
               }
             }else{
-              write_log("ProcessEmisores | __contruct() | El archivo NO es una imágen");
+              write_log("ProcessChangeLogo | __contruct() | El archivo NO es una imágen");
               $sesion->set_notification("ERROR", "El Logotipo que desea cargar no es una imagen");
               header("location: " . $hostname . "/administrar/emisores");
             }
