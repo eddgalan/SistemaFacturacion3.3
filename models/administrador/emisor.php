@@ -130,6 +130,26 @@
         }
       }
 
+      public function update_logo($id_emisor, $new_path){
+        try{
+          $this->connect();
+          $sql = "UPDATE emisores SET PathLogo = '$new_path'
+          WHERE Id = '$id_emisor'";
+          write_log("EmisorPDO | update_logo() | SQL: ". $sql);
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+
+          write_log("EmisorPDO | update_logo() | Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("EmisorPDO | update_logo() | Ocurrió un error al realizar el UPDATE del Emisor\nError: ". $e->getMessage());
+          write_log("SQL: ". $sql);
+          $this->disconect();
+          return false;
+        }
+      }
+
       public function cambiar_activo($id_emisor, $nuevo_status){
         try{
           $this->connect();

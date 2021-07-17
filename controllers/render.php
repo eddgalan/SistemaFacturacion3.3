@@ -161,6 +161,61 @@
     }
   }
 
+  class ProcessChangeLogo{
+    function __construct($host_name="", $site_name="", $variables=null){
+      if ($_POST){
+        // Valida el Token de la sesión
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        $data_session = $sesion->get_session();
+
+        if($sesion->validate_token($token)){
+          if(!empty($_FILES['logo_img'])){
+            $file = $_FILES['logo_img'];
+            $type = $file['type'];
+            // Valida el Tipo de Archivo
+            if($type == "image/jpg" || $type == "image/jpeg" || $type == "image/png"){
+              // Obtiene el RFC del Emisor (Empresa)
+              $id_emisor = $data_session['Emisor'];
+              $emisor_pdo = new EmisorPDO();
+              $data_emisor = $emisor_pdo->get_emisor($id_emisor);
+              $rfc = $data_emisor['RFC'];
+
+              $extension = substr($file['name'], strpos($file['name'], '.'), strlen($file['name']));
+              $pathlogo = "uploads/". $rfc ."/logo" . $extension;
+              // Valida si existe el directorio donde se guardará el Logo | Si NO existe lo crea
+              if(!is_dir("uploads/". $rfc)){
+                mkdir("uploads/". $rfc, 0777);
+              }
+              move_uploaded_file($file['tmp_name'], $pathlogo);
+              write_log("ProcessEmisores | __contruct() | Se cargó la imagen de forma exitosa");
+              // Actualiza el campo PathLogo del Emisor
+              if( $emisor_pdo->update_logo($id_emisor, $pathlogo) ){
+                $sesion->set_notification("OK", "Se cambió el logo de forma correcta.");
+                write_log("ProcessEmisores | __contruct() | Se cargó la imagen de forma exitosa");
+              }else{
+                $sesion->set_notification("ERROR", "Ocurrió un error al cargar el logo. Inténtelo de nuevo.");
+                write_log("ProcessEmisores | __contruct() | Se cargó la imagen de forma exitosa");
+              }
+            }else{
+              write_log("ProcessEmisores | __contruct() | El archivo NO es una imágen");
+              $sesion->set_notification("ERROR", "El Logotipo que desea cargar no es una imagen");
+              header("location: " . $hostname . "/administrar/emisores");
+            }
+          }
+        }else{
+          write_log("ProcessChangeLogo | __construct() | Token NO válido");
+          $sesion->set_notification("ERROR", "No fue posible procesar su solicitud.");
+        }
+      }else{
+        write_log("ProcessChangeLogo | __construct() | NO se recibieron datos por POST");
+        $sesion->set_notification("ERROR", "No fue posible procesar su solicitud.");
+      }
+      // Redirecciona a la página de administrar/usuarios
+      header("location: " . $host_name . "/administrar/miempresa");
+    }
+  }
+
   class ViewUsuarios {
     function __construct($host_name="", $site_name="", $variables=null){
       $data['title'] = "Facturación 3.3 | Administrar | Usuarios";

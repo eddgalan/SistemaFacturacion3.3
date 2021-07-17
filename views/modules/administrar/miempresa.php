@@ -25,21 +25,13 @@
                             <?php require './views/modules/components/notifications.php'; ?>
                           </div>
                           <div class="row">
-                            <!-- ..:: Carga de Archivos ::.. -->
-                            <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:5px;">
-                              <?php
-                                if( !$data['csd'] ){
-                                  require './views/modules/components/carga_csd.php';
-                                }
-                               ?>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                              <h5> <?= $data['emisor']['Nombre'] ?> </h5>
                             </div>
-                              <div class="col-lg-12 col-md-12 col-sm-12">
-                                <h5> <?= $data['emisor']['Nombre'] ?> </h5>
-                              </div>
-                              <div class="col-lg-5 col-md-5 col-sm-12">
-                                <img class="img-fluid" src="<?= $data['host']?>/<?= $data['emisor']['PathLogo'] ?>" style="max-height:200px;">
-                              </div>
-                              <div class="col-lg-7 col-md-7 col-sm-12">
+                            <div class="col-lg-5 col-md-5 col-sm-12">
+                              <img class="img-fluid" src="<?= $data['host']?>/<?= $data['emisor']['PathLogo'] ?>" style="max-height:200px;">
+                            </div>
+                            <div class="col-lg-7 col-md-7 col-sm-12">
                               <form method="POST" action="<?= $data['host']?>/administrar/miempresa/process">
                                 <div class="row">
                                   <!-- Token -->
@@ -110,7 +102,7 @@
                                   </div>
                                 </div>
                               </form>
-                              </div>
+                            </div>
                           </div>
                         </div>
                     </div>
@@ -128,7 +120,56 @@
             <h4 class="modal-title"> <i class="fas fa-file-upload"></i> Carga de Archivos </h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
-          <form method="POST" action="<?= $data['host'] ?>/administrar/usuarios/process">
+          <form method='POST' action="<?= $data['host'] ?>" enctype="multipart/form-data">
+            <div class="modal-body">
+              <div class="row">
+                <!-- Token -->
+                <div style="display:none;">
+                  <input type="hidden" name="token" value="<?= $data['token'] ?>">
+                  <input type="hidden" name="id_usuario" value="<?= $data['token'] ?>">
+                </div>
+                <div class='col-lg-12 col-md-12 col-sm-12 text-center'>
+                  <p> Es importante que cargue lo siguientes archivos que se solicitan para que pueda facturar. </p>
+                </div>
+                <div class='col-lg-12 col-md-12 col-sm-12'>
+                  <div class="table-sm">
+                    <table class="table table-bordered">
+                      <thead style="font-size:15px;">
+                        <tr class="text-center">
+                          <th>Archivo .CER</th>
+                          <th>Archivo .KEY</th>
+                          <th>Contraseña</th>
+                        </tr>
+                      </thead>
+                      <tbody style="font-size:14px;">
+                        <tr>
+                          <td><input type="file" name="archivo_cer" accept=".cer" required></td>
+                          <td><input type="file" name="archivo_key" accept=".key" required></td>
+                          <td><input type="password" class='form-control' name="contrasena_archivos" placeholder="********" autocomplete="off" required></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success"> <i class="fas fa-upload"></i> Procesar archivos </button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- ..:: Modal Cambiar Logo ::.. -->
+    <div class="modal fade" id="modal_cambiarlogo">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title"> <i class="far fa-image"></i> Cambiar logo </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <form method="POST" action="<?= $data['host'] ?>/administrar/miempresa/cambiar_logo" enctype="multipart/form-data">
               <div class="modal-body">
                 <div class="row">
                   <!-- Token -->
@@ -136,39 +177,16 @@
                     <input type="hidden" name="token" value="<?= $data['token'] ?>">
                     <input type="hidden" name="id_usuario" value="<?= $data['token'] ?>">
                   </div>
-
-                  <div class='col-lg-12 col-md-12 col-sm-12'>
-                    <form method='POST' action="" enctype="multipart/form-data">
-                      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:5px;">
-                          <div class="table-sm">
-                            <table class="table table-bordered">
-                              <thead style="font-size:15px;">
-                                <tr class="text-center">
-                                  <th>Archivo .CER</th>
-                                  <th>Archivo .KEY</th>
-                                  <th>Contraseña</th>
-                                </tr>
-                              </thead>
-                              <tbody style="font-size:14px;">
-                                <tr>
-                                  <td><input type="file" name="archivo_cer" accept=".cer" required></td>
-                                  <td><input type="file" name="archivo_key" accept=".key" required></td>
-                                  <td><input type="password" class='form-control' name="contrasena_archivos" placeholder="********" autocomplete="off" required></td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                      </div>
-                      <div class="col text-right">
-                        <button type="submit" class="btn btn-success">
-                          <i class="fas fa-upload"></i> Procesar archivos
-                        </button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
-                      </div>
-                    </form>
+                  <!-- Cargar Logo -->
+                  <div class='col-lg-12 col-md-12 col-sm-12 text-center'>
+                    <label for='logo_img'> Cargue su imágen </label>
+                    <input type='file' name='logo_img' accept="image/jpeg, image/png">
                   </div>
-
                 </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success"> <i class="fas fa-check"></i> Cargar logo </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
               </div>
           </form>
         </div>

@@ -12,6 +12,7 @@
       // Mi Empresa
       $routes["administrar/miempresa"]="ViewMiEmpresa";
       $routes["administrar/miempresa/process"]="ProcessMiEmpresa";
+      $routes["administrar/miempresa/cambiar_logo"]="ProcessChangeLogo";
       // Usuarios
       $routes["administrar/usuarios"]="ViewUsuarios";
       $routes["administrar/usuarios/process"]="ProcessUsuario";
