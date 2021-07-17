@@ -87,6 +87,28 @@
         }
       }
 
+      public function get_emisor_by_rfc($rfc){
+        $this->connect();
+        try{
+          $sql = "SELECT * FROM emisores WHERE RFC='$rfc'";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("EmisorPDO | get_emisor_by_rfc() | SQL: " . $sql);
+          write_log("EmisorPDO | get_emisor_by_rfc() | Result: ". serialize($result));
+
+          if( count($result) == 1 ){
+            return $result[0];
+          }else{
+            return false;
+          }
+        }catch(PDOException $e) {
+          write_log("EmisorPDO | get_emisor_by_rfc() | Error al ejecutar la consulta. ERROR: " . $e->getMessage());
+          write_log("SQL: " . $sql);
+          return false;
+        }
+      }
+
       public function update_emisor($id_emisor, $emisor, $rfc_edit, $domicilio, $codigo_postal, $tipo_persona,
       $regimen, $desc_regimen, $path_logo, $pac, $modo){
         try{

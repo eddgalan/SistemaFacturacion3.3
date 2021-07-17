@@ -38,9 +38,9 @@
           $stmt->execute();
           $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
           write_log("CSD_PDO | get_csd() | SQL: " . $sql);
-          write_log("CSD_PDO | get_csd() | Result: " . serialize($result[0]));
           $this->disconect();
           if( count($result) >= 1 ){
+            write_log("CSD_PDO | get_csd() | Result: " . serialize($result[0]));
             return $result[0];
           }else{
             return false;
@@ -48,6 +48,22 @@
         }catch(PDOException $e) {
           write_log("CSD_PDO | get_csd() | Error al ejecutar la consulta. ERROR: " . $e->getMessage());
           write_log("SQL: " . $sql);
+          return false;
+        }
+      }
+
+      public function insert_csd($emisor){
+        $this->connect();
+        try{
+          $sql = "INSERT INTO csd (Emisor)
+          VALUES ('$emisor')";
+          $this->conn->exec($sql);
+          write_log("CSD_PDO | insert_csd() | Se realizó el INSERT con Éxito.");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e) {
+          write_log("CSD_PDO | insert_csd() | Ocurrió un error al realizar el INSERT del Emisor\nError: ". $e->getMessage());
+          $this->disconect();
           return false;
         }
       }
@@ -68,8 +84,6 @@
           $this->disconect();
           return false;
         }
-
-
         write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
         $this->disconect();
       }

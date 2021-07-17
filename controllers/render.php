@@ -737,7 +737,17 @@
 
             $emisor_pdo = new EmisorPDO();
             if( $emisor_pdo->insert_emisor($nombre, $rfc, $pac, $tpo_persona) ){
-              $sesion->set_notification("OK", "Se ha agregado el nuevo emisor.");
+              // Obtiene el Id del Emisor que se insertó
+              $data_emisor = $emisor_pdo->get_emisor_by_rfc($rfc);
+              if( $data_emisor ){
+                // Crea el CSD del Emisor
+                $csd_pdo = new CSD_PDO();
+                if( $csd_pdo->insert_csd($data_emisor['Id']) ){
+                  $sesion->set_notification("OK", "Se ha agregado el nuevo emisor.");
+                }else{
+                  $sesion->set_notification("ERROR", "Se registró el Emisor pero no fue posible crear un registro CSD ligado al Emisor.");
+                }
+              }
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al agregar el emisor. Intente de nuevo.");
             }
