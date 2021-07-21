@@ -13,6 +13,7 @@
       $routes["administrar/miempresa"]="ViewMiEmpresa";
       $routes["administrar/miempresa/process"]="ProcessMiEmpresa";
       $routes["administrar/miempresa/cambiar_logo"]="ProcessChangeLogo";
+      $routes["administrar/miempresa/procesar_csd"]="ProcessFilesCSD";
       // Usuarios
       $routes["administrar/usuarios"]="ViewUsuarios";
       $routes["administrar/usuarios/process"]="ProcessUsuario";
