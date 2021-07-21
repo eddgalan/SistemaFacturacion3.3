@@ -68,6 +68,96 @@
         }
       }
 
+      public function process_csdfiles($path_files, $rfc, $password, $key_file, $cer_file){
+        // Generar el archivo .key.pem
+      	$archivo_key_pem = $path_files."".$rfc.".key.pem";
+      	$generar_key_pem = "openssl pkcs8 -inform DER -in $key_file -passin pass:".$password." -out ".$archivo_key_pem;
+      	echo "<br>". $generar_key_pem;
+      	exec($generar_key_pem);
+
+      	// Generar el archivo .cer.pem
+      	$archivo_cer_pem = $path_files."".$rfc.".cer.pem";
+      	$generar_cer_pem = "openssl x509 -inform DER -outform PEM -in $cer_file -pubkey > ".$archivo_cer_pem;
+      	echo "<br>". $generar_cer_pem;
+      	exec($generar_cer_pem);
+
+      	// Vigencia, noCertificado, Certificado:
+      	$fechaInicio = "openssl x509 -in ".$archivo_cer_pem." -startdate -noout";
+      	echo "<br>". $fechaInicio;
+      	$fechaInicio = exec($fechaInicio);
+      	// echo "<br> R= $fechaInicio";
+      	$fechaInicio = substr($fechaInicio,10);
+      	$fechaInicio = DateTime::createFromFormat("F j H:i:s Y e",$fechaInicio);
+      	// echo $fechaInicio;
+      	// $fechaInicio = $fechaInicio->format("Y-m-d");
+
+      	$fechaFin = "openssl x509 -in ".$archivo_cer_pem." -enddate -noout";
+      	echo "<br>". $fechaFin;
+      	$fechaFin = exec($fechaFin);
+      	$fechaFin = substr($fechaFin,9);
+      	$fechaFin = DateTime::createFromFormat("F j H:i:s Y e",$fechaFin);
+      	// $fechaFin = $fechaFin->format("Y-m-d");
+
+      	// Serial:
+      	$serial = "openssl x509 -in ".$archivo_cer_pem." -serial -noout";
+      	// echo "<br> $fechaFin";
+      	$serial = exec($serial);
+      	$serial = substr($serial, 7);
+      	$nvoSerial = "";
+      	for($i=0;$i<strlen($serial);$i++){
+      		if(($i % 2)!=0){
+      			$nvoSerial .= $serial[$i];
+      		}
+      	}
+      	$noCertificado = $nvoSerial;
+
+      	// Certificado
+      	$cadenaSerial = "openssl x509 -in ".$archivo_cer_pem." -serial";
+      	$arregloResultados = array();
+      	exec($cadenaSerial, $arregloResultados);
+      	$cadenaSerial = implode("",$arregloResultados);
+      	$posicion = strpos($cadenaSerial, "-----BEGIN CERTIFICATE-----");
+      	$cadenaSerial = substr($cadenaSerial, $posicion+27);
+      	$cadenaSerial = substr($cadenaSerial, 0, -25);
+      	$cadenaSerial = str_replace("", "\n",$cadenaSerial);
+      	$Certificado = $cadenaSerial;
+        return array(
+          "PathKeyPem"=> $archivo_key_pem,
+          "NoCertificado"=> $noCertificado,
+          "Certificado"=> $Certificado,
+          "FechaInicio"=> $fechaInicio,
+          "FechaFin"=> $fechaFin
+          );
+      	// echo "
+      	// 	<p> No Certificado: <br><input type='text' class='caja1c' value='$noCertificado'/> </p>
+      	// 	<p> Vigencia inicio: <br><input type='text'  class='caja1c' value='$fechaInicio'/> </p>
+      	// 	<p> Vigencia fin: <br><input type='text'  class='caja1c' value='$fechaFin'/> </p>
+      	// 	<p> Certificado: <br><textarea cols='100' rows='5' class='caja1c'>$Certificado</textarea> </p>
+      	// ";
+      }
+
+      public function update_csd_by_emisor($emisor, $path_cer, $path_key, $pass, $path_pem, $no_certificado, $certificado, $fecha_inicio, $fecha_fin){
+        $this->connect();
+        try{
+          $sql_update = "UPDATE csd SET NoCertificado='$no_certificado', Certificado='$certificado', PathCertificado='$path_cer',
+          PathKey='$path_key', PassCer='$pass', VigenciaInicio='$fecha_inicio', VigenciaFin='$fecha_fin', PathPem='$path_pem'
+          WHERE Emisor='$emisor'";
+          $stmt = $this->conn->prepare($sql_update);
+          $stmt->execute();
+
+          write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+          $this->disconect();
+          return true;
+        }catch(PDOException $e){
+          write_log("Ocurrió un error al actualizar la serie. ERROR: " .$e->getMessage());
+          write_log("SQL: " .$sql_update);
+          $this->disconect();
+          return false;
+        }
+        write_log("Se actualizaron: " . $stmt->rowCount() . " registros de forma exitosa");
+        $this->disconect();
+      }
+
       public function update_consecutivo($id, $nuevo_consecutivo){
         $this->connect();
         try{

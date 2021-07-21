@@ -120,13 +120,12 @@
             <h4 class="modal-title"> <i class="fas fa-file-upload"></i> Carga de Archivos </h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
-          <form method='POST' action="<?= $data['host'] ?>" enctype="multipart/form-data">
+          <form method='POST' action="<?= $data['host'] ?>/administrar/miempresa/procesar_csd" enctype="multipart/form-data">
             <div class="modal-body">
               <div class="row">
                 <!-- Token -->
                 <div style="display:none;">
                   <input type="hidden" name="token" value="<?= $data['token'] ?>">
-                  <input type="hidden" name="id_usuario" value="<?= $data['token'] ?>">
                 </div>
                 <div class='col-lg-12 col-md-12 col-sm-12 text-center'>
                   <p> Es importante que cargue lo siguientes archivos que se solicitan para que pueda facturar. </p>
@@ -145,7 +144,7 @@
                         <tr>
                           <td><input type="file" name="archivo_cer" accept=".cer" required></td>
                           <td><input type="file" name="archivo_key" accept=".key" required></td>
-                          <td><input type="password" class='form-control' name="contrasena_archivos" placeholder="********" autocomplete="off" required></td>
+                          <td><input type="password" class='form-control' name="pass_files" placeholder="********" required></td>
                         </tr>
                       </tbody>
                     </table>

@@ -163,7 +163,7 @@
 
   class ProcessChangeLogo{
     function __construct($host_name="", $site_name="", $variables=null){
-      if ($_POST){
+      if($_POST){
         // Valida el Token de la sesión
         $token = $_POST['token'];
         $sesion = new UserSession();
@@ -211,8 +211,65 @@
         write_log("ProcessChangeLogo | __construct() | NO se recibieron datos por POST");
         $sesion->set_notification("ERROR", "No fue posible procesar su solicitud.");
       }
-      // Redirecciona a la página de administrar/usuarios
       header("location: " . $host_name . "/administrar/miempresa");
+    }
+  }
+
+  class ProcessFilesCSD{
+    function __construct($hostname="", $sitename="", $variables=null){
+      if($_POST){
+        // Valida el Token de la sesión
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+        if($sesion->validate_token($token)){
+          // Valida que se hayan cargado los 2 archivos
+          if( !empty($_FILES['archivo_cer']) && !empty($_FILES['archivo_key']) && $_POST['pass_files']!="" ){
+            // Obtiene los datos del Emisor para obtener el RFC
+            $data_sesion = $sesion->get_session();
+            $emisor_pdo = new EmisorPDO();
+            $data_emisor = $emisor_pdo->get_emisor($data_sesion['Emisor']);
+            $rfc = $data_emisor['RFC'];
+            $password = trim( $_POST[ "pass_files" ] );
+            // Subir los archivos:
+          	if( isset($_FILES["archivo_cer"]["tmp_name"]) ) $file_cer = trim($_FILES["archivo_cer"]["tmp_name"]);
+          	if( isset($_FILES["archivo_key"]["tmp_name"]) ) $file_key = trim($_FILES["archivo_key"]["tmp_name"]);
+          	$ruta_documentos = "uploads/". $rfc. "/csd_files/";
+          	if( !file_exists( $ruta_documentos ) ){
+          		if( !mkdir( $ruta_documentos, 0777 ) ){
+                write_log("Ocurrió un error al crear el directorio: ". $ruta_documentos);
+          			die('<br>Error al crear: '. $ruta_documentos );
+          		}
+          	}
+            $file_cer2 = $ruta_documentos.trim($_FILES["archivo_cer"]["name"]);
+          	$file_key2 = $ruta_documentos.trim($_FILES["archivo_key"]["name"]);
+          	$empdockeypem = "";
+            // Mueve los archivos al directorio que se creó
+            if(!move_uploaded_file($file_cer, $file_cer2)){
+          		echo "<br> Error al subir el archivo: ($file_cer)."; exit;
+          	}
+          	if(!move_uploaded_file($file_key, $file_key2)) {
+          		echo "<br> Error al subir el archivo: ($file_key).";  exit;
+          	}
+            $csd_pdo = new CSD_PDO();
+            $csd_info = $csd_pdo->process_csdfiles($ruta_documentos, $rfc, $password, $file_cer2, $file_key2);
+            if( $csd_pdo->update_csd_by_emisor($data_emisor['Id'], $file_cer2, $file_key2, "password", $csd_info['PathKeyPem'], $csd_info['NoCertificado'], $csd_info['Certificado'], $csd_info['FechaInicio'], $csd_info['FechaFin']) ){
+              $sesion->set_notification("OK", "Se han guardado y procesado sus archivos.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al procesar sus archivos. Verifique que sean los correctos al igual que la contraseña y vuelva a intentarlo.");
+            }
+          }else{
+            $sesion->set_notification("ERROR", "No fue posible procesar los archivos. Verifique es esté cargando los dos archivos correctos (.key y .cer).");
+            write_log("ProcessFilesCSD | __construct() | No se recibieron los archivos");
+          }
+        }else{
+          $sesion->set_notification("ERROR", "No fue posible procesar su solicitud. Inténtelo de nuevo.");
+          write_log("ProcessFilesCSD | __construct() | NO se recibieron datos por POST");
+        }
+      }else{
+        $sesion->set_notification("ERROR", "No fue posible procesar su solicitud.");
+        write_log("ProcessFilesCSD | __construct() | NO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/administrar/miempresa");
     }
   }
 
