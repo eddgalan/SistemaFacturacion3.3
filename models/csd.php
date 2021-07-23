@@ -122,12 +122,12 @@
       	$cadenaSerial = str_replace("", "\n",$cadenaSerial);
       	$certificado = $cadenaSerial;
 
-        echo "No Certificado: ". $noCertificado. "<br>";
-        echo "Fecha Inicio: ". $fechaInicio. "<br>";
-        echo "Fecha Fin: ". $fechaFin. "<br>";
-        echo "Certificado: ". $Certificado. "<br>";
+        echo "<br> No Certificado: ". $noCertificado;
+        echo "<br> Fecha Inicio: ". $fechaInicio;
+        echo "<br> Fecha Fin: ". $fechaFin;
+        echo "<br> Certificado: ". $Certificado;
         die;
-        
+
         return array(
           "PathKeyPem"=> $archivo_key_pem,
           "NoCertificado"=> $noCertificado,
