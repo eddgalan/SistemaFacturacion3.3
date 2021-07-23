@@ -319,7 +319,7 @@
           		<p> Vigencia fin: <br><input type='text'  class='caja1c' value='$fechaFin'/> </p>
           		<p> Certificado: <br><textarea cols='100' rows='5' class='caja1c'>$Certificado</textarea> </p>
           	";
-
+            die;
           }else{
             $sesion->set_notification("ERROR", "No fue posible procesar los archivos. Verifique es esté cargando los dos archivos correctos (.key y .cer).");
             write_log("ProcessFilesCSD | __construct() | No se recibieron los archivos");
