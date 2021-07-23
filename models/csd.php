@@ -120,20 +120,22 @@
       	$cadenaSerial = substr($cadenaSerial, $posicion+27);
       	$cadenaSerial = substr($cadenaSerial, 0, -25);
       	$cadenaSerial = str_replace("", "\n",$cadenaSerial);
-      	$Certificado = $cadenaSerial;
+      	$certificado = $cadenaSerial;
+        echo "
+      		<p> No Certificado: <br><input type='text' class='caja1c' value='$noCertificado'/> </p>
+      		<p> Vigencia inicio: <br><input type='text'  class='caja1c' value='$fechaInicio'/> </p>
+      		<p> Vigencia fin: <br><input type='text'  class='caja1c' value='$fechaFin'/> </p>
+      		<p> Certificado: <br><textarea cols='100' rows='5' class='caja1c'>$Certificado</textarea> </p>
+      	";
+        die;
         return array(
           "PathKeyPem"=> $archivo_key_pem,
           "NoCertificado"=> $noCertificado,
-          "Certificado"=> $Certificado,
+          "Certificado"=> $certificado,
           "FechaInicio"=> $fechaInicio,
           "FechaFin"=> $fechaFin
           );
-      	// echo "
-      	// 	<p> No Certificado: <br><input type='text' class='caja1c' value='$noCertificado'/> </p>
-      	// 	<p> Vigencia inicio: <br><input type='text'  class='caja1c' value='$fechaInicio'/> </p>
-      	// 	<p> Vigencia fin: <br><input type='text'  class='caja1c' value='$fechaFin'/> </p>
-      	// 	<p> Certificado: <br><textarea cols='100' rows='5' class='caja1c'>$Certificado</textarea> </p>
-      	// ";
+
       }
 
       public function update_csd_by_emisor($emisor, $path_cer, $path_key, $pass, $path_pem, $no_certificado, $certificado, $fecha_inicio, $fecha_fin){
