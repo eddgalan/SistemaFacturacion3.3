@@ -121,13 +121,13 @@
       	$cadenaSerial = substr($cadenaSerial, 0, -25);
       	$cadenaSerial = str_replace("", "\n",$cadenaSerial);
       	$certificado = $cadenaSerial;
-        echo "
-      		<p> No Certificado: <br><input type='text' class='caja1c' value='$noCertificado'/> </p>
-      		<p> Vigencia inicio: <br><input type='text'  class='caja1c' value='$fechaInicio'/> </p>
-      		<p> Vigencia fin: <br><input type='text'  class='caja1c' value='$fechaFin'/> </p>
-      		<p> Certificado: <br><textarea cols='100' rows='5' class='caja1c'>$Certificado</textarea> </p>
-      	";
+
+        echo "No Certificado: ". $noCertificado. "<br>";
+        echo "Fecha Inicio: ". $fechaInicio. "<br>";
+        echo "Fecha Fin: ". $fechaFin. "<br>";
+        echo "Certificado: ". $Certificado. "<br>";
         die;
+        
         return array(
           "PathKeyPem"=> $archivo_key_pem,
           "NoCertificado"=> $noCertificado,
