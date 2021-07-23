@@ -68,69 +68,75 @@
         }
       }
 
-      public function process_csdfiles($path_files, $rfc, $password, $key_file, $cer_file){
+      public function process_csdfiles($ruta_documentos, $rfc, $password, $cer_file, $key_file){
         // Generar el archivo .key.pem
-      	$archivo_key_pem = $path_files."".$rfc.".key.pem";
-      	$generar_key_pem = "openssl pkcs8 -inform DER -in $key_file -passin pass:".$password." -out ".$archivo_key_pem;
-      	echo "<br> $generar_key_pem";
-      	exec($generar_key_pem);
-      	// echo "<br> "; echo "<br><pre>"; print_r( $generar_key_pem ); echo "</pre><br>"; // exit;
+        $archivo_key_pem = $ruta_documentos."".$rfc.".key.pem";
+        $generar_key_pem = "openssl pkcs8 -inform DER -in $key_file -passin pass:".$password." -out ".$archivo_key_pem;
+        echo "<br> $generar_key_pem";
+        exec($generar_key_pem);
+        // echo "<br> "; echo "<br><pre>"; print_r( $generar_key_pem ); echo "</pre><br>"; // exit;
 
-      	// Generar el archivo .cer.pem
-      	$archivo_cer_pem = $path_files."".$rfc.".cer.pem";
-      	// $generar_cer_pem = "openssl pkcs8 -inform DER -in $file_cer2 -passin pass:".$password." -out ".$archivo_cer_pem;
-      	$generar_cer_pem = "openssl x509 -inform DER -outform PEM -in $cer_file -pubkey > ".$archivo_cer_pem;
-      	echo "<br> $generar_cer_pem";
-      	exec($generar_cer_pem);
+        // Generar el archivo .cer.pem
+        $archivo_cer_pem = $ruta_documentos."".$rfc.".cer.pem";
+        // $generar_cer_pem = "openssl pkcs8 -inform DER -in $file_cer2 -passin pass:".$password." -out ".$archivo_cer_pem;
+        $generar_cer_pem = "openssl x509 -inform DER -outform PEM -in $cer_file -pubkey > ".$archivo_cer_pem;
+        echo "<br> $generar_cer_pem";
+        exec($generar_cer_pem);
 
-      	// Vigencia, noCertificado, Certificado:
-      	$fechaInicio = "openssl x509 -in ".$archivo_cer_pem." -startdate -noout";
-      	echo "<br> $fechaInicio";
-      	$fechaInicio = exec($fechaInicio);
-      	// echo "<br> R= $fechaInicio";
-      	$fechaInicio = substr($fechaInicio,10);
-      	$fechaInicio = DateTime::createFromFormat("F j H:i:s Y e",$fechaInicio);
-      	// echo $fechaInicio;
-      	$fechaInicio = $fechaInicio->format("Y-m-d");
+        // Vigencia, noCertificado, Certificado:
+        $fechaInicio = "openssl x509 -in ".$archivo_cer_pem." -startdate -noout";
+        echo "<br> $fechaInicio";
+        $fechaInicio = exec($fechaInicio);
+        // echo "<br> R= $fechaInicio";
+        $fechaInicio = substr($fechaInicio,10);
+        $fechaInicio = DateTime::createFromFormat("F j H:i:s Y e",$fechaInicio);
+        // echo $fechaInicio;
+        $fechaInicio = $fechaInicio->format("Y-m-d");
 
-      	$fechaFin = "openssl x509 -in ".$archivo_cer_pem." -enddate -noout";
-      	echo "<br> $fechaFin";
-      	$fechaFin = exec($fechaFin);
-      	$fechaFin = substr($fechaFin,9);
-      	$fechaFin = DateTime::createFromFormat("F j H:i:s Y e",$fechaFin);
-      	$fechaFin = $fechaFin->format("Y-m-d");
+        $fechaFin = "openssl x509 -in ".$archivo_cer_pem." -enddate -noout";
+        echo "<br> $fechaFin";
+        $fechaFin = exec($fechaFin);
+        $fechaFin = substr($fechaFin,9);
+        $fechaFin = DateTime::createFromFormat("F j H:i:s Y e",$fechaFin);
+        $fechaFin = $fechaFin->format("Y-m-d");
 
-      	// Serial:
-      	$serial = "openssl x509 -in ".$archivo_cer_pem." -serial -noout";
-      	// echo "<br> $fechaFin";
-      	$serial = exec($serial);
-      	$serial = substr($serial, 7);
-      	$nvoSerial = "";
-      	for($i=0;$i<strlen($serial);$i++){
-      		if(($i % 2)!=0){
-      			$nvoSerial .= $serial[$i];
-      		}
-      	}
-      	$noCertificado = $nvoSerial;
+        // Serial:
+        $serial = "openssl x509 -in ".$archivo_cer_pem." -serial -noout";
+        // echo "<br> $fechaFin";
+        $serial = exec($serial);
+        $serial = substr($serial, 7);
+        $nvoSerial = "";
+        for($i=0;$i<strlen($serial);$i++){
+          if(($i % 2)!=0){
+            $nvoSerial .= $serial[$i];
+          }
+        }
+        $noCertificado = $nvoSerial;
 
-      	// Certificado
-      	$cadenaSerial = "openssl x509 -in ".$archivo_cer_pem." -serial";
-      	$arregloResultados = array();
-      	exec($cadenaSerial, $arregloResultados);
-      	$cadenaSerial = implode("",$arregloResultados);
-      	$posicion = strpos($cadenaSerial, "-----BEGIN CERTIFICATE-----");
-      	$cadenaSerial = substr($cadenaSerial, $posicion+27);
-      	$cadenaSerial = substr($cadenaSerial, 0, -25);
-      	$cadenaSerial = str_replace("", "\n",$cadenaSerial);
-      	$Certificado = $cadenaSerial;
+        // Certificado
+        $cadenaSerial = "openssl x509 -in ".$archivo_cer_pem." -serial";
+        $arregloResultados = array();
+        exec($cadenaSerial, $arregloResultados);
+        $cadenaSerial = implode("",$arregloResultados);
+        $posicion = strpos($cadenaSerial, "-----BEGIN CERTIFICATE-----");
+        $cadenaSerial = substr($cadenaSerial, $posicion+27);
+        $cadenaSerial = substr($cadenaSerial, 0, -25);
+        $cadenaSerial = str_replace("", "\n",$cadenaSerial);
+        $Certificado = $cadenaSerial;
 
-      	echo "
+        echo "
       		<p> No Certificado: <br><input type='text' class='caja1c' value='$noCertificado'/> </p>
       		<p> Vigencia inicio: <br><input type='text'  class='caja1c' value='$fechaInicio'/> </p>
       		<p> Vigencia fin: <br><input type='text'  class='caja1c' value='$fechaFin'/> </p>
       		<p> Certificado: <br><textarea cols='100' rows='5' class='caja1c'>$Certificado</textarea> </p>
       	";
         die;
+        return array("NoCertificado"=>$noCertificado,
+          "Certificado"=>$Certificado,
+          "PathKeyPem"=>$archivo_key_pem,
+          "FechaInicio"=>$fechaInicio,
+          "FechaFin"=>$fechaFin
+        )
       }
 
       public function update_csd_by_emisor($emisor, $path_cer, $path_key, $pass, $path_pem, $no_certificado, $certificado, $fecha_inicio, $fecha_fin){
