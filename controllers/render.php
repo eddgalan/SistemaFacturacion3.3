@@ -250,13 +250,76 @@
           	if(!move_uploaded_file($file_key, $file_key2)) {
           		echo "<br> Error al subir el archivo: ($file_key).";  exit;
           	}
-            $csd_pdo = new CSD_PDO();
-            $csd_info = $csd_pdo->process_csdfiles($ruta_documentos, $rfc, $password, $file_cer2, $file_key2);
-            if( $csd_pdo->update_csd_by_emisor($data_emisor['Id'], $file_cer2, $file_key2, "password", $csd_info['PathKeyPem'], $csd_info['NoCertificado'], $csd_info['Certificado'], $csd_info['FechaInicio'], $csd_info['FechaFin']) ){
-              $sesion->set_notification("OK", "Se han guardado y procesado sus archivos.");
-            }else{
-              $sesion->set_notification("ERROR", "Ocurrió un error al procesar sus archivos. Verifique que sean los correctos al igual que la contraseña y vuelva a intentarlo.");
-            }
+            // $csd_pdo = new CSD_PDO();
+            // $csd_info = $csd_pdo->process_csdfiles($ruta_documentos, $rfc, $password, $file_cer2, $file_key2);
+            // if( $csd_pdo->update_csd_by_emisor($data_emisor['Id'], $file_cer2, $file_key2, "password", $csd_info['PathKeyPem'], $csd_info['NoCertificado'], $csd_info['Certificado'], $csd_info['FechaInicio'], $csd_info['FechaFin']) ){
+            //   $sesion->set_notification("OK", "Se han guardado y procesado sus archivos.");
+            // }else{
+            //   $sesion->set_notification("ERROR", "Ocurrió un error al procesar sus archivos. Verifique que sean los correctos al igual que la contraseña y vuelva a intentarlo.");
+            // }
+
+            // Generar el archivo .key.pem
+          	$archivo_key_pem = $ruta_documentos."".$rfc.".key.pem";
+          	$generar_key_pem = "openssl pkcs8 -inform DER -in $file_key2 -passin pass:".$password." -out ".$archivo_key_pem;
+          	echo "<br> $generar_key_pem";
+          	exec($generar_key_pem);
+          	// echo "<br> "; echo "<br><pre>"; print_r( $generar_key_pem ); echo "</pre><br>"; // exit;
+
+          	// Generar el archivo .cer.pem
+          	$archivo_cer_pem = $ruta_documentos."".$rfc.".cer.pem";
+          	// $generar_cer_pem = "openssl pkcs8 -inform DER -in $file_cer2 -passin pass:".$password." -out ".$archivo_cer_pem;
+          	$generar_cer_pem = "openssl x509 -inform DER -outform PEM -in $file_cer2 -pubkey > ".$archivo_cer_pem;
+          	echo "<br> $generar_cer_pem";
+          	exec($generar_cer_pem);
+
+          	// Vigencia, noCertificado, Certificado:
+          	$fechaInicio = "openssl x509 -in ".$archivo_cer_pem." -startdate -noout";
+          	echo "<br> $fechaInicio";
+          	$fechaInicio = exec($fechaInicio);
+          	// echo "<br> R= $fechaInicio";
+          	$fechaInicio = substr($fechaInicio,10);
+          	$fechaInicio = DateTime::createFromFormat("F j H:i:s Y e",$fechaInicio);
+          	// echo $fechaInicio;
+          	$fechaInicio = $fechaInicio->format("Y-m-d");
+
+          	$fechaFin = "openssl x509 -in ".$archivo_cer_pem." -enddate -noout";
+          	echo "<br> $fechaFin";
+          	$fechaFin = exec($fechaFin);
+          	$fechaFin = substr($fechaFin,9);
+          	$fechaFin = DateTime::createFromFormat("F j H:i:s Y e",$fechaFin);
+          	$fechaFin = $fechaFin->format("Y-m-d");
+
+          	// Serial:
+          	$serial = "openssl x509 -in ".$archivo_cer_pem." -serial -noout";
+          	// echo "<br> $fechaFin";
+          	$serial = exec($serial);
+          	$serial = substr($serial, 7);
+          	$nvoSerial = "";
+          	for($i=0;$i<strlen($serial);$i++){
+          		if(($i % 2)!=0){
+          			$nvoSerial .= $serial[$i];
+          		}
+          	}
+          	$noCertificado = $nvoSerial;
+
+          	// Certificado
+          	$cadenaSerial = "openssl x509 -in ".$archivo_cer_pem." -serial";
+          	$arregloResultados = array();
+          	exec($cadenaSerial, $arregloResultados);
+          	$cadenaSerial = implode("",$arregloResultados);
+          	$posicion = strpos($cadenaSerial, "-----BEGIN CERTIFICATE-----");
+          	$cadenaSerial = substr($cadenaSerial, $posicion+27);
+          	$cadenaSerial = substr($cadenaSerial, 0, -25);
+          	$cadenaSerial = str_replace("", "\n",$cadenaSerial);
+          	$Certificado = $cadenaSerial;
+
+          	echo "
+          		<p> No Certificado: <br><input type='text' class='caja1c' value='$noCertificado'/> </p>
+          		<p> Vigencia inicio: <br><input type='text'  class='caja1c' value='$fechaInicio'/> </p>
+          		<p> Vigencia fin: <br><input type='text'  class='caja1c' value='$fechaFin'/> </p>
+          		<p> Certificado: <br><textarea cols='100' rows='5' class='caja1c'>$Certificado</textarea> </p>
+          	";
+
           }else{
             $sesion->set_notification("ERROR", "No fue posible procesar los archivos. Verifique es esté cargando los dos archivos correctos (.key y .cer).");
             write_log("ProcessFilesCSD | __construct() | No se recibieron los archivos");
