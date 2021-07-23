@@ -136,7 +136,7 @@
           "PathKeyPem"=>$archivo_key_pem,
           "FechaInicio"=>$fechaInicio,
           "FechaFin"=>$fechaFin
-        )
+        );
       }
 
       public function update_csd_by_emisor($emisor, $path_cer, $path_key, $pass, $path_pem, $no_certificado, $certificado, $fecha_inicio, $fecha_fin){
