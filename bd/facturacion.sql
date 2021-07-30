@@ -394,6 +394,7 @@ CREATE TABLE `permisos` (
   `GrupoId` int(11) NOT NULL,
   `DashboardAdmin` int(1) NOT NULL DEFAULT 0,
   `Admin_miempresa` int(1) NOT NULL DEFAULT 0,
+  `Admin_PAC` int(1) NOT NULL DEFAULT 0,
   `Admin_usuario` int(1) NOT NULL DEFAULT 0,
   `Admin_grupos` int(1) NOT NULL DEFAULT 0,
   `Admin_perfiles` int(1) NOT NULL DEFAULT 0,
