@@ -1,12 +1,12 @@
 <?php
   require 'libs/conexion_db.php';
   require 'libs/mpdf/plantillas_mpdf.php';
-  require 'models/pac.php';
   require 'models/comprobante.php';
   require 'models/csd.php';
   require 'models/mailgun.php';
   require 'models/contacto.php';
   /* ..:: Administrador ::..  */
+  require 'models/administrador/pac.php';
   require 'models/administrador/usuario.php';
   require 'models/administrador/grupos.php';
   require 'models/administrador/perfiles.php';
@@ -106,7 +106,7 @@
 
   class ViewMiEmpresa{
     function __construct($host_name="", $site_name="", $variables=null){
-      $data['title'] = "Facturación 3.3 | Administrar | Usuarios";
+      $data['title'] = "Facturación 3.3 | Administrar | Mi Empresa";
       $data['host'] = $host_name;
 
       $sesion = new UserSession();
@@ -212,6 +212,71 @@
         $sesion->set_notification("ERROR", "No fue posible procesar su solicitud.");
       }
       header("location: " . $host_name . "/administrar/miempresa");
+    }
+  }
+
+  class ViewPACs{
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Administrar | PACs";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+      $data_sesion = $sesion->get_session();
+
+      $pac_pdo = new PacPDO();
+      $data['pacs'] = $pac_pdo->get_active_pac();
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/pacs.php', $data, true);
+    }
+  }
+
+  class ProcessPAC{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if ($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          if( empty($_POST['id_pac']) ){
+            // INSERT PAC
+            $nombre_pac = $_POST['nombre_pac'];
+            $nombre_corto = $_POST['nombre_corto'];
+            $endpoint = $_POST['endpoint'];
+            $endpoint_pruebas = $_POST['endpoint_pruebas'];
+            $usuario = $_POST['usuario'];
+            $pass = $_POST['pass'];
+            $observaciones = $_POST['observaciones'];
+
+            $pac_pdo = new PacPDO();
+            if( $pac_pdo->insert($nombre_pac, $nombre_corto, $endpoint, $endpoint_pruebas, $usuario, $pass, $observaciones) ){
+              $sesion->set_notification("OK", "Se ha registrado el nuevo PAC.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al registrar el PAC. Intente de nuevo.");
+            }
+          }else{
+            $id = $_POST['id_pac'];
+            $nombre_pac = $_POST['nombre_pac_edit'];
+            $nombre_corto = $_POST['nombre_corto_edit'];
+            $endpoint = $_POST['endpoint_edit'];
+            $endpoint_pruebas = $_POST['endpoint_pruebas_edit'];
+            $usuario = $_POST['usuario_edit'];
+            $pass = $_POST['pass_edit'];
+            $observaciones = $_POST['observaciones_edit'];
+
+            $pac_pdo = new PacPDO();
+            if( $pac_pdo->update($id, $nombre_pac, $nombre_corto, $endpoint, $endpoint_pruebas, $usuario, $pass, $observaciones) ){
+              $sesion->set_notification("OK", "Se ha actualizado el registro.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el PAC. Intente de nuevo.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessPAC | __contruct | NO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/administrar/pacs");
     }
   }
 

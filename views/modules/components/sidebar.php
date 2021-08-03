@@ -46,6 +46,10 @@
                       if( $permisos['Admin_miempresa'] != 0 ){
                         $panel .= "<a class='nav-link' href='". $data['host'] ."/administrar/miempresa'> <i class='fas fa-building'></i> Mi Empresa</a>\n\t\t\t\t\t\t";
                       }
+                      // PACs
+                      if( $permisos['Admin_PAC'] != 0 ){
+                        $panel .= "<a class='nav-link' href='". $data['host'] ."/administrar/pacs'> <i class='fas fa-stamp'></i> PACs </a>\n\t\t\t\t\t\t";
+                      }
                       // Usuarios
                       if( $permisos['Admin_usuario'] != 0 ){
                         $panel .= "<a class='nav-link' href='". $data['host'] ."/administrar/usuarios'> <i class='fas fa-user'></i> Usuarios</a>\n\t\t\t\t\t\t";
