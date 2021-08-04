@@ -524,6 +524,12 @@
           }else{
             $admin_miempresa = 0;
           }
+          // PACs
+          if(isset($_POST['admin_pacs'])){
+            $admin_pacs = 1;
+          }else{
+            $admin_pacs = 0;
+          }
           // Usuario
           if(isset($_POST['admin_usuario'])){
             $admin_usuario = 1;
@@ -613,7 +619,7 @@
           }
 
           $grupo_pdo = new GrupoPDO();
-          if( $grupo_pdo->update_permisos($id, $admin_miempresa, $admin_usuario, $admin_grupos, $admin_perfiles, $admin_emisores, $admin_clientes, $admin_prodserv, $admin_series, $comprobantes_facturas, $report_reportemensual, $catsat_prodserv, $catsat_unidades, $catsat_formaspago, $catsat_monedas, $catsat_impuestos) ){
+          if( $grupo_pdo->update_permisos($id, $admin_miempresa, $admin_pacs, $admin_usuario, $admin_grupos, $admin_perfiles, $admin_emisores, $admin_clientes, $admin_prodserv, $admin_series, $comprobantes_facturas, $report_reportemensual, $catsat_prodserv, $catsat_unidades, $catsat_formaspago, $catsat_monedas, $catsat_impuestos) ){
             $sesion->set_notification("OK", "Se actualizaron los permisos del grupo indicado");
           }else{
             $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los permisos del grupo.");

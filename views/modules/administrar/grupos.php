@@ -113,7 +113,7 @@
         </div>
       </div>
     </div>
-    <!-- ..:: Modal Editar Usuario ::.. -->
+    <!-- ..:: Modal Editar Grupo ::.. -->
     <div class="modal fade" id="modal_editar_grupo">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -193,6 +193,14 @@
                             <div class="form-check">
                               <label class="form-check-label">
                                 <input class="form-check-input" type="checkbox" name="admin_miempresa"> Mi empresa
+                              </label>
+                            </div>
+                          </div>
+                          <!-- ..:: PACs ::.. -->
+                          <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-check">
+                              <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" name="admin_pacs"> PACs
                               </label>
                             </div>
                           </div>
