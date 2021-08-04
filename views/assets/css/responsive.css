@@ -1,0 +1,22 @@
+/* ...::: ESCRITORIO GRANDE (1366 PX EN ADELANTE) :::... */
+@media(min-width:1200px){
+
+}
+/* ...:::  ESCRITORIO MEDIANO O TABLET HORIZONTAL (MD 1024 PX)  :::... */
+@media(max-width:1199px) and (min-width:992px){
+
+}
+/* ...:::: ESCRITORIO PEQUEÑO O TABLET VERTICAL (SM 768 PX) :::... */
+@media(max-width:991px) and (min-width:768px){
+
+}
+/* ...::: MOVIL (320 PX) :::... */
+@media(max-width:767px){
+  .btn{
+    width: 100% !important;
+    margin-bottom: 5px !important;
+  }
+  .fix-button{
+    margin: 10px 0px 10px 0px !important;
+  }
+}
