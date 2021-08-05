@@ -873,8 +873,15 @@ ALTER TABLE `productos`
   ADD CONSTRAINT `Impuesto_Producto` FOREIGN KEY (`Impuesto`) REFERENCES `catsatimpuestos` (`Id`);
 
 --
+-- Filtros para la tabla `cfdi`
+--
+ALTER TABLE `cfdi`
+  ADD CONSTRAINT `CFDI_Emisor` FOREIGN KEY (`Emisor`) REFERENCES `emisores`(`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `CFDI_Cliente` FOREIGN KEY (`ClienteId`) REFERENCES `clientes`(`Id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+--
 -- Filtros para la tabla `series`
 --
+
 ALTER TABLE `series`
   ADD CONSTRAINT `Emisor_Serie` FOREIGN KEY (`Emisor`) REFERENCES `emisores` (`Id`);
 COMMIT;
