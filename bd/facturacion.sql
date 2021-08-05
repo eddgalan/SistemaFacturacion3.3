@@ -835,7 +835,7 @@ ALTER TABLE `contactos`
 -- Filtros para la tabla `csd`
 --
 ALTER TABLE `csd`
-  ADD CONSTRAINT `Emisor_CSD` FOREIGN KEY (`Emisor`) REFERENCES `emisores` (`Id`);
+  ADD CONSTRAINT `Emisor_CSD` FOREIGN KEY (`Emisor`) REFERENCES `emisores` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `emisores`
