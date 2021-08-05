@@ -725,7 +725,7 @@
           if( $pass == $pass_confirm ){
             $usuario_pdo = new UsuarioPDO();
             if( $usuario_pdo->update_password($usuario_id, $pass) ){
-              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+              $sesion->set_notification("OK", "Se ha actualizado su contraseña.");
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al actualizar la contraseña.");
             }

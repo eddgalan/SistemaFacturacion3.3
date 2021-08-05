@@ -118,7 +118,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="submit" name="update_pass" class="btn btn-success" disabled> <i class="fas fa-check"></i> Cambiar contraseña </button>
+                <button type="submit" name="update_pass" class="btn btn-success"> <i class="fas fa-check"></i> Cambiar contraseña </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar </button>
               </div>
           </form>
