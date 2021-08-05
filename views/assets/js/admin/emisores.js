@@ -4,7 +4,6 @@ $(document).ready(function (){
       "url": "../views/assets/js/datatable/Spanish.json"
     }
   });
-  
   $("select[name='tipo_persona_edit']").change(function(){
     var tpo_persona = $(this).val();
     carga_regimenes(tpo_persona);
@@ -44,7 +43,7 @@ function carga_datos(id){
     url: "../API/emisores/get_emisor",
     data: {"token":token, "id_emisor":id},
     success: function(resp){
-      // console.log(resp);
+      console.log(resp.data);
       // Obtiene los datos del servicio
       var id = resp.data.Id;
       var nombre = resp.data.Nombre;
@@ -70,7 +69,9 @@ function carga_datos(id){
       $("select[name='regimen_edit']").val(regimen +" | "+ desc_regimen);
       $("input[name='pac_edit']").val(pac);
       $("select[name='modo_edit']").val(testing);
-      $("img[name='img_logo']").attr("src", "../" + path_logo);
+      if( path_logo != "" ){
+        $("img[name='img_logo']").attr("src", "../" + path_logo);
+      }
     },
     error : function(xhr, status) {
       console.log(xhr);

@@ -855,8 +855,8 @@
         $token = $_POST['token'];
         $sesion = new UserSession();
 
-        if($sesion->validate_token($token)){
-          if (empty($_POST['id_emisor'])){
+        if( $sesion->validate_token($token) ){
+          if( empty($_POST['id_emisor']) ){
             // INSERT EMISOR
             $nombre = $_POST['nombre'];
             $rfc = $_POST['rfc'];
@@ -940,6 +940,9 @@
               $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del Emisor.");
             }
           }
+        }else{
+          write_log("ProcessEmisores | __contruct() | Token NO Válido");
+          $sesion->set_notification("ERROR", "No fue posible procesar su solicitud. Inténtelo de nuevo.");
         }
       }else{
         write_log("ProcessEmisores | __contruct() | NO se recibieron datos por POST");
