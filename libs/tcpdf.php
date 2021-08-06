@@ -34,9 +34,9 @@
     		$moneda = $comprobante['Moneda'];
     		$forma_pago0 = "Forma de Pago:";
     		$metodo_pago0 = "Método de Pago:";
-    		$forma_pago = $comprobante['ClaveFormaPago'] . " | " . $comprobante['DescripcionFormaPago'];
-    		$metodo_pago = $comprobante['ClaveMetodoPago'] . " | " . $comprobante['DescripcionMetodoPago'];
-    		if( $comprobante['TipoComprobante'] == "P" ){
+    		$forma_pago = $comprobante['FormaPago'];
+    		$metodo_pago = $comprobante['MetodoPago'];
+    		if( substr($comprobante['TipoComprobante'], 0, 1) == "P" ){
     			$moneda0 = "";
     			$moneda = "";
     			$forma_pago0 = "";
@@ -63,10 +63,10 @@
     		$this->imprime_encanezado_cliente_cfdi2( 0,0,$metodo_pago0." ".$metodo_pago,"" );
     		$this->imprime_encanezado_cliente_cfdi2( 0,0,"Régimen: ". $comprobante['Regimen'] ." | ". $comprobante['DescRegimen'],"" );
     		// Cliente:
-    		if( $comprobante['TipoComprobante'] == "N" ){
+    		if( substr($comprobante['TipoComprobante'], 0, 1) == "N" ){
           $this->imprime_encanezado_cliente_cfdi( 1,1,"Empleado:","Fecha","NÓMINA" );
     		}else{
-    			$this->imprime_encanezado_cliente_cfdi( 1,1,"Cliente:","Fecha", strtoupper( $comprobante['TipoComprobante'] ) . " - " . $comprobante['DescTipo'] );
+    			$this->imprime_encanezado_cliente_cfdi( 1,1,"Cliente:","Fecha", strtoupper( $comprobante['TipoComprobante'] ) );
     		}
     		$this->imprime_encanezado_cliente_cfdi( 0,0,substr( $comprobante['NombreReceptor'],0,150),
         $comprobante['Fecha'] . " " . $comprobante['Hora'],
@@ -77,15 +77,15 @@
         $this->imprime_encanezado_cliente_cfdi2( 0,0,"RFC: ". $comprobante['RFCReceptor'], strtoupper( $comprobante['UUID'] ) );
     		$this->SetFont('helvetica', 'B', 10 );
 
-        if( $comprobante['TipoComprobante'] != "N" ){
+        if( substr($comprobante['TipoComprobante'], 0, 1) != "N" ){
           $this->imprime_encanezado_cliente_cfdi( 0,1,"Uso del CFDI: ". $comprobante['ClaveUsoCFDI'] ." | ". $comprobante['DescUsoCFDI'],$moneda0,$tc0 );
       		$txt_condiciones = "";
-      		if( $comprobante['CondicionesPago'] != "" && $comprobante['TipoComprobante'] != "P" ) $txt_condiciones = "Condiciones: ". $comprobante['CondicionesPago'];
+      		if( $comprobante['CondicionesPago'] != "" && substr($comprobante['TipoComprobante'], 0, 1) != "P" ) $txt_condiciones = "Condiciones: ". $comprobante['CondicionesPago'];
       		$this->imprime_encanezado_cliente_cfdi( 0,0,$txt_condiciones,$moneda,$tc );
         }
 
     		if( file_exists( "./". $path_logo ) ) $this->Image( "./". $path_logo, 148, 10, 45, 40, 'jpg', '', '', true, 150, '', false, false, 0, false, false, false);
-    		if( $comprobante['TipoComprobante'] != "N" ){
+    		if( substr($comprobante['TipoComprobante'], 0, 1) != "N" ){
     			$this->SetFont('helvetica', 'B', 8 );
     			$this->imprime_linea8( 0,"Cve. Prod.","Clave SAT","Cantidad","Unidad","Descripción","Precio","IVA","Importe","Descuento" );
     			if( count( $detalles > 0 )){
@@ -116,8 +116,8 @@
     			}
     		}
 
-    		if( $comprobante['TipoComprobante'] != "N" ){
-    			if( $comprobante['TipoComprobante'] == "P" ){
+    		if( substr($comprobante['TipoComprobante'], 0, 1) != "N" ){
+    			if( substr($comprobante['TipoComprobante'], 0, 1) == "P" ){
     			}else{
     				if( floatval($comprobante['Subtotal']) > 0 ){
     					$this->SetFont('helvetica', 'B', 8 );
@@ -125,11 +125,11 @@
     				}
     			}
     			// Si es TRASLADO se oculta la forma y tipo de Pago:
-    			if( $comprobante['TipoComprobante'] == "T" ){
+    			if( substr($comprobante['TipoComprobante'], 0, 1) == "T" ){
     				if( floatval($comprobante['RetIva']) > 0 ){
     					$this->imprime_linea4_01( 0,"","","IVA:",number_format($comprobante['IVA'],2,".",",") );
     				}
-    			}elseif( $comprobante['TipoComprobante'] == "P" ){
+    			}elseif( substr($comprobante['TipoComprobante'], 0, 1) == "P" ){
     			}else{
     				if( floatval($comprobante['Descuento']) > 0 ){
     					$this->imprime_linea4_01( 0,"","","Descuento:",number_format($comprobante['Descuento'],2,".",",") );
@@ -145,7 +145,7 @@
     				}
     			}
     		}
-    		if( $comprobante['TipoComprobante'] == "P" ){
+    		if( substr($comprobante['TipoComprobante'], 0, 1) == "P" ){
 
     		}else{
     			$this->SetFont('helvetica', 'B', 8 );

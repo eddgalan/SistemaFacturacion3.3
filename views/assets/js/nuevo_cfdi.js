@@ -42,10 +42,12 @@ $(document).ready(function (){
         url: "../../API/series/get_serie_by_nom_serie",
         data: {"token":token, "nom_serie":serie},
         success: function(resp){
+          // console.log(resp.data);
           // Obtiene los datos del servicio
           var serie = resp.data.TipoComprobante;
+          var descserie = resp.data.DescripcionTipoComp;
           // Setea los datos en el formulario
-          $("input[name='tipo_comprobante']").val(serie);
+          $("input[name='tipo_comprobante']").val(serie +" | "+ descserie);
         },
         error : function(xhr, status) {
           console.log(xhr);

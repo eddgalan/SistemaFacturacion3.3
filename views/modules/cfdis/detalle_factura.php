@@ -94,6 +94,8 @@
                             <div class="row">
                               <!-- Serie -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
+                                <label><strong>Tipo de comprobante: </strong></label>
+                                <spam><?= $data['comprobante']['TipoComprobante'] ?> </spam>
                                 <label><strong>Serie: </strong></label>
                                 <spam><?= $data['comprobante']['Serie'] ?> </spam>
                                 <label><strong>Folio: </strong></label>
@@ -109,12 +111,12 @@
                               <!-- Método de Pago -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Método de Pago: </strong></label>
-                                <spam><?= $data['comprobante']['ClaveMetodoPago'] ?> | <?= $data['comprobante']['DescripcionMetodoPago'] ?></spam>
+                                <spam> <?= $data['comprobante']['MetodoPago'] ?> </spam>
                               </div>
                               <!-- Forma de Pago -->
                               <div class="col-lg-12 col-md-12 col-sm-12">
                                 <label><strong>Forma de Pago: </strong></label>
-                                <spam><?= $data['comprobante']['ClaveFormaPago'] ?> | <?= $data['comprobante']['DescripcionFormaPago'] ?></spam>
+                                <spam> <?= $data['comprobante']['FormaPago'] ?> </spam>
                               </div>
                               <!-- Moneda y Tipo de Cambio -->
                               <div class="col-lg-12 col-md-12 col-sm-12">

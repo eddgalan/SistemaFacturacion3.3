@@ -233,24 +233,16 @@
           $sql = "SELECT cfdi.Id as IdCFDI, cfdi.Estatus as EstatusCFDI, cfdi.Emisor as IdEmisor, emisores.Nombre as NombreEmisor, emisores.RFC as RFCEmisor,
           cfdi.ClienteId as IdReceptor, clientes.RFC as RFCReceptor, clientes.Nombre as NombreReceptor,
           cfdi.Serie, cfdi.Folio, cfdi.Fecha, cfdi.Hora, cfdi.Moneda, cfdi.TipoCambio, cfdi.TipoComprobante,
-          series.DescripcionTipoComp as DescTipo,
-          cfdi.CondicionesPago, cfdi.NoCertificado, cfdi.MetodoPago as ClaveMetodoPago,
-          catsatmetodos.Descripcion as DescripcionMetodoPago, cfdi.FormaPago as ClaveFormaPago,
-          catsatformaspago.Descripcion as DescripcionFormaPago, cfdi.UsoCFDI as ClaveUsoCFDI, cfdi.DescUsoCFDI,
+          cfdi.CondicionesPago, cfdi.NoCertificado, cfdi.MetodoPago as MetodoPago,
+          cfdi.FormaPago as FormaPago,
+          cfdi.UsoCFDI as ClaveUsoCFDI, cfdi.DescUsoCFDI,
           cfdi.LugarExpedicion, cfdi.Regimen, emisores.DescRegimen, cfdi.Subtotal, cfdi.IVA, cfdi.IEPS, cfdi.RetIva, cfdi.TotalRetenido, cfdi.TotalTraslado,
           cfdi.Descuento, cfdi.Total, cfdi.UUID, cfdi.FechaCertificado, cfdi.HoraCertificado, cfdi.EstatusSAT,
           cfdi.PathXML, cfdi.PathPDF, cfdi.Creado, cfdi.Observaciones
           FROM cfdi
           INNER JOIN emisores ON cfdi.Emisor = emisores.Id
           INNER JOIN clientes ON cfdi.ClienteId = clientes.Id
-          INNER JOIN catsatmetodos ON cfdi.MetodoPago = catsatmetodos.ClaveMetodo
-          INNER JOIN catsatformaspago ON cfdi.FormaPago = catsatformaspago.ClaveFormaPago
-          INNER JOIN series ON cfdi.TipoComprobante = series.TipoComprobante
-          WHERE cfdi.Id='$id_comprobante'
-          AND emisores.Id='$emisor'
-          AND clientes.Emisor='$emisor'
-          AND catsatmetodos.Emisor='$emisor'
-          AND catsatformaspago.Emisor='$emisor'";
+          WHERE cfdi.Id='$id_comprobante'";
 
           $stmt = $this->conn->prepare($sql);
           $stmt->execute();
@@ -361,14 +353,14 @@
       			$xmlWriter->text( $comprobante['LugarExpedicion'] );
       		$xmlWriter->endAttribute();
           // Si es Traslado o Pago se omite el Metodo de Pago
-          if($comprobante['TipoComprobante'] != 'T' && $comprobante['TipoComprobante'] != 'P'){
+          if( substr($comprobante['TipoComprobante'], 0, 1) != 'T' && substr($comprobante['TipoComprobante'], 0, 1) != 'P'){
             $xmlWriter->startAttribute('MetodoPago');
-      				$xmlWriter->text( $comprobante["ClaveMetodoPago"] );
+      				$xmlWriter->text( substr($comprobante["MetodoPago"], 0, strpos($comprobante["MetodoPago"], " | ")) );
       			$xmlWriter->endAttribute();
           }
           // Tipo Comprobante
           $xmlWriter->startAttribute('TipoDeComprobante');
-      			$xmlWriter->text( $comprobante["TipoComprobante"] );
+      			$xmlWriter->text( substr($comprobante["TipoComprobante"], 0, 1) );
       		$xmlWriter->endAttribute();
           // Descuento
           if( $comprobante["Descuento"] > 0 ){
@@ -413,9 +405,9 @@
       			$xmlWriter->text( $nocertificado );
       		$xmlWriter->endAttribute();
           // Forma de Pago | Si es Traslado / Pago se omite la forma Pago
-          if( $comprobante['TipoComprobante'] != "T" && $comprobante['TipoComprobante'] != "P" ){
+          if( substr($comprobante['TipoComprobante'], 0, 1) != "T" && substr($comprobante['TipoComprobante'], 0, 1) != "P" ){
             $xmlWriter->startAttribute('FormaPago');
-      				$xmlWriter->text( $comprobante['ClaveFormaPago'] );
+      				$xmlWriter->text( substr($comprobante['FormaPago'], 0, strpos($comprobante['FormaPago'], " | ")) );
       			$xmlWriter->endAttribute();
       		}
           // Fecha
@@ -479,7 +471,7 @@
       					$xmlWriter->text( $producto["ClaveProdServ"] );
       				$xmlWriter->endAttribute();
 
-      				if( $comprobante['TipoComprobante'] == "P" ||  $comprobante['TipoComprobante'] == "N" ){
+      				if( substr($comprobante['TipoComprobante'], 0, 1) == "P" || substr($comprobante['TipoComprobante'], 0, 1) == "N" ){
       					$producto["Cantidad"] = number_format( $producto["Cantidad"],0,".","" );
       				}else{
       					$xmlWriter->startAttribute('NoIdentificacion');
@@ -495,7 +487,7 @@
       					$xmlWriter->text( substr($producto["Unidad"], 0, 3) );
       				$xmlWriter->endAttribute();
 
-      				if( $comprobante['TipoComprobante'] != "P" &&  $comprobante['TipoComprobante'] != "N" ){
+      				if( substr($comprobante['TipoComprobante'], 0, 1) != "P" &&  substr($comprobante['TipoComprobante'], 0, 1) != "N" ){
                 $xmlWriter->startAttribute('Unidad');
                 $xmlWriter->text( substr($producto["Unidad"], 6, strlen($producto["Unidad"])) );
                 $xmlWriter->endAttribute();
@@ -506,7 +498,7 @@
       				$xmlWriter->endAttribute();
 
       				$xmlWriter->startAttribute('ValorUnitario');
-      					if( $comprobante['TipoComprobante'] == "P" ){
+      					if( substr($comprobante['TipoComprobante'], 0, 1) == "P" ){
       						$xmlWriter->text( "0" );
       					}else{
       						$xmlWriter->text( number_format( $producto["PrecioUnitario"],4,".","" ) );
@@ -514,7 +506,7 @@
       				$xmlWriter->endAttribute();
 
       				$xmlWriter->startAttribute('Importe');
-      				if($comprobante['TipoComprobante'] == "P" ){
+      				if( substr($comprobante['TipoComprobante'], 0, 1) == "P" ){
       					$xmlWriter->text( "0" );
       				}else{
       					$xmlWriter->text( number_format( $producto["Importe"],2,".","" ) );
