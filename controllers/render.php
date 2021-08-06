@@ -1887,9 +1887,6 @@
       // Obtiene las formas de pago
       $forma_pago = new CatSATFormaPago();
       $data['formas_pago'] = $forma_pago->get_all_actives($emisor);
-      // // Obtiene los usos CFDI
-      // $usos_cfdi = new CatSATUsosCFDI();
-      // $data['usos_cfdi'] = $usos_cfdi->get_all();
       // Obtiene las monedas
       $moneda = new CatSATMoneda();
       $data['monedas'] = $moneda->get_all_actives($emisor);
@@ -1898,7 +1895,7 @@
       $data['series'] = $serie->get_all_actives($emisor);
       // Obtiene los productos
       $productos = new ProdServPDO();
-      $data['productos'] = $productos->get_all($emisor);
+      $data['productos'] = $productos->get_actives($emisor);
       // Obtiene fecha y hora actual
       $data['fecha'] = date('Y-m-d');
       $data['hora'] = date("H:i:s");

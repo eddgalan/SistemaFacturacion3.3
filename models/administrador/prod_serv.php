@@ -45,6 +45,32 @@
         }
       }
 
+      public function get_actives($emisor){
+        $this->connect();
+        try{
+          $sql = "SELECT productos.Id, productos.Estatus, productos.SKU, productos.Nombre, productos.Precio,
+          catsatclavesprodserv.Id as IdProdServ, catsatclavesprodserv.ClaveProdServ as ClaveProdServ, catsatclavesprodserv.Descripcion as DescClave,
+          catsatunidades.Id as IdUnidad, catsatunidades.ClaveUnidad as ClaveUnidad, catsatunidades.NombreUnidad as NombreUnidad,
+          catsatimpuestos.Id as IdImpuesto, catsatimpuestos.ClaveImpuesto, catsatimpuestos.Descripcion as DescImpuesto, catsatimpuestos.Tasa_Cuota
+          FROM productos
+          INNER JOIN catsatclavesprodserv ON productos.ClaveProdServ = catsatclavesprodserv.Id
+          INNER JOIN catsatunidades ON productos.ClaveUnidad = catsatunidades.Id
+          INNER JOIN catsatimpuestos ON productos.Impuesto = catsatimpuestos.Id
+          WHERE productos.Emisor=$emisor AND productos.Estatus=1";
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          write_log("ProdServPDO | get_all() | SQL: " . $sql);
+          write_log("ProdServPDO | get_all() | Result: ". serialize($result));
+          return $result;
+        }catch(PDOException $e) {
+          write_log("ProdServPDO | get_all() | Ocurrió un error al ejecutar la consulta. ERROR: " . $e->getMessage());
+          write_log("SQL: " . $sql);
+          return false;
+
+        }
+      }
+
       public function insert_prodserv($emisor, $sku, $nombre, $prodserv, $unidad, $precio, $impuesto){
         $this->connect();
         try{
