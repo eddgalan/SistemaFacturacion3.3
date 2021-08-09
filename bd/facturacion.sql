@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-07-2021 a las 15:52:10
+-- Tiempo de generación: 09-08-2021 a las 16:10:28
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 7.4.20
 
@@ -195,6 +195,14 @@ CREATE TABLE `clientes` (
   `Correo` varchar(50) COLLATE utf8mb4_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `clientes`
+--
+
+INSERT INTO `clientes` (`Id`, `Emisor`, `Estatus`, `Nombre`, `RFC`, `TipoPersona`, `Direccion`, `Telefono`, `Correo`) VALUES
+(1, 1, 1, 'Publico en general', 'XAXX010101000', 'F', 'CDMX', '1234567890', 'cliente@correo.com'),
+(2, 1, 1, 'Persona Física', 'SASS200216XXX', 'F', 'CDMX', '5500000000', 'cliente@correo.com');
+
 -- --------------------------------------------------------
 
 --
@@ -252,6 +260,13 @@ CREATE TABLE `csd` (
   `PathPem` varchar(256) COLLATE utf8mb4_spanish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `csd`
+--
+
+INSERT INTO `csd` (`Id`, `Emisor`, `Estatus`, `NoCertificado`, `Certificado`, `PathCertificado`, `PathKey`, `PassCer`, `VigenciaInicio`, `VigenciaFin`, `PathPem`) VALUES
+(1, 1, 1, '30001000000400002434', '', '0', '0', '0', '2021-04-01', NULL, '0');
+
 -- --------------------------------------------------------
 
 --
@@ -295,6 +310,14 @@ CREATE TABLE `emisores` (
   `Testing` int(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `emisores`
+--
+
+INSERT INTO `emisores` (`Id`, `Estatus`, `Nombre`, `RFC`, `Domicilio`, `CP`, `Persona`, `Regimen`, `DescRegimen`, `PathLogo`, `PAC`, `Testing`) VALUES
+(1, 1, 'Emisor Pruebas  S.A. de C.V.', 'EKU9003173C9', 'Ciudad de México', '56260', 'M', '601', 'General de Ley Personas Morales', 'uploads/EKU9003173C9/logo.jpg', 1, 1),
+(2, 1, 'Otro_Emisor', 'EKU9003173C0', 'CDMX', '56230', 'M', '601', 'General de Ley Personas Morales', 'uploads/GARE970115IYA/logo.jpg', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -313,7 +336,7 @@ CREATE TABLE `grupos` (
 
 INSERT INTO `grupos` (`Id`, `Nombre`, `Descripcion`) VALUES
 (1, 'Administradores', 'Grupo con todos los permisos del sistema'),
-(2, 'Emisores', 'Grupo de todos los Emisores'),
+(2, 'Emisores', 'Grupo de todos los Emisores');
 
 -- --------------------------------------------------------
 
@@ -332,7 +355,8 @@ CREATE TABLE `grupos_usuario` (
 --
 
 INSERT INTO `grupos_usuario` (`Id`, `IdGrupo`, `IdUsuario`) VALUES
-(1, 1, 1), (2,2,2);
+(1, 1, 1),
+(2, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -351,6 +375,13 @@ CREATE TABLE `pac` (
   `PassPAC` varchar(256) COLLATE utf8mb4_spanish_ci NOT NULL,
   `Observaciones` varchar(256) COLLATE utf8mb4_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `pac`
+--
+
+INSERT INTO `pac` (`Id`, `Nombre`, `NombreCorto`, `EndPoint`, `EndPoint_Pruebas`, `UsrPAC`, `PassPAC`, `Observaciones`) VALUES
+(1, 'Proveedores de Facturación Electrónica y Software S.A. de C.V.', 'PROFACT_PR', '---', '---', '---', '87654321', '');
 
 -- --------------------------------------------------------
 
@@ -374,7 +405,7 @@ CREATE TABLE `perfiles` (
 
 INSERT INTO `perfiles` (`Id`, `UsuarioId`, `Nombre`, `ApellidoPaterno`, `ApellidoMaterno`, `Emisor`, `Puesto`) VALUES
 (1, 1, 'Admin', '', '', 1, 'Administrador del sistema'),
-(2, 2, 'Usuario pruebas', '---', '---', 1, 'Contador');
+(2, 2, 'Edson', 'Galan', '---', 2, '---');
 
 -- --------------------------------------------------------
 
@@ -408,9 +439,9 @@ CREATE TABLE `permisos` (
 -- Volcado de datos para la tabla `permisos`
 --
 
-INSERT INTO `permisos` (`Id`, `GrupoId`, `DashboardAdmin`, `Admin_miempresa`, `Admin_usuario`, `Admin_grupos`, `Admin_perfiles`, `Admin_emisores`, `Admin_clientes`, `Admin_prodserv`, `Admin_series`, `Comprobantes_facturas`, `Reportes_reportemensual`, `CatSAT_claves_prodserv`, `CatSAT_unidades`, `CatSAT_formaspago`, `CatSAT_monedas`, `CatSAT_impuestos`) VALUES
-(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-(2, 2, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO `permisos` (`Id`, `GrupoId`, `DashboardAdmin`, `Admin_miempresa`, `Admin_PAC`, `Admin_usuario`, `Admin_grupos`, `Admin_perfiles`, `Admin_emisores`, `Admin_clientes`, `Admin_prodserv`, `Admin_series`, `Comprobantes_facturas`, `Reportes_reportemensual`, `CatSAT_claves_prodserv`, `CatSAT_unidades`, `CatSAT_formaspago`, `CatSAT_monedas`, `CatSAT_impuestos`) VALUES
+(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+(2, 2, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -469,8 +500,9 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`Id`, `Estatus`, `Username`, `Password`, `Email`, `ChangePass`, `Created`, `LastSession`) VALUES
-(1, 1, 'Admin', '$2y$15$iliQ5UwvImILwDA/zMSiP.tFKRYlFC5qZp3ow0DDnEpvNmNA5ls2O', '', 0, '2021-04-17 16:58:42', NULL),
-(2, 1, 'Emisor', '$2y$15$ee5/w.0iRgyF/HwuDBwq8eS3soiu4c4ZwacRrLNiP/BD7/aPZBnLe', 'emisor@correo.com', 0, '2021-04-19 16:34:13', NULL);
+(1, 1, 'Admin', '$2y$15$F0rGRQNowj8XRN48hbtX9uR2Nkdqe0b47sEKgBElM9KrIJTLZ77JW', '', 1, '2021-04-17 16:58:42', NULL),
+(2, 1, 'Usuario Emisor', '$2y$15$FvpP3yYri1cBWb/7KxCNS.docYfwULRH1825Ywd4yaArE.OH58QJq', 'alguien@correo.com', 1, '2021-04-19 16:34:13', NULL);
+
 --
 -- Índices para tablas volcadas
 --
@@ -528,7 +560,9 @@ ALTER TABLE `catsatusocfdi`
 -- Indices de la tabla `cfdi`
 --
 ALTER TABLE `cfdi`
-  ADD PRIMARY KEY (`Id`);
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `CFDI_Emisor` (`Emisor`),
+  ADD KEY `CFDI_Cliente` (`ClienteId`);
 
 --
 -- Indices de la tabla `clientes`
@@ -686,7 +720,7 @@ ALTER TABLE `cfdi`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `confmailgun`
@@ -704,7 +738,7 @@ ALTER TABLE `contactos`
 -- AUTO_INCREMENT de la tabla `csd`
 --
 ALTER TABLE `csd`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT de la tabla `detallecomprobante`
@@ -716,19 +750,19 @@ ALTER TABLE `detallecomprobante`
 -- AUTO_INCREMENT de la tabla `emisores`
 --
 ALTER TABLE `emisores`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `grupos`
 --
 ALTER TABLE `grupos`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `grupos_usuario`
 --
 ALTER TABLE `grupos_usuario`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `pac`
@@ -740,13 +774,13 @@ ALTER TABLE `pac`
 -- AUTO_INCREMENT de la tabla `perfiles`
 --
 ALTER TABLE `perfiles`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos`
 --
 ALTER TABLE `permisos`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -764,7 +798,7 @@ ALTER TABLE `series`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
@@ -811,6 +845,13 @@ ALTER TABLE `catsatunidades`
 --
 ALTER TABLE `catsatusocfdi`
   ADD CONSTRAINT `Emisor_CatSATUsoCFDI` FOREIGN KEY (`Emisor`) REFERENCES `emisores` (`Id`);
+
+--
+-- Filtros para la tabla `cfdi`
+--
+ALTER TABLE `cfdi`
+  ADD CONSTRAINT `CFDI_Cliente` FOREIGN KEY (`ClienteId`) REFERENCES `clientes` (`Id`),
+  ADD CONSTRAINT `CFDI_Emisor` FOREIGN KEY (`Emisor`) REFERENCES `emisores` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `clientes`
@@ -866,15 +907,8 @@ ALTER TABLE `productos`
   ADD CONSTRAINT `Impuesto_Producto` FOREIGN KEY (`Impuesto`) REFERENCES `catsatimpuestos` (`Id`);
 
 --
--- Filtros para la tabla `cfdi`
---
-ALTER TABLE `cfdi`
-  ADD CONSTRAINT `CFDI_Emisor` FOREIGN KEY (`Emisor`) REFERENCES `emisores`(`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `CFDI_Cliente` FOREIGN KEY (`ClienteId`) REFERENCES `clientes`(`Id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
---
 -- Filtros para la tabla `series`
 --
-
 ALTER TABLE `series`
   ADD CONSTRAINT `Emisor_Serie` FOREIGN KEY (`Emisor`) REFERENCES `emisores` (`Id`);
 COMMIT;
