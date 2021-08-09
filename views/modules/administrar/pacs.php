@@ -151,7 +151,7 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title"> <i class="fas fa-plus"></i> Agregar PAC </h4>
+            <h4 class="modal-title"> <i class="fas fa-edit"></i> Editar PAC </h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <form method="POST" action="<?= $data['host'] ?>/administrar/pacs/process">
@@ -200,7 +200,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="submit" name='send'class="btn btn-success"> <i class="fas fa-check"></i> Agregar </button>
+                <button type="submit" name='send'class="btn btn-success"> <i class="fas fa-check"></i> Guardar </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
               </div>
           </form>
