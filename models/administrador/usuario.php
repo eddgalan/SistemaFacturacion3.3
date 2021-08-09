@@ -296,7 +296,8 @@
 
     public function get_permisos($id_usuario){
       $this->connect();
-      $sql = "SELECT SUM(DashboardAdmin) AS DashboardAdmin, SUM(Admin_miempresa) AS Admin_miempresa, SUM(Admin_usuario) AS Admin_usuario, SUM(Admin_grupos) AS Admin_grupos, SUM(Admin_perfiles) AS Admin_perfiles,
+      $sql = "SELECT SUM(DashboardAdmin) AS DashboardAdmin, SUM(Admin_miempresa) AS Admin_miempresa, SUM(Admin_PAC) AS Admin_PAC,
+      SUM(Admin_usuario) AS Admin_usuario, SUM(Admin_grupos) AS Admin_grupos, SUM(Admin_perfiles) AS Admin_perfiles,
       SUM(Admin_emisores) AS Admin_emisores, SUM(Admin_clientes) AS Admin_clientes, SUM(Admin_prodserv) AS Admin_prodserv,
       SUM(Admin_series) AS Admin_series, SUM(Comprobantes_facturas) AS Comprobantes_facturas,
       SUM(Reportes_reportemensual) AS Reportes_reportemensual,

@@ -188,7 +188,7 @@
                         </select>
                       </div>
                       <!-- Botón Agregar -->
-                      <div class="col-lg-6 col-md-6 col-sm-12" style="margin-left: -15px;">
+                      <div class="col-lg-6 col-md-6 col-sm-12 fix-button" style="margin-left: -15px;">
                         <button type="button" class="btn btn-success" name="add_group" disabled>
                           <i class="fas fa-plus"></i> Agregar
                         </button>

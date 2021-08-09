@@ -14,6 +14,11 @@
       $routes["administrar/miempresa/process"]="ProcessMiEmpresa";
       $routes["administrar/miempresa/cambiar_logo"]="ProcessChangeLogo";
       $routes["administrar/miempresa/procesar_csd"]="ProcessFilesCSD";
+      // PACs
+      $routes["administrar/pacs"]="ViewPACs";
+      $routes["administrar/pacs/process"]="ProcessPAC";
+      $routes["administrar/pacs/switch_active/_data_/_data_"]="SwitchActivoPAC";
+
       // Usuarios
       $routes["administrar/usuarios"]="ViewUsuarios";
       $routes["administrar/usuarios/process"]="ProcessUsuario";
@@ -88,6 +93,7 @@
 
 
       /* ...:: APIs ::... */
+      $routes["API/pac/get_pac/_data_"]="PACAPI/get_pac";
       $routes["API/usuarios/get_usuario/_data_"]="UsuarioAPI/get_usuario";
       $routes["API/grupos/get_grupo"]="GrupoAPI/get_grupo";
       $routes["API/grupos/get_grupos_usuario"]="GrupoAPI/get_grupos_usuario";

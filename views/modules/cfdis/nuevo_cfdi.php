@@ -82,7 +82,7 @@
                                   <option value="0">---</option>
                                   <?php
                                     foreach ($data['metodos_pago'] as $metodo_pago) {
-                                      $html_option = "<option value='". $metodo_pago['ClaveMetodo']. "'>". $metodo_pago['ClaveMetodo'] ." | ". $metodo_pago['Descripcion'] ."</option>\n";
+                                      $html_option = "<option value='". $metodo_pago['ClaveMetodo']. " | ". $metodo_pago['Descripcion'] ."'>". $metodo_pago['ClaveMetodo'] ." | ". $metodo_pago['Descripcion'] ."</option>\n";
                                       echo $html_option;
                                     }
                                   ?>
@@ -96,7 +96,7 @@
                                   <option value="0">---</option>
                                   <?php
                                     foreach ($data['formas_pago'] as $forma_pago) {
-                                      $html_option = "<option value='". $forma_pago['ClaveFormaPago']. "'>". $forma_pago['ClaveFormaPago'] ." | ". $forma_pago['Descripcion'] ."</option>\n";
+                                      $html_option = "<option value='". $forma_pago['ClaveFormaPago']. " | ". $forma_pago['Descripcion'] ."'>". $forma_pago['ClaveFormaPago'] ." | ". $forma_pago['Descripcion'] ."</option>\n";
                                       echo $html_option;
                                     }
                                   ?>
@@ -327,7 +327,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" name="add_product"class="btn btn-success" disabled> <i class="fas fa-check"></i> Agregar </button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cancelar</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fas fa-times"></i> Cerrar</button>
           </div>
         </div>
       </div>

@@ -34,6 +34,28 @@
     }
   }
 
+  class PACAPI extends API{
+    public function get_pac($data_url){
+      if($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          $id = $data_url[1];
+          $pac_pdo = new PacPDO();
+          $data_pac = $pac_pdo->get_pac($id);
+          $this -> return_data("Mostrando Datos PAC | API", 200, $data_pac);
+        }else{
+          write_log("PACAPI | get_pac | Token NO válido");
+          $this->return_data("Ocurrió un error... No es posible procesar su solicitud", 400);
+        }
+      }else{
+        write_log("PACAPI | get_pac | NO se recibieron datos POST");
+        $this->return_data("No es posible procesar su solicitud", 400);
+      }
+    }
+  }
+
   class GrupoAPI extends API{
     public function get_grupo(){
       if($_POST){

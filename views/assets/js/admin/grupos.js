@@ -54,6 +54,12 @@ function carga_permisos(id_grupo){
         }else{
           $("input[name='admin_miempresa']").prop("checked", false);
         }
+        // PACs
+        if( datos.Admin_PAC == 1 ){
+          $("input[name='admin_pacs']").prop("checked", true);
+        }else{
+          $("input[name='admin_pacs']").prop("checked", false);
+        }
         // Usuario
         if( datos.Admin_usuario == 1 ){
           $("input[name='admin_usuario']").prop("checked", true);

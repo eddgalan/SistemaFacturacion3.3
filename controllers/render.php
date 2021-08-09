@@ -1,12 +1,12 @@
 <?php
   require 'libs/conexion_db.php';
   require 'libs/mpdf/plantillas_mpdf.php';
-  require 'models/pac.php';
   require 'models/comprobante.php';
   require 'models/csd.php';
   require 'models/mailgun.php';
   require 'models/contacto.php';
   /* ..:: Administrador ::..  */
+  require 'models/administrador/pac.php';
   require 'models/administrador/usuario.php';
   require 'models/administrador/grupos.php';
   require 'models/administrador/perfiles.php';
@@ -106,7 +106,7 @@
 
   class ViewMiEmpresa{
     function __construct($host_name="", $site_name="", $variables=null){
-      $data['title'] = "Facturación 3.3 | Administrar | Usuarios";
+      $data['title'] = "Facturación 3.3 | Administrar | Mi Empresa";
       $data['host'] = $host_name;
 
       $sesion = new UserSession();
@@ -212,6 +212,71 @@
         $sesion->set_notification("ERROR", "No fue posible procesar su solicitud.");
       }
       header("location: " . $host_name . "/administrar/miempresa");
+    }
+  }
+
+  class ViewPACs{
+    function __construct($host_name="", $site_name="", $variables=null){
+      $data['title'] = "Facturación 3.3 | Administrar | PACs";
+      $data['host'] = $host_name;
+
+      $sesion = new UserSession();
+      $data['token'] = $sesion->set_token();
+      $data_sesion = $sesion->get_session();
+
+      $pac_pdo = new PacPDO();
+      $data['pacs'] = $pac_pdo->get_active_pac();
+
+      $this->view = new View();
+      $this->view->render('views/modules/administrar/pacs.php', $data, true);
+    }
+  }
+
+  class ProcessPAC{
+    function __construct($hostname="", $sitename="", $dataurl=null){
+      if ($_POST){
+        $token = $_POST['token'];
+        $sesion = new UserSession();
+
+        if($sesion->validate_token($token)){
+          if( empty($_POST['id_pac']) ){
+            // INSERT PAC
+            $nombre_pac = $_POST['nombre_pac'];
+            $nombre_corto = $_POST['nombre_corto'];
+            $endpoint = $_POST['endpoint'];
+            $endpoint_pruebas = $_POST['endpoint_pruebas'];
+            $usuario = $_POST['usuario'];
+            $pass = $_POST['pass'];
+            $observaciones = $_POST['observaciones'];
+
+            $pac_pdo = new PacPDO();
+            if( $pac_pdo->insert($nombre_pac, $nombre_corto, $endpoint, $endpoint_pruebas, $usuario, $pass, $observaciones) ){
+              $sesion->set_notification("OK", "Se ha registrado el nuevo PAC.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al registrar el PAC. Intente de nuevo.");
+            }
+          }else{
+            $id = $_POST['id_pac'];
+            $nombre_pac = $_POST['nombre_pac_edit'];
+            $nombre_corto = $_POST['nombre_corto_edit'];
+            $endpoint = $_POST['endpoint_edit'];
+            $endpoint_pruebas = $_POST['endpoint_pruebas_edit'];
+            $usuario = $_POST['usuario_edit'];
+            $pass = $_POST['pass_edit'];
+            $observaciones = $_POST['observaciones_edit'];
+
+            $pac_pdo = new PacPDO();
+            if( $pac_pdo->update($id, $nombre_pac, $nombre_corto, $endpoint, $endpoint_pruebas, $usuario, $pass, $observaciones) ){
+              $sesion->set_notification("OK", "Se ha actualizado el registro.");
+            }else{
+              $sesion->set_notification("ERROR", "Ocurrió un error al actualizar el PAC. Intente de nuevo.");
+            }
+          }
+        }
+      }else{
+        write_log("ProcessPAC | __contruct | NO se recibieron datos por POST");
+      }
+      header("location: " . $hostname . "/administrar/pacs");
     }
   }
 
@@ -459,6 +524,12 @@
           }else{
             $admin_miempresa = 0;
           }
+          // PACs
+          if(isset($_POST['admin_pacs'])){
+            $admin_pacs = 1;
+          }else{
+            $admin_pacs = 0;
+          }
           // Usuario
           if(isset($_POST['admin_usuario'])){
             $admin_usuario = 1;
@@ -548,7 +619,7 @@
           }
 
           $grupo_pdo = new GrupoPDO();
-          if( $grupo_pdo->update_permisos($id, $admin_miempresa, $admin_usuario, $admin_grupos, $admin_perfiles, $admin_emisores, $admin_clientes, $admin_prodserv, $admin_series, $comprobantes_facturas, $report_reportemensual, $catsat_prodserv, $catsat_unidades, $catsat_formaspago, $catsat_monedas, $catsat_impuestos) ){
+          if( $grupo_pdo->update_permisos($id, $admin_miempresa, $admin_pacs, $admin_usuario, $admin_grupos, $admin_perfiles, $admin_emisores, $admin_clientes, $admin_prodserv, $admin_series, $comprobantes_facturas, $report_reportemensual, $catsat_prodserv, $catsat_unidades, $catsat_formaspago, $catsat_monedas, $catsat_impuestos) ){
             $sesion->set_notification("OK", "Se actualizaron los permisos del grupo indicado");
           }else{
             $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los permisos del grupo.");
@@ -654,7 +725,7 @@
           if( $pass == $pass_confirm ){
             $usuario_pdo = new UsuarioPDO();
             if( $usuario_pdo->update_password($usuario_id, $pass) ){
-              $sesion->set_notification("OK", "Los datos se actualizaron correctamente.");
+              $sesion->set_notification("OK", "Se ha actualizado su contraseña.");
             }else{
               $sesion->set_notification("ERROR", "Ocurrió un error al actualizar la contraseña.");
             }
@@ -784,8 +855,8 @@
         $token = $_POST['token'];
         $sesion = new UserSession();
 
-        if($sesion->validate_token($token)){
-          if (empty($_POST['id_emisor'])){
+        if( $sesion->validate_token($token) ){
+          if( empty($_POST['id_emisor']) ){
             // INSERT EMISOR
             $nombre = $_POST['nombre'];
             $rfc = $_POST['rfc'];
@@ -869,6 +940,9 @@
               $sesion->set_notification("ERROR", "Ocurrió un error al actualizar los datos del Emisor.");
             }
           }
+        }else{
+          write_log("ProcessEmisores | __contruct() | Token NO Válido");
+          $sesion->set_notification("ERROR", "No fue posible procesar su solicitud. Inténtelo de nuevo.");
         }
       }else{
         write_log("ProcessEmisores | __contruct() | NO se recibieron datos por POST");
@@ -1813,9 +1887,6 @@
       // Obtiene las formas de pago
       $forma_pago = new CatSATFormaPago();
       $data['formas_pago'] = $forma_pago->get_all_actives($emisor);
-      // // Obtiene los usos CFDI
-      // $usos_cfdi = new CatSATUsosCFDI();
-      // $data['usos_cfdi'] = $usos_cfdi->get_all();
       // Obtiene las monedas
       $moneda = new CatSATMoneda();
       $data['monedas'] = $moneda->get_all_actives($emisor);
@@ -1824,7 +1895,7 @@
       $data['series'] = $serie->get_all_actives($emisor);
       // Obtiene los productos
       $productos = new ProdServPDO();
-      $data['productos'] = $productos->get_all($emisor);
+      $data['productos'] = $productos->get_actives($emisor);
       // Obtiene fecha y hora actual
       $data['fecha'] = date('Y-m-d');
       $data['hora'] = date("H:i:s");

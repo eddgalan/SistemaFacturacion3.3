@@ -12,11 +12,11 @@ $(document).ready(function(){
       valida();
     });
 
-    $("input[name='email']").change(function(){
+    $("input[name='email']").on('input', function(){
       valida();
     });
 
-    $("textarea[name='msg_email']").change(function(){
+    $("textarea[name='msg_email']").on('input', function(){
       valida();
     });
 
