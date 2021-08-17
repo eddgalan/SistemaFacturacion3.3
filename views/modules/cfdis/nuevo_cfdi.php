@@ -80,12 +80,8 @@
                                 <label for="metodo_pago"> Método de Pago: </label>
                                 <select class="form-control" name="metodo_pago">
                                   <option value="0">---</option>
-                                  <?php
-                                    foreach ($data['metodos_pago'] as $metodo_pago) {
-                                      $html_option = "<option value='". $metodo_pago['ClaveMetodo']. " | ". $metodo_pago['Descripcion'] ."'>". $metodo_pago['ClaveMetodo'] ." | ". $metodo_pago['Descripcion'] ."</option>\n";
-                                      echo $html_option;
-                                    }
-                                  ?>
+                                  <option value="PUE | Pago en una sola exhibición">PUE | Pago en una sola exhibición</option>
+                                  <option value="PPD | Pago en parcialidades o diferido">PPD | Pago en parcialidades o diferido</option>
                                 </select>
                                 <small class="color_red display_none" name="metodo_pago">Seleccione un Método de Pago</small>
                               </div>
