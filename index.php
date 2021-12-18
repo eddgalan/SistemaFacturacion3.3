@@ -4,7 +4,7 @@
   require 'libs/view.php';
   include 'libs/log.php';
 
-  $host_name = "https://alphateamdev.com/projects/demo";
+  $host_name = "https://alphateamdev.com/projects/demo/facturacion";
   $site_name = "Sistema de Facturación";
 
   $app = new Routes($host_name, $site_name);
