@@ -380,8 +380,8 @@ CREATE TABLE `pac` (
 -- Volcado de datos para la tabla `pac`
 --
 
-INSERT INTO `pac` (`Id`, `Nombre`, `NombreCorto`, `EndPoint`, `EndPoint_Pruebas`, `UsrPAC`, `PassPAC`, `Observaciones`) VALUES
-(1, 'Proveedores de Facturación Electrónica y Software S.A. de C.V.', 'PROFACT_PR', '---', '---', '---', '87654321', '');
+INSERT INTO `pac` (`Id`, `Estatus`, `Nombre`, `NombreCorto`, `EndPoint`, `EndPoint_Pruebas`, `UsrPAC`, `PassPAC`, `Observaciones`) VALUES 
+(1, 1, 'Proveedores de Facturación Electrónica y Software S.A. de C.V.', 'PROFACT_PR', 'https://cfdi33-pruebas.buzoncfdi.mx:1443/Timbrado.asmx?wsdl', 'https://cfdi33-pruebas.buzoncfdi.mx:1443/Timbrado.asmx?wsdl', 'mvpNUXmQfK8=', '87654321', 'Estas son las credenciales de prueba para facturar.');
 
 -- --------------------------------------------------------
 

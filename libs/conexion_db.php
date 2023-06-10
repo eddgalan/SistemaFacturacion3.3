@@ -8,9 +8,9 @@
 
     function __construct() {
       $this->servername = "localhost";
-      $this->username = "lenovo";
-      $this->password = "Lenovo123456!";
-      $this->sqldatabase = "facturacion";
+      $this->username = "root";
+      $this->password = "";
+      $this->sqldatabase = "facturacion3";
     }
 
     function connect(){
